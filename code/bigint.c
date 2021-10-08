@@ -2,7 +2,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-
+#define FALSE 0
+#define TRUE 1
+#define GREATER 1
+#define EQUAL 0
+#define LESS -1
 
 //delete bigint
 void bi_delete(bigint** x) {
@@ -83,4 +87,118 @@ void bi_set_by_string(bigint** x, int sign, char* str, int base {
 void bi_show_hex(bigint* x) {
 	for(int i = x->wordlen-1; i >= 0; i--)
 		fprintf(stdout, "%x", x->a[i]);
+}
+
+void bi_refine(bigint* x) {
+	if(x == NULL)
+		return;
+	
+	int new_wordlen = x->wordlen;
+	while(new_wordlen > 1) {
+		if(x->a[new_wordlen - 1] != 0)
+			break;
+		new_wordlen--;
+	}
+	if (x->wordlen != new_wordlen) {
+		x->wordlen = new_wordlen;
+		x->a = (word*)realloc(x->a, sizeof(word)*new_wordlen);
+	}
+
+	if((x->wordlen == 1) && (x->a[0] == 0x0))
+		x->sign = NON_NEGATIVE;
+}
+
+void bi_assign(bigint** y, bigint *x) {
+	if(*y != NULL)
+		bi_delete(y);
+
+	bi_new(y, x->wordlen);
+	(*y)->sign = x->sign;
+	//array_copy((*y)->a, x->a, x->wordlen);
+}
+
+
+void bi_gen_rand(bigint**x, int sign, int wordlen) {
+	bi_new(x, wordlen);
+	(*x)->sign = sign;
+	array_rand((*x)->a, wordlen);
+
+	bi_refine(*x);
+}
+//need to change, low security
+void array_rand(word* dst, int wordlen) {
+	byte* p = (byte*)dst;
+	int cnt = wordlen * sizeof(word);
+	while(cnt > 0) {
+		*p = rand() & 0xff;
+		p++;
+		cnt--;
+	}
+}
+
+//create bigint 1
+void bi_set_one(bigint** x) {
+	bi_new(x, 1);
+	(*x)->sign = NON_NEGATIVE;
+	(*x)->a[0] = 0x1;
+}
+//create bigint 0
+void bi_set_zero(bigint** x) {
+	bi_new(x, 1);
+	(*x)->sign = NON_NEGATIVE;
+	(*x)->a[0] = 0x0;
+}
+//if bigint is 0, return 1 else 0
+int bi_is_zero(bigint* x) {
+	int i;
+	if(x->sign == NEGATIVE | x->a[0] != 0)
+		return FALSE;
+	
+	for(i=x->wordlen; i>0; i--) {
+		if(x->a[i])
+			return FALSE;
+	}
+	return TRUE;
+}
+//if bigint is 1, return 1 else 0
+int bi_is_one(bigint* x) {
+	int i;
+	if(x->sign == NEGATIVE | x->a[0] != 0)
+		return FALSE;
+	
+	for(i=x->wordlen; i>0; i--) {
+		if(x->a[i])
+			return FALSE;
+	}
+	return TRUE;
+}
+
+//abs compare
+int bi_compare_abs(bigint* x, bigint* y) {
+	int i;
+	if(x->wordlen > y->wordlen)
+		return GREATER;
+	else if(x->wordlen < y->wordlen)
+		return LESS;
+	
+	for(i=x->wordlen-1; i>=0; i--) {
+		if(x->a[i] > y->a[i])
+			return GREATER;
+		else if (x->a[i] < y->a[i])
+			return LESS;
+	}
+	return EQUAL;
+}
+//compare 
+int bi_compare(bigint* x, bigint* y) {
+	if(x->sign==NON_NEGATIVE & y->sign==NEGATIVE)
+		return GREATER;
+	if(x->sign==NEGATIVE & y->sign==NON_NEGATIVE)
+		return LESS;
+	
+	int com_abs = bi_compare_abs(x,y);
+	if(x->sign == NON_NEGATIVE)
+		return com_abs;
+	else
+		return com_abs*(-1);
 }

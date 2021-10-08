@@ -8,6 +8,7 @@
 #define WORD 8
 
 typedef unsigned short word;
+typedef unsigned char byte;
 
 typedef struct {
 	int sign;
@@ -27,7 +28,7 @@ void bi_show_bin(bigint* x);
 
 void bi_refine(bigint* x);
 
-void bi_assign(bigint* y, bigint* x);
+void bi_assign(bigint** y, bigint* x);
 
 void bi_gen_rand(bigint** x, int sign, int wordlen);
 
@@ -40,11 +41,11 @@ int bi_get_flipsign(bigint* x);
 
 void bi_set_one(bigint** x);
 void bi_set_zero(bigint** x);
-int bi_is_zero(bigint** x);
-int bi_is_one(bigint** x);
+int bi_is_zero(bigint* x);
+int bi_is_one(bigint* x);
 
-int bi_compare_abs(bigint** x);
-int bi_compare(bigint** x);
+int bi_compare_abs(bigint* x, bigint* y);
+int bi_compare(bigint* x, bigint* y);
 
 void bi_rshift(bigint** x, int r);
 void bi_lshift(bigint** x, int l);
