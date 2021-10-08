@@ -7,6 +7,7 @@
 #define GREATER 1
 #define EQUAL 0
 #define LESS -1
+#define BYTE 8
 
 //delete bigint
 void bi_delete(bigint** x) {
@@ -26,17 +27,17 @@ void bi_delete(bigint** x) {
 void bi_new(bigint** x, int wordlen) {
 	if(*x != NULL)	
 		bi_delete(x);
-
 	*x = (bigint*)malloc(sizeof(bigint));
 	(*x)->sign = NON_NEGATIVE;
 	(*x)->wordlen = wordlen;
 	(*x)->a = (word*)calloc(wordlen, sizeof(word));
 }
 
-//set bigint by array
+//set bigint by array error
 void bi_set_by_array(bigint** x, int sign, word* a, int wordlen) {
 	(*x)->sign = sign;
 	(*x)->wordlen = wordlen;
+	free((*x)->a);
 	(*x)->a = a;
 }
 
@@ -59,36 +60,52 @@ int cdevide(int a, int b) {
 	else
 		return answer;
 }
-/*
-void bi_set_by_string(bigint** x, int sign, char* str, int base {
+
+//string to bigint
+void bi_set_by_string(bigint** x, int sign, char* str, int base) {
 	int i;
 	int len;
-	char* w= NULL;
+	byte* w= NULL;
 	int n;
 
 	(*x)->sign = sign;
 
 	//base to wordlen
-	(*x)->wordlen = cdevide(base, sizeof(word));
+	(*x)->wordlen = cdevide(base, sizeof(word)*2);
 	
 	//make new array use str
 	int malsiz = sizeof(word)*(*x)->wordlen;
 	w = malloc(malsiz);
-	for (i=0; i<malsiz-base; i++) {
-		w[malsiz-1-i] = 0;	
+	i = base-1;
+	while(i>0) {
+		w[(base-1-i)/2] = chartohex(str[i]) | chartohex(str[i-1])<<4;
+		i -= 2;
 	}
-	for(i=0; i < base; i++) {
-		w[base-1-i] = chartohex(str[i]);
-	}
-	(*x)-> = strtoarr(str);
-}*/
+	if(base&1)
+		w[base/2] = str[0];
+	
+	for(i=(base+1)/2; i<malsiz; i++)
+		w[i] = 0x0;
+	(*x)->a = (word*)w;
+}
 
 //print bigint 16
 void bi_show_hex(bigint* x) {
-	for(int i = x->wordlen-1; i >= 0; i--)
+	int i;
+	for(i = x->wordlen-1; i >= 0; i--)
 		fprintf(stdout, "%x", x->a[i]);
 }
+void bi_show_bin(bigint* x) {
+	int i, j;
+	for(i = x->wordlen-1; i >= 0; i--) {
+		int temp = x->a[i];
+		for(j = sizeof(word)*BYTE-1; j>=0; j--) {
+			fprintf(stdout, "%x", (temp>>j)&1);
+		}
+	}
+}
 
+//make memory fit word
 void bi_refine(bigint* x) {
 	if(x == NULL)
 		return;
@@ -108,6 +125,7 @@ void bi_refine(bigint* x) {
 		x->sign = NON_NEGATIVE;
 }
 
+//assign y <- x
 void bi_assign(bigint** y, bigint *x) {
 	if(*y != NULL)
 		bi_delete(y);
@@ -117,14 +135,6 @@ void bi_assign(bigint** y, bigint *x) {
 	//array_copy((*y)->a, x->a, x->wordlen);
 }
 
-
-void bi_gen_rand(bigint**x, int sign, int wordlen) {
-	bi_new(x, wordlen);
-	(*x)->sign = sign;
-	array_rand((*x)->a, wordlen);
-
-	bi_refine(*x);
-}
 //need to change, low security
 void array_rand(word* dst, int wordlen) {
 	byte* p = (byte*)dst;
@@ -135,6 +145,24 @@ void array_rand(word* dst, int wordlen) {
 		cnt--;
 	}
 }
+//create random bigint
+void bi_gen_rand(bigint**x, int sign, int wordlen) {
+	bi_new(x, wordlen);
+	(*x)->sign = sign;
+	array_rand((*x)->a, wordlen);
+
+	bi_refine(*x);
+}
+
+int bi_get_wordlen(bigint* x) {
+	return x->wordlen;
+}
+int bi_get_sign(bigint* x) {
+	return x->sign;
+}
+
+
+
 
 //create bigint 1
 void bi_set_one(bigint** x) {
