@@ -1,23 +1,22 @@
 #include "bigint.h"
+#include "ADD.h"
 #include <stdio.h>
 #include <stdlib.h>
 
 
 
-using namespace std;
 
 
-word ADD_mod_w(word A, word B) {
-	return (A + B) >> ( sizeof(word)*8 );
-}
 
-word* ADD_ABc(word *A, word *B,word c) {
+
+//Algorithm 5 ADD_ABc(A,B,c)
+word* ADD_ABc(word A, word B,word c) {
 	word c_2 = 0;
-	word C = ADD_mod_w(*A, *B);
-	if (C < *A) {
+	word C = A + B;
+	if (C < A) {
 		c_2 = 1;
 	}
-	C = ADD_mod_w(C,c);
+	C = C + c;
 	if (C < c) {
 		c_2 += 1;
 	}
@@ -26,36 +25,52 @@ word* ADD_ABc(word *A, word *B,word c) {
 	return array_return;
 }
 
-
+//Algorithm 6 ADDC(A,B)
 bigint* ADDC(bigint* A, bigint* B) {
 
-	for (word i = A->wordlen - B->wordlen; i < A->wordlen; i++) {
-		*((B->a) + i) = 0;
+	//line 1
+	word* array = (word*)malloc(sizeof(word) * A->wordlen);
+	memcpy(array, B->a, sizeof(word) * B->wordlen);
+	
+	for (word i = B->wordlen; i < A->wordlen; i++) {
+		array[i] = 0;
 	}
 
+	B->a = array;
+
+	//line2
 	word c = 0;
-	bigint* C = NULL;
-	bi_new(&C, A->wordlen);
-
+	word* C_array = (word*)malloc(sizeof(word) * A->wordlen);
 	for (word j = 0; j < A->wordlen; j++) {
-		return_array = ADD_ABc(A->a + j, B->a + j, c);
-		c, *((C->a) + j) = return_array[0],return_array[1];
+		word* return_ADD_ABc = ADD_ABc(*(A->a + j), *(B->a + j), c);
+		c = return_ADD_ABc[0];
+		C_array[j] = return_ADD_ABc[1];
 	}
 
-	*(C->a + A->wordlen) = c;
+	//line 7 
+	C_array[A->wordlen] = c;
 
-	if (*(C->a + A->wordlen) == 1) {
-		C->wordlen = A->wordlen;
-		bi_delete(&A);
-		bi_delete(&B);
+	//line 8
+	//B->wordlen = A->wordlen;
+
+	if (c == 1) {
+		bigint* C = NULL;
+		bi_new(&C, A->wordlen+1);
+		bi_set_by_array(&C, NON_NEGATIVE, C_array, A->wordlen+1);
+
+		//bi_delete(&A);
+		//bi_delete(&B);
 
 		return C;
 	}
 	else {
-		C->wordlen = A->wordlen - 1;
+		bigint* C = NULL;
+		bi_new(&C, A->wordlen);
+		bi_set_by_array(&C, NON_NEGATIVE, C_array, A->wordlen);
 
-		bi_delete(&A);
-		bi_delete(&B);
+		//bi_delete(&A);
+		//bi_delete(&B);
+
 		return C;
 	}
 
@@ -65,7 +80,7 @@ bigint* SUB(bigint* A, bigint* B) {
 
 }
 
-bigint* ADD(bigint* A, bigint* B) {
+bigint* bigint_ADD(bigint* A, bigint* B) {
 	if (A->wordlen == 0)
 		return B;
 
