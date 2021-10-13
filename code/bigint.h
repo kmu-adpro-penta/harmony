@@ -22,7 +22,7 @@ void bi_set_by_array(bigint** x, int sign, word* a, int wordlen);
 void bi_set_by_string(bigint** x, int sign, char*str, int base);
 
 void bi_show_hex(bigint* x);
-void bi_show_dec(bigint* x);//yet
+void bi_show_dec(bigint* x);//too hard
 void bi_show_bin(bigint* x);
 
 void bi_refine(bigint* x);
@@ -32,11 +32,11 @@ void bi_assign(bigint** y, bigint* x);
 void bi_gen_rand(bigint** x, int sign, int wordlen);//fix
 
 int bi_get_wordlen(bigint* x);
-int bi_get_bitlen(bigint* x);//yet
+int bi_get_bitlen(bigint* x);
 
-int bi_get_ibit(bigint* x, int i);//yet
+int bi_get_ibit(bigint* x, int i);//fix
 int bi_get_sign(bigint* x);
-int bi_get_flipsign(bigint* x);//yet
+int bi_get_flipsign(bigint* x);
 
 void bi_set_one(bigint** x);
 void bi_set_zero(bigint** x);

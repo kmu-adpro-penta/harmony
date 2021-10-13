@@ -1,6 +1,7 @@
 #include "bigint.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #define FALSE 0
 #define TRUE 1
@@ -125,6 +126,12 @@ void bi_refine(bigint* x) {
 		x->sign = NON_NEGATIVE;
 }
 
+
+//array copy, need to valid check
+void array_copy(word* dst, word* arr,int wordlen) {
+	memcpy(dst, arr, wordlen*sizeof(word)*BYTE);
+}
+
 //assign y <- x
 void bi_assign(bigint** y, bigint *x) {
 	if(*y != NULL)
@@ -134,6 +141,7 @@ void bi_assign(bigint** y, bigint *x) {
 	(*y)->sign = x->sign;
 	//array_copy((*y)->a, x->a, x->wordlen);
 }
+
 
 //need to change, low security
 void array_rand(word* dst, int wordlen) {
@@ -154,14 +162,29 @@ void bi_gen_rand(bigint**x, int sign, int wordlen) {
 	bi_refine(*x);
 }
 
+//return wordlen
 int bi_get_wordlen(bigint* x) {
 	return x->wordlen;
 }
+
+//return wordlen * BYTE(8) * sizeof(word)
+int bi_get_bitlen(bigint* x) {
+	return x->wordlen*BYTE*sizeof(word);
+}
+
+// what do you want to get??
+int bi_get_ibit(bigint* x, int i) {
+	x->a[i>>(sizeof(word)*BYTE)] >> ((1<<(sizeof(word)*BYTE) - 1) & i);
+}
+
+//return sign
 int bi_get_sign(bigint* x) {
 	return x->sign;
 }
-
-
+//return !sign
+int bi_get_flipsign(bigint* x) {
+	return x->sign ? NON_NEGATIVE : NEGATIVE;
+}
 
 
 //create bigint 1
@@ -170,6 +193,7 @@ void bi_set_one(bigint** x) {
 	(*x)->sign = NON_NEGATIVE;
 	(*x)->a[0] = 0x1;
 }
+
 //create bigint 0
 void bi_set_zero(bigint** x) {
 	bi_new(x, 1);
@@ -229,4 +253,25 @@ int bi_compare(bigint* x, bigint* y) {
 		return com_abs;
 	else
 		return com_abs*(-1);
+}
+
+void bi_rshift(bigint** x, int r) {
+	int q, re;
+	bigint* nb;
+	// case: r > wn
+	if (r > (*x)->wordlen * sizeof(word) * BYTE)
+		bi_set_zero(x);
+	// case: r = wk
+	else if (r & (sizeof(word)*BYTE - 1) == 0) {
+		q = r/(sizeof(word)*BYTE);
+		bi_new(&nb, (*x)->wordlen - q);
+		memcpy(nb->a, (*x)->a[q], nb->wordlen);
+		bi_delete(x);
+		x = &nb;
+	}
+	else {
+		q = r/(sizeof(word)*BYTE);
+		re = r & (sizeof(word)*BYTE - 1);
+		for()
+	}
 }
