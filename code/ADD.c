@@ -76,9 +76,6 @@ bigint* ADDC(bigint* A, bigint* B) {
 
 }
 
-bigint* SUB(bigint* A, bigint* B) {
-
-}
 
 bigint* bigint_ADD(bigint* A, bigint* B) {
 	if (A->wordlen == 0)
