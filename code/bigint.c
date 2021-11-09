@@ -83,7 +83,7 @@ void bi_set_by_string(bigint** x, int sign, char* str, int base) {
 		i -= 2;
 	}
 	if(base&1)
-		w[base/2] = str[0];
+		w[base/2] = chartohex(str[0]);
 	
 	for(i=(base+1)/2; i<malsiz; i++)
 		w[i] = 0x0;
@@ -94,7 +94,7 @@ void bi_set_by_string(bigint** x, int sign, char* str, int base) {
 void bi_show_hex(bigint* x) {
 	int i;
 	for(i = x->wordlen-1; i >= 0; i--)
-		fprintf(stdout, "%x", x->a[i]);
+		fprintf(stdout, "%04x", x->a[i]);
 }
 void bi_show_bin(bigint* x) {
 	int i, j;
@@ -254,7 +254,7 @@ int bi_compare(bigint* x, bigint* y) {
 	else
 		return com_abs*(-1);
 }
-
+/*
 void bi_rshift(bigint** x, int r) {
 	int q, re;
 	bigint* nb;
@@ -274,4 +274,4 @@ void bi_rshift(bigint** x, int r) {
 		re = r & (sizeof(word)*BYTE - 1);
 		for()
 	}
-}
+}*/
