@@ -46,8 +46,8 @@ int bi_is_one(bigint* x);
 int bi_compare_abs(bigint* x, bigint* y);
 int bi_compare(bigint* x, bigint* y);
 
-void bi_rshift(bigint** x, int r);//yet
+void bi_rshift(bigint** x, int r);
 void bi_lshift(bigint** x, int l);//yet
 
-
+void bi_realloc(bigint** x, int i);
 #endif

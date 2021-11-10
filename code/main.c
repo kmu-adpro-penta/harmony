@@ -11,6 +11,11 @@ int main(){
 	printf("start\n");
 	//bi_set_by_array(&bi, NON_NEGATIVE, w, 2);
 	bi_set_by_string(&bi, NON_NEGATIVE, "1324812481adfe134124", 20);
+	bi_lshift(&bi, 28);
+	printf("worlen : %d\n", bi_get_wordlen(bi));
+	bi_show_hex(bi);
+	printf("\n");
+	bi_realloc(&bi, 3);
 	printf("worlen : %d\n", bi_get_wordlen(bi));
 	bi_show_hex(bi);
 	printf("\n");

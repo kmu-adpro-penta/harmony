@@ -18,7 +18,6 @@ void bi_delete(bigint** x) {
 #ifdef ZERORIZE 
 	array_init((*x)->a, (*x)->wordlen);
 #endif
-
 	free((*x)->a);
 	free((*x));
 	*x = NULL;
@@ -139,7 +138,7 @@ void bi_assign(bigint** y, bigint *x) {
 
 	bi_new(y, x->wordlen);
 	(*y)->sign = x->sign;
-	//array_copy((*y)->a, x->a, x->wordlen);
+	array_copy((*y)->a, x->a, x->wordlen);
 }
 
 
@@ -254,24 +253,61 @@ int bi_compare(bigint* x, bigint* y) {
 	else
 		return com_abs*(-1);
 }
-/*
+
 void bi_rshift(bigint** x, int r) {
-	int q, re;
-	bigint* nb;
+	int k, re, i;
 	// case: r > wn
 	if (r > (*x)->wordlen * sizeof(word) * BYTE)
 		bi_set_zero(x);
 	// case: r = wk
-	else if (r & (sizeof(word)*BYTE - 1) == 0) {
-		q = r/(sizeof(word)*BYTE);
-		bi_new(&nb, (*x)->wordlen - q);
-		memcpy(nb->a, (*x)->a[q], nb->wordlen);
-		bi_delete(x);
-		x = &nb;
-	}
 	else {
-		q = r/(sizeof(word)*BYTE);
+		k = r/(sizeof(word)*BYTE);
 		re = r & (sizeof(word)*BYTE - 1);
-		for()
+		memmove((*x)->a, &((*x)->a[k]), (*x)->wordlen*sizeof(word)-k);
+		memset(&((*x)->a[(*x)->wordlen - k]), 0, k*sizeof(word));
+		bi_refine(*x);
+
+		// case: r = wk+r'
+		if(re) {
+			for(i=0; i<(*x)->wordlen-1; i++) {
+				(*x)->a[i] = (*x)->a[i+1] << (sizeof(word)*BYTE-re) | (*x)->a[i] >> re;
+				//printf("%x ",(*x)->a[i]);
+			}
+			(*x)->a[(*x)->wordlen - 1] = (*x)->a[(*x)->wordlen - 1] >> re;
+		}
+
 	}
-}*/
+}
+
+void bi_lshift(bigint** x, int r) {
+	int k, re, i, len;
+	word b;
+	k = r/(sizeof(word)*BYTE);
+	re = r & (sizeof(word)*BYTE - 1);
+	len = (*x)->wordlen;
+
+	bi_realloc(x, k+1);
+	memmove(&((*x)->a[k]), (*x)->a, len*sizeof(word));
+	memset((*x)->a, 0, k*sizeof(word));
+	
+	if(re) {
+		b = (*x)->a[0];
+		(*x)->a[len+k] = (*x)->a[len+k - 1] >>(sizeof(word)*BYTE-re);
+		for(i=len-1; i>0; i--) {
+			(*x)->a[i+k] = (*x)->a[i+k] << re | (*x)->a[i+k-1] >>(sizeof(word)*BYTE-re);
+		}
+		(*x)->a[k] = (*x)->a[k] << re;
+	}
+	bi_refine(*x);
+	
+}
+
+void bi_realloc(bigint** x, int i) {
+	int n;
+	realloc((*x)->a, ((*x)->wordlen + i)*sizeof(word));
+	for(n=0; n<i; n++) {
+		(*x)->a[(*x)->wordlen + n] = 0;
+	}
+	(*x)->wordlen+= i;
+
+}
