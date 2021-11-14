@@ -1,9 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "bigint.h"
+#include <ADD.h>
 
 #define MAIN
 int main(){
+
 	bigint* bi=NULL;
 	bi_new(&bi, 2);
 	word w[2] = {0x5678, 0x1234};

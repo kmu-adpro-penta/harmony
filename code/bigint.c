@@ -241,6 +241,7 @@ int bi_compare_abs(bigint* x, bigint* y) {
 	return EQUAL;
 }
 //compare 
+
 int bi_compare(bigint* x, bigint* y) {
 	if(x->sign==NON_NEGATIVE & y->sign==NEGATIVE)
 		return GREATER;
@@ -302,6 +303,8 @@ void bi_lshift(bigint** x, int r) {
 	
 }
 
+
+
 void bi_realloc(bigint** x, int i) {
 	int n;
 	realloc((*x)->a, ((*x)->wordlen + i)*sizeof(word));
@@ -311,3 +314,4 @@ void bi_realloc(bigint** x, int i) {
 	(*x)->wordlen+= i;
 
 }
+

@@ -2,6 +2,7 @@
 #include "ADD.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <SUB.h>
 
 
 
@@ -9,8 +10,15 @@
 
 
 
-//Algorithm 5 ADD_ABc(A,B,c)
-word* ADD_ABc(word A, word B,word c) {
+/*
+
+Input : A,B and c  ( 0 < A,B <= W and c = 0 or 1)
+
+Ourput : C and c'  ( A + B + c = c'W +C )
+
+*/
+
+word ADD_ABc(word A, word B,word c,word* C_j) {
 	word c_2 = 0;
 	word C = A + B;
 	if (C < A) {
@@ -20,84 +28,88 @@ word* ADD_ABc(word A, word B,word c) {
 	if (C < c) {
 		c_2 += 1;
 	}
-	
-	word array_return[2] = {c_2,C};
-	return array_return;
+	*C_j = C;
+	return c_2;
 }
 
-//Algorithm 6 ADDC(A,B)
-bigint* ADDC(bigint* A, bigint* B) {
+/*
 
-	//line 1
-	word* array = (word*)malloc(sizeof(word) * A->wordlen);
-	memcpy(array, B->a, sizeof(word) * B->wordlen);
+Input : A , B  ( A,B > 0 and A > B )
+
+Output : C ( C > 0 ) +---------------------------******9
+
+A 의 길이 = n
+B 의 길이 = m  ( n > m )
+
+*/
+void ADDC(bigint* A, bigint* B, bigint** C) {
 	
-	for (word i = B->wordlen; i < A->wordlen; i++) {
-		array[i] = 0;
+	bi_new(C, A->wordlen + 1);
+
+	word c = 0;					// c : carry
+	for (int j = 0; j < A->wordlen; j++) {
+		if(j == B->wordlen+1)
+			c = ADD_ABc(*(A->a + j), 0, c, (*C)->a + j);
+		else
+			c = ADD_ABc(*(A->a + j), *(B->a + j), c, (*C)->a+j);
 	}
 
-	B->a = array;
-
-	//line2
-	word c = 0;
-	word* C_array = (word*)malloc(sizeof(word) * A->wordlen);
-	for (word j = 0; j < A->wordlen; j++) {
-		word* return_ADD_ABc = ADD_ABc(*(A->a + j), *(B->a + j), c);
-		c = return_ADD_ABc[0];
-		C_array[j] = return_ADD_ABc[1];
-	}
-
-	//line 7 
-	C_array[A->wordlen] = c;
-
-	//line 8
-	//B->wordlen = A->wordlen;
+	*((*C)->a + A->wordlen) = c;
 
 	if (c == 1) {
-		bigint* C = NULL;
-		bi_new(&C, A->wordlen+1);
-		bi_set_by_array(&C, NON_NEGATIVE, C_array, A->wordlen+1);
-
-		//bi_delete(&A);
-		//bi_delete(&B);
-
-		return C;
+		(*C)->wordlen = A->wordlen + 1;
+		(*C)->sign = NON_NEGATIVE;
 	}
 	else {
-		bigint* C = NULL;
-		bi_new(&C, A->wordlen);
-		bi_set_by_array(&C, NON_NEGATIVE, C_array, A->wordlen);
-
-		//bi_delete(&A);
-		//bi_delete(&B);
-
-		return C;
+		(*C)->wordlen = A->wordlen;
+		(*C)->sign = NON_NEGATIVE;
 	}
 
 }
 
 
-bigint* bigint_ADD(bigint* A, bigint* B) {
+/*
+
+bigint_ADD
+
+Input : A,B		Output : A + B
+
+case 1. A = 0
+case 2. B = 0 
+case 3. A > 0 and B < 0
+case 4. A < 0 and B > 0
+case 5. A > B or A < B  ( A,B > 0 )
+
+
+*/
+ void bigint_ADD(bigint* A, bigint* B, bigint **C) {
+
+	// if A = 0  then return B
 	if (A->wordlen == 0)
-		return B;
+		bi_assign(C,B);
 
+	// if B = 0	 then return A
 	if (B->wordlen == 0)
-		return A;
+		bi_assign(C,A);
 
+	// if A > 0  and  B < 0  then return A - |B|
 	if (A->sign > 0 && B->sign < 0) {
 		B->sign = NON_NEGATIVE;
-		return SUB(A, B);
+		//SUB(&A, &B, C);
 	}
 
+	// if A < 0  and  B > 0  then return B - |A|
 	if (A->sign < 0 && B->sign > 0) {
 		A->sign = NON_NEGATIVE;
-		return SUB(B, A);
+		//SUB(&B, &A, C);
 	}
 
+	// if A >= B then 
 	if (A->wordlen >= B->wordlen)
-		return ADDC(A, B);
+		ADDC(A, B,C);  // return A + B
+	// else (A < B)
 	else
-		return ADDC(B, A);
+		ADDC(B, A,C);	// return B + A
 }
 
 
