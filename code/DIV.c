@@ -1,6 +1,7 @@
 #include "bigint.h"
 #include <stdio.h>
 
+
 /*
 
 Multi-Precision Long Division
@@ -21,6 +22,7 @@ Output : Q, R	( such that A = B*Q + R ( 0 <= R < B , Q in [0,W) )
 
 
 */
+/*
 void DIVC(bigint* A, bigint* B, word* Q_j) {
 
 	if (*(A->a + A->wordlen) < *(B->a + B->wordlen))
@@ -29,7 +31,7 @@ void DIVC(bigint* A, bigint* B, word* Q_j) {
 
 	}
 }
-
+*/
 /*
 
 Input : A,B ( 0 < A_j <= W )
@@ -37,6 +39,8 @@ Input : A,B ( 0 < A_j <= W )
 Output : Q  ( A = BQ + R ( 0 <= R < B, 0 < Q_j <= W ))
 
 */
+
+/*
 
 void DIV(bigint* A, bigint* B, bigint** Q, bigint** R) {
 
@@ -58,3 +62,6 @@ void DIV(bigint* A, bigint* B, bigint** Q, bigint** R) {
 
 
 }
+
+
+*/

@@ -4,6 +4,8 @@
 #define NON_NEGATIVE 0
 #define NEGATIVE 1
 
+#include <stdio.h>
+#include <stdlib.h>
 
 
 typedef unsigned short word;

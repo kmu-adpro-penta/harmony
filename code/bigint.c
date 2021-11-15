@@ -192,6 +192,7 @@ void bi_set_one(bigint** x) {
 	(*x)->sign = NON_NEGATIVE;
 	(*x)->a[0] = 0x1;
 }
+/*
 
 //create bigint 0
 void bi_set_zero(bigint** x) {
@@ -304,7 +305,6 @@ void bi_lshift(bigint** x, int r) {
 }
 
 
-
 void bi_realloc(bigint** x, int i) {
 	int n;
 	realloc((*x)->a, ((*x)->wordlen + i)*sizeof(word));
@@ -315,3 +315,4 @@ void bi_realloc(bigint** x, int i) {
 
 }
 
+*/

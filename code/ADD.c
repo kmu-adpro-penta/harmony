@@ -1,8 +1,6 @@
 #include "bigint.h"
 #include "ADD.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <SUB.h>
+#include "SUB.h"
 
 
 
@@ -48,7 +46,7 @@ void ADDC(bigint* A, bigint* B, bigint** C) {
 
 	word c = 0;					// c : carry
 	for (int j = 0; j < A->wordlen; j++) {
-		if(j == B->wordlen+1)
+		if(j == B->wordlen)
 			c = ADD_ABc(*(A->a + j), 0, c, (*C)->a + j);
 		else
 			c = ADD_ABc(*(A->a + j), *(B->a + j), c, (*C)->a+j);
@@ -95,13 +93,13 @@ case 5. A > B or A < B  ( A,B > 0 )
 	// if A > 0  and  B < 0  then return A - |B|
 	if (A->sign > 0 && B->sign < 0) {
 		B->sign = NON_NEGATIVE;
-		//SUB(&A, &B, C);
+		SUBC(&A, &B, C);
 	}
 
 	// if A < 0  and  B > 0  then return B - |A|
 	if (A->sign < 0 && B->sign > 0) {
 		A->sign = NON_NEGATIVE;
-		//SUB(&B, &A, C);
+		SUBC(&B, &A, C);
 	}
 
 	// if A >= B then 
