@@ -304,7 +304,6 @@ void bi_lshift(bigint** x, int r) {
 	
 }
 
-
 void bi_realloc(bigint** x, int i) {
 	int n;
 	realloc((*x)->a, ((*x)->wordlen + i)*sizeof(word));
@@ -314,4 +313,3 @@ void bi_realloc(bigint** x, int i) {
 	(*x)->wordlen+= i;
 
 }
-

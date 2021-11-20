@@ -1,6 +1,6 @@
 #include "bigint.h"
 #include <ADD.h>
-#include "DIV.h"
+//#include "DIV.h"
 
 #define MAIN
 int main(){
@@ -46,10 +46,6 @@ int main(){
 	bi_show_hex(B);
 
 
-	DIV(A, B, &Q, &R);
-
-	bi_show_hex(Q);
-	bi_show_hex(R);
 
 
 	return 0;

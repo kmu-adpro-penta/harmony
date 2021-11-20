@@ -1,4 +1,3 @@
-#include <stdio.h>
 #include "bigint.h"
 #include "DIV.h"
 #include "SUB.h"
@@ -39,11 +38,13 @@ Multi-Precision Long Division
 
 */
 
-void LDA(word A_1, word A_2, word B,word* Q) {
+
+
+void LDA(word A_1, word A_2, word B, word* Q) {
 	*Q = 0;
 	word R = A_1;
 
-	for (int j = sizeof(word)*8 - 1; j > 0; j--) {
+	for (int j = sizeof(word) * 8 - 1; j > 0; j--) {
 		word a_j = 1 << j;
 		a_j = a_j & A_2;
 		if (a_j == 0)
@@ -51,7 +52,7 @@ void LDA(word A_1, word A_2, word B,word* Q) {
 		else
 			a_j = 1;
 
-		if ((R >> (sizeof(word)*8 - 1)) > 0) {
+		if ((R >> (sizeof(word) * 8 - 1)) > 0) {
 			*Q = *Q + (1 << j);
 			R = R + R - B + a_j;
 		}
@@ -85,13 +86,13 @@ void DIVCC(bigint** A, bigint* B, word* Q, bigint** R) {
 			*Q = 65534;
 		}
 		else {
-			LDA(*((*A)->a + (*A)->wordlen), *((*A)->a + (*A)->wordlen-1), *(B->a + B->wordlen),Q);
+			LDA(*((*A)->a + (*A)->wordlen), *((*A)->a + (*A)->wordlen - 1), *(B->a + B->wordlen), Q);
 		}
 	}
-//	SUB(A, mul(B, Q), R);
+	//	SUB(A, mul(B, Q), R);
 	while ((*R)->sign < 0) {
 		Q--;
-		bigint_ADD(*R,B,R);
+		bigint_ADD(*R, B, R);
 	}
 }
 
@@ -150,7 +151,7 @@ void DIV(bigint* A, bigint* B, bigint** Q, bigint** R) {
 
 
 
-	if (bi_compare(B,A)) {		// if A < B then
+	if (bi_compare(B, A)) {		// if A < B then
 
 		bi_new(R, A->wordlen);
 		bi_assign(R, A);		// return (0,A)   :   A = 0 * B + A
@@ -161,8 +162,8 @@ void DIV(bigint* A, bigint* B, bigint** Q, bigint** R) {
 
 		int k = 0;
 		word B_most_num = B->a[B->wordlen - 1];
-		while (k < sizeof(word)*8) {
-			if (1 <= (B_most_num >> (sizeof(word)*8 - k - 1)) && (B_most_num >> (sizeof(word)*8 - k - 1)) < 2)
+		while (k < sizeof(word) * 8) {
+			if (1 <= (B_most_num >> (sizeof(word) * 8 - k - 1)) && (B_most_num >> (sizeof(word) * 8 - k - 1)) < 2)
 				break;
 			k++;
 		}
@@ -170,10 +171,10 @@ void DIV(bigint* A, bigint* B, bigint** Q, bigint** R) {
 		bi_new(Q, A->wordlen - B->wordlen + 1);
 		bi_new(R, B->wordlen);
 
-		for (word i = A->wordlen-1; i > 0; i--) {
+		for (word i = A->wordlen - 1; i > 0; i--) {
 
 
-			bi_rshift(R, sizeof(word)*8);
+			bi_rshift(R, sizeof(word) * 8);
 
 			*((*R)->a) = *(A->a + i);
 
