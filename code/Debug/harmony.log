@@ -1,0 +1,6 @@
+﻿  main.c
+C:\Users\82105\Desktop\새 폴더\code\main.c(26,15): warning C4047: '함수': 'bigint *'의 간접 참조 수준이 'bigint **'과(와) 다릅니다.
+C:\Users\82105\Desktop\새 폴더\code\main.c(26,13): warning C4024: 'bigint_ADD': 형식 및 실제 매개 변수 1의 형식이 서로 다릅니다.
+C:\Users\82105\Desktop\새 폴더\code\main.c(26,19): warning C4047: '함수': 'bigint *'의 간접 참조 수준이 'bigint **'과(와) 다릅니다.
+C:\Users\82105\Desktop\새 폴더\code\main.c(26,17): warning C4024: 'bigint_ADD': 형식 및 실제 매개 변수 2의 형식이 서로 다릅니다.
+  harmony.vcxproj -> C:\Users\82105\Desktop\새 폴더\code\Debug\harmony.exe

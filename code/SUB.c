@@ -19,15 +19,16 @@ void SUBAbB(word* A, word* B, word* C, word* b) {
 void SUBC(bigint** A, bigint** B, bigint** C) {//부호 워드열 다 다르게 검증
 
 	bi_new(C, (*A)->wordlen);
-
-
 	word i = 0;
+	//A의 길이가 B보다 길면 A길이 - B길이 이후의 값에 0을 넣어야 하므로 만듦
+	word x = 0;
 	//초기 borrow를 0으로 설정
 	word b = 0;
 	//각 자릿수의 연산
-	for (i = 0; i < (*A)->wordlen; i++) {
+	for (i; i < (*B)->wordlen; i++)
 		SUBAbB(&(*A)->a[i], &(*B)->a[i], &(*C)->a[i], &b);
-	}
+	for (i; i < (*A)->wordlen; i++)
+		SUBAbB(&(*A)->a[i], &x, &(*C)->a[i], &b);
 
 }
 
@@ -36,11 +37,19 @@ void SUB(bigint** A, bigint** B, bigint** C) {//입력값 체크
 
 	if ((*A)->sign == (*B)->sign) {
 		//printf("SUB\n");
-		//A보다 B가 클 경우 결과는 -
-		if ((*A)->a[(*A)->wordlen - 1] < (*B)->a[(*B)->wordlen - 1]) {
+		//A가 B보다 클 경우 결과는 +
+		if ((*A)->wordlen > (*B)->wordlen) SUBC(A, B, C);
+		
+		else if ((*A)->wordlen < (*B)->wordlen) {
 			SUBC(B, A, C);
 			(*C)->sign = NEGATIVE;
 		}
+		//A보다 B가 클 경우 결과는 -
+		else
+			if ((*A)->a[(*A)->wordlen - 1] < (*B)->a[(*B)->wordlen - 1]) {
+				SUBC(B, A, C);
+				(*C)->sign = NEGATIVE;
+			}
 		//A가 B보다 클 경우 결과는 non_negative
 		else SUBC(A, B, C);
 	}
@@ -52,9 +61,9 @@ void SUB(bigint** A, bigint** B, bigint** C) {//입력값 체크
 			bigint_ADD(*A, *B, C);
 		}
 		else {
-			(*C)->sign = NEGATIVE;
 			(*A)->sign = NON_NEGATIVE;
 			bigint_ADD(*A, *B, C);
+			(*C)->sign = NEGATIVE;
 		}
 	}
 }

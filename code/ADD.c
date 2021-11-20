@@ -100,14 +100,15 @@ case 5. A > B or A < B  ( A,B > 0 )
 	if (A->sign < 0 && B->sign > 0) {
 		A->sign = NON_NEGATIVE;
 		SUBC(&B, &A, C);
+		(*C)->sign = NEGATIVE;
 	}
 
 	// if A >= B then 
 	if (A->wordlen >= B->wordlen)
-		ADDC(A, B,C);  // return A + B
+		ADDC(A, B, C);  // return A + B
 	// else (A < B)
 	else
-		ADDC(B, A,C);	// return B + A
+		ADDC(B, A, C);	// return B + A
 }
 
 
