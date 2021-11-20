@@ -17,13 +17,15 @@ int main(){
 	bi_set_by_array(&B, NON_NEGATIVE, w_2, 3);
 
 	bigint* C = NULL;
+	bi_new(&C, MAX(A->wordlen, B->wordlen) + 1);
 
 	bi_show_hex(A);
 	printf("\n");
 	bi_show_hex(B);
 	printf("\n");
 
-	bigint_ADD(&A, &B, &C);
+	SUB(&A, &B, &C);
+	bi_refine(C);
 	bi_show_hex(C);
 
 

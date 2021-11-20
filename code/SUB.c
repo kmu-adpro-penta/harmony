@@ -18,7 +18,6 @@ void SUBAbB(word* A, word* B, word* C, word* b) {
 
 void SUBC(bigint** A, bigint** B, bigint** C) {//부호 워드열 다 다르게 검증
 
-	bi_new(C, (*A)->wordlen);
 	word i = 0;
 	//A의 길이가 B보다 길면 A길이 - B길이 이후의 값에 0을 넣어야 하므로 만듦
 	word x = 0;

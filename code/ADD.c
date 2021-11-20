@@ -41,8 +41,6 @@ B ÀÇ ±æÀÌ = m  ( n > m )
 
 */
 void ADDC(bigint* A, bigint* B, bigint** C) {
-	
-	bi_new(C, A->wordlen + 1);
 
 	word c = 0;					// c : carry
 	for (int j = 0; j < A->wordlen; j++) {
