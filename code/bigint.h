@@ -2,6 +2,7 @@
 #define __BIGINT_H__
 
 #define MAX(a, b) (((a) > (b)) ? (a) : (b))
+#define MIN(a, b) (((a) < (b)) ? (a) : (b))
 #define NON_NEGATIVE 0
 #define NEGATIVE 1
 

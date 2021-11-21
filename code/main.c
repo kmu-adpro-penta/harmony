@@ -24,11 +24,9 @@ int main(){
 	bi_show_hex(B);
 	printf("\n");
 
-	SUB(&A, &B, &C);
+	MULC(&A, &B, &C);
 	bi_refine(C);
 	bi_show_hex(C);
-
-
 
 	return 0;
 }
