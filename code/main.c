@@ -28,5 +28,7 @@ int main(){
 	bi_refine(C);
 	bi_show_hex(C);
 
+
+
 	return 0;
 }
