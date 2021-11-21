@@ -24,8 +24,7 @@ int main(){
 	bi_show_hex(B);
 	printf("\n");
 
-	SUB(&A, &B, &C);
-	bi_refine(C);
+	bigint_ADD(A, B, &C);
 	bi_show_hex(C);
 
 
