@@ -13,7 +13,7 @@ int main(){
 
 	bigint* B = NULL;
 	bi_new(&B, 3);
-	word w_2[3] = { 0x5678, 0x1234, 0x1230 }; 
+	word w_2[3] = { 0x5678, 0x1234, 0x1234 }; 
 	bi_set_by_array(&B, NON_NEGATIVE, w_2, 3);
 
 	bigint* C = NULL;
