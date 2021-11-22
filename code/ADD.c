@@ -93,25 +93,30 @@ void bigint_ADD(bigint* A, bigint* B, bigint **C) {
 	if (B->wordlen == 0)
 		bi_assign(C,A);
 
+	bi_new(C, MAX(A->wordlen, B->wordlen) + 1);
+
 	// if A > 0  and  B < 0  then return A - |B|
 	if (A->sign == NON_NEGATIVE && B->sign == NEGATIVE) {
 		B->sign = NON_NEGATIVE;
-		SUBC(&A, &B, C);
+		SUB(&A, &B, C);
 	}
 
 	// if A < 0  and  B > 0  then return B - |A|
-	if (A->sign == NEGATIVE && B->sign == NON_NEGATIVE) {
+	else if (A->sign == NEGATIVE && B->sign == NON_NEGATIVE) {
 		A->sign = NON_NEGATIVE;
-		SUBC(&B, &A, C);
+		SUB(&B, &A, C);
 		(*C)->sign = NEGATIVE;
 	}
 
 	// if A >= B then 
-	if (A->wordlen >= B->wordlen)
+	else if (A->wordlen >= B->wordlen)
 		ADDC(A, B, C);  // return A + B
 	// else (A < B)
 	else
 		ADDC(B, A, C);	// return B + A
+
+	bi_refine(*C);
+
 }
 
 

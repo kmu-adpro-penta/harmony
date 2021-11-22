@@ -34,6 +34,7 @@ void SUBC(bigint** A, bigint** B, bigint** C) {//부호 워드열 다 다르게 검증
 
 void SUB(bigint** A, bigint** B, bigint** C) {//입력값 체크
 	//부호가 같을 경우
+	bi_new(C, MAX((*A)->wordlen, (*B)->wordlen));
 
 	if ((*A)->sign == (*B)->sign) {
 		//printf("SUB\n");

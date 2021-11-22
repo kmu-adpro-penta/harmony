@@ -8,7 +8,10 @@ int main(){
 	
 	for(int i=0; i<100000; i++) {
 		bigint* A = NULL;
-		bi_gen_rand(&A, NON_NEGATIVE, 21);
+		bi_gen_rand(&A, NON_NEGATIVE, 31);
+		//bi_show_hex(A);
+		//printf("\n");
+
 		//bi_new(&A, 23);
 		//word w[2] = { 0x5678, 0x1237 };
 		//bi_set_by_array(&A, NON_NEGATIVE, w, 2);
@@ -16,6 +19,8 @@ int main(){
 
 		bigint* B = NULL;
 		bi_gen_rand(&B, NON_NEGATIVE, 25);
+		//bi_show_hex(B);
+		//printf("\n");
 
 		//bi_new(&B, 20);
 		//word w_2[3] = { 0x5678, 0x1234, 0x1234 }; 
@@ -23,7 +28,7 @@ int main(){
 		//bi_set_by_array(&B, NON_NEGATIVE, w_2, 3);
 
 		bigint* C = NULL;
-		bi_new(&C, MAX(A->wordlen, B->wordlen) + 1);
+		//bi_new(&C, MAX(A->wordlen, B->wordlen) + 1);
 
 		//bi_show_hex(A);
 		//printf("\n");
@@ -31,14 +36,24 @@ int main(){
 		//printf("\n");
 
 		SUB(&A, &B, &C);
+
 		bi_refine(C);
+
+		//bi_show_hex(C);
+		//printf("\n");
+
 		//bi_show_hex(C);
 
 		bigint *AA = NULL;
-		bi_new(&AA, bi_get_wordlen(A));
+		//bi_new(&AA, MAX(A->wordlen, B->wordlen) + 1);
 		bigint_ADD(B, C, &AA);
+
+		//bi_show_hex(AA);
+		//printf("\n");
+
 		if(bi_compare(A, AA) != 0) {
-			bi_realloc(&A, 4);
+			
+			//bi_realloc(&A, 4);
 			bi_show_hex(A);
 			printf("\n");
 			bi_show_hex(B);
@@ -46,7 +61,7 @@ int main(){
 			bi_show_hex(C);
 			printf("\n");
 			bi_show_hex(AA);
-			printf("you die%d", 1); 
+			printf("you die%d", i); 
 			return 0;
 		}
 	}
