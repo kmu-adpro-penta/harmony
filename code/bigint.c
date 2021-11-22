@@ -208,7 +208,7 @@ void array_copy(word* dst, word* arr,int wordlen) {
  * @param x bigint* you want to copy
  */
 void bi_assign(bigint** y, bigint *x) {
-	if(*y != NULL)
+	if( *y != NULL)
 		bi_delete(y);
 
 	bi_new(y, x->wordlen);

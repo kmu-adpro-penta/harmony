@@ -4,9 +4,40 @@
 #include "MUL.h"
 //#include "DIV.h"
 #define MAIN
+
+
+
+void toy1() {
+	bigint* A = NULL;
+	bigint* B = NULL;
+
+	word A_array[3] = { 0x1234,0x2345,0x3456 };
+	word B_array[2] = { 0x3122,0x1234 };
+
+	bi_set_by_array(&A, NON_NEGATIVE, A_array, 3);
+	bi_set_by_array(&B, NON_NEGATIVE, B_array, 2);
+
+
+	bigint* Q = NULL;
+	bigint* R = NULL;
+
+
+	printf("A = \n");
+	bi_show_hex(A);
+	printf("\nB = \n");
+	bi_show_hex(B);
+
+	DIV(&A, &B, &Q, &R);
+
+	printf("\nQ = \n");
+	bi_show_hex(Q);
+	printf("\nR = \n");
+	bi_show_hex(R);
+}
+
 int main(){
 	
-	for(int i=0; i<100000; i++) {
+	for (int i = 0; i < 100000; i++) {
 		bigint* A = NULL;
 		bi_gen_rand(&A, NON_NEGATIVE, 31);
 		//bi_show_hex(A);
@@ -28,7 +59,6 @@ int main(){
 		//bi_set_by_array(&B, NON_NEGATIVE, w_2, 3);
 
 		bigint* C = NULL;
-		//bi_new(&C, MAX(A->wordlen, B->wordlen) + 1);
 
 		//bi_show_hex(A);
 		//printf("\n");
@@ -44,15 +74,14 @@ int main(){
 
 		//bi_show_hex(C);
 
-		bigint *AA = NULL;
-		//bi_new(&AA, MAX(A->wordlen, B->wordlen) + 1);
+		bigint* AA = NULL;
 		bigint_ADD(B, C, &AA);
 
 		//bi_show_hex(AA);
 		//printf("\n");
 
-		if(bi_compare(A, AA) != 0) {
-			
+		if (bi_compare(A, AA) != 0) {
+
 			//bi_realloc(&A, 4);
 			bi_show_hex(A);
 			printf("\n");
@@ -61,11 +90,12 @@ int main(){
 			bi_show_hex(C);
 			printf("\n");
 			bi_show_hex(AA);
-			printf("you die%d", i); 
+			printf("you die%d", i);
 			return 0;
 		}
 	}
 
 	printf("ok");
+
 	return 0;
 }
