@@ -153,9 +153,10 @@ void array_rand(word* dst, int wordlen) {
 	}
 }
 //create random bigint
-void bi_gen_rand(bigint**x, int sign, int wordlen) {
+void bi_gen_rand(bigint**x) {
+	int wordlen = rand() % 0xf;
 	bi_new(x, wordlen);
-	(*x)->sign = sign;
+	(*x)->sign = rand() % 2;
 	array_rand((*x)->a, wordlen);
 
 	bi_refine(*x);

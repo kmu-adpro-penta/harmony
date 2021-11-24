@@ -79,7 +79,7 @@ case 5. A > B or A < B  ( A,B > 0 )
 
 */
  void bigint_ADD(bigint* A, bigint* B, bigint **C) {
-
+	 bi_new(C, MAX(A->wordlen, B->wordlen) + 1);
 	// if A = 0  then return B
 	if (A->wordlen == 0)
 		bi_assign(C,B);
@@ -91,13 +91,13 @@ case 5. A > B or A < B  ( A,B > 0 )
 	// if A > 0  and  B < 0  then return A - |B|
 	if (A->sign > 0 && B->sign < 0) {
 		B->sign = NON_NEGATIVE;
-		SUBC(&A, &B, C);
+		SUBC(A, B, C);
 	}
 
 	// if A < 0  and  B > 0  then return B - |A|
 	if (A->sign < 0 && B->sign > 0) {
 		A->sign = NON_NEGATIVE;
-		SUBC(&B, &A, C);
+		SUBC(B, A, C);
 		(*C)->sign = NEGATIVE;
 	}
 

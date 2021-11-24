@@ -5,6 +5,6 @@
 #include "bigint.h"
 
 void AB(word* A, word* B, word* C0, word* C1);
-void MULC(bigint** A, bigint** B, bigint** C);
+void MULC(bigint* A, bigint* B, bigint** C);
 
 #endif
