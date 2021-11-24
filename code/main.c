@@ -65,7 +65,7 @@ int main(){
 		//bi_show_hex(B);
 		//printf("\n");
 
-		SUB(&A, &B, &C);
+		SUB(A, B, &C);
 
 		bi_refine(C);
 
@@ -75,7 +75,7 @@ int main(){
 		//bi_show_hex(C);
 
 		bigint* AA = NULL;
-		bigint_ADD(B, C, &AA);
+		ADD(B, C, &AA);
 
 		//bi_show_hex(AA);
 		//printf("\n");
@@ -93,6 +93,9 @@ int main(){
 			printf("you die%d", i);
 			return 0;
 		}
+		bi_delete(&A);
+		bi_delete(&B);
+		bi_delete(&C);
 	}
 
 	printf("ok");

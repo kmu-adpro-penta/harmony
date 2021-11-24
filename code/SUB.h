@@ -4,7 +4,7 @@
 #include "bigint.h"
 
 void SUBAbB( word* A, word* B, word* C, word* b );
-void SUBC( bigint** A, bigint** B, bigint** C );
-void SUB( bigint** A, bigint** B, bigint** C );
+void SUBC( bigint* A, bigint* B, bigint** C );
+void SUB( bigint* A, bigint* B, bigint** C );
 
 #endif

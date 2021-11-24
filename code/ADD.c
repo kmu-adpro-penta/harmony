@@ -1,4 +1,4 @@
-ï»¿#include "bigint.h"
+#include "bigint.h"
 #include "ADD.h"
 #include "SUB.h"
 
@@ -36,8 +36,8 @@ Input : A , B  ( A,B > 0 and A > B )
 
 Output : C ( C > 0 ) +---------------------------******9
 
-A ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ = n
-B ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ = m  ( n > m )
+A ÀÇ ±æÀÌ = n
+B ÀÇ ±æÀÌ = m  ( n > m )
 
 */
 void ADDC(bigint* A, bigint* B, bigint** C) {
@@ -83,8 +83,8 @@ case 5. A > B or A < B  ( A,B > 0 )
 
 
 */
- void bigint_ADD(bigint* A, bigint* B, bigint **C) {
-	 bi_new(C, MAX(A->wordlen, B->wordlen) + 1);
+
+void ADD(bigint* A, bigint* B, bigint **C) {
 	// if A = 0  then return B
 	if (A->wordlen == 0)
 		bi_assign(C,B);
@@ -98,13 +98,13 @@ case 5. A > B or A < B  ( A,B > 0 )
 	// if A > 0  and  B < 0  then return A - |B|
 	if (A->sign == NON_NEGATIVE && B->sign == NEGATIVE) {
 		B->sign = NON_NEGATIVE;
-		SUBC(A, B, C);
+		SUB(A, B, C);
 	}
 
 	// if A < 0  and  B > 0  then return B - |A|
 	else if (A->sign == NEGATIVE && B->sign == NON_NEGATIVE) {
 		A->sign = NON_NEGATIVE;
-		SUBC(B, A, C);
+		SUB(B, A, C);
 		(*C)->sign = NEGATIVE;
 	}
 

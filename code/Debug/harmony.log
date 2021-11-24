@@ -1,6 +1,5 @@
-﻿  SUB.c
-C:\Users\82105\Desktop\새 폴더\code\SUB.c(18,19): warning C4028: 정식 매개 변수 1이(가) 선언과 다릅니다.
-C:\Users\82105\Desktop\새 폴더\code\SUB.c(18,30): warning C4028: 정식 매개 변수 2이(가) 선언과 다릅니다.
-C:\Users\82105\Desktop\새 폴더\code\SUB.c(33,18): warning C4028: 정식 매개 변수 1이(가) 선언과 다릅니다.
-C:\Users\82105\Desktop\새 폴더\code\SUB.c(33,29): warning C4028: 정식 매개 변수 2이(가) 선언과 다릅니다.
+﻿  main.c
+C:\Users\82105\Desktop\새 폴더\code\main.c(30,5): warning C4013: 'DIV'이(가) 정의되지 않았습니다. extern은 int형을 반환하는 것으로 간주합니다.
+C:\Users\82105\Desktop\새 폴더\code\main.c(42,19): warning C4020: 'bi_gen_rand': 실제 매개 변수가 너무 많습니다.
+C:\Users\82105\Desktop\새 폴더\code\main.c(52,19): warning C4020: 'bi_gen_rand': 실제 매개 변수가 너무 많습니다.
   harmony.vcxproj -> C:\Users\82105\Desktop\새 폴더\code\Debug\harmony.exe

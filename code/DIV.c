@@ -100,11 +100,11 @@ void DIVCC(bigint** A, bigint* B, word* Q, bigint** R) {
 
 	bigint** BQ = NULL;
 	MULC(B, Q_2, BQ);
-	SUB(A,BQ , R);
+	SUB(*A,*BQ , R);
 
 	while ((*R)->sign == NEGATIVE ) {
 		Q--;
-		bigint_ADD(*R, B, R);
+		ADD(*R, B, R);
 	}
 }
 

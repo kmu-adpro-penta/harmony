@@ -56,12 +56,13 @@ void SUB(bigint* A, bigint* B, bigint** C) {//�Է°� üũ
 		//
 		if (!(A->sign)) {
 			B->sign = NON_NEGATIVE;
-			bigint_ADD(A, B, C);
+			ADD(A, B, C);
 		}
 		else {
 			A->sign = NON_NEGATIVE;
-			bigint_ADD(A, B, C);
+			ADD(A, B, C);
 			(*C)->sign = NEGATIVE;
 		}
 	}
+	bi_refine(*C);
 }
