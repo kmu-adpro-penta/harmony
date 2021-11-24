@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 #define FALSE 0
 #define TRUE 1
@@ -10,7 +11,11 @@
 #define LESS -1
 #define BYTE 8
 
-//delete bigint
+/**
+ * @brief delete bigint x
+ * 
+ * @param x bigint you want to delete 
+ */
 void bi_delete(bigint** x) {
 	if(*x == NULL)
 		return; 
@@ -23,7 +28,12 @@ void bi_delete(bigint** x) {
 	*x = NULL;
 }
 
-//new bigint
+/**
+ * @brief make new bigint
+ * 
+ * @param x bigint you want to make
+ * @param wordlen word length of bigint
+ */
 void bi_new(bigint** x, int wordlen) {
 	if(*x != NULL)	
 		bi_delete(x);
@@ -33,26 +43,58 @@ void bi_new(bigint** x, int wordlen) {
 	(*x)->a = (word*)calloc(wordlen, sizeof(word));
 }
 
-//set bigint by array error
+/**
+ * @brief set bigint by array
+ * 
+ * @param x bigint you want to set
+ * @param sign NEGATIVE OR NONNEGATIVE
+ * @param a word array
+ * @param wordlen word length of a
+ */
 void bi_set_by_array(bigint** x, int sign, word* a, int wordlen) {
+
+	if (*x == NULL) {
+		bi_new(x, wordlen);
+	}
+	
 	(*x)->sign = sign;
 	(*x)->wordlen = wordlen;
 	free((*x)->a);
+
 	(*x)->a = a;
 }
 
+
+/**
+ * @brief character digit [0-9a-fA-F] to int
+ * 
+ * @param c character you want to change to int
+ * @return int 
+ * 	if you input other character, return -1
+ */
 int chartohex(char c) {
 	unsigned int n = (unsigned int)c - 0x30;
+	//case of [0-9]
 	if (n<10)
 		return (int)n;
 	n -= 0x11;
+	//case of [A-F]
 	if (n<6)
 		return (int)n+10;
 	n -= 0x20;
+	//case of [a-f]
 	if (n<6)
 		return (int)n+10;
 	return -1;
 }
+
+/**
+ * @brief return a / b and ceil it ex) cdevide(7, 4) == 2
+ * 
+ * @param a devidend
+ * @param b divisor
+ * @return int quotient
+ */
 int cdevide(int a, int b) {
 	int answer = a / b;
 	if(answer*b != a) 
@@ -67,6 +109,10 @@ void bi_set_by_string(bigint** x, int sign, char* str, int base) {
 	int len;
 	byte* w= NULL;
 	int n;
+
+	if(*x == NULL) {
+		bi_new(x, cdevide(base, sizeof(word)*2));
+	}
 
 	(*x)->sign = sign;
 
@@ -89,12 +135,25 @@ void bi_set_by_string(bigint** x, int sign, char* str, int base) {
 	(*x)->a = (word*)w;
 }
 
-//print bigint 16
+/**
+ * @brief stdout bigint x hexadecade
+ * 
+ * @param x bigint
+ */
 void bi_show_hex(bigint* x) {
+	if(x == NULL) {fprintf(stdout, "0"); return;}
 	int i;
+	if(bi_get_sign(x) == NEGATIVE)
+		fprintf(stdout, "-");
 	for(i = x->wordlen-1; i >= 0; i--)
 		fprintf(stdout, "%04x", x->a[i]);
 }
+
+/**
+ * @brief stdout bigint x binary
+ * 
+ * @param x bigint 
+ */
 void bi_show_bin(bigint* x) {
 	int i, j;
 	for(i = x->wordlen-1; i >= 0; i--) {
@@ -105,7 +164,12 @@ void bi_show_bin(bigint* x) {
 	}
 }
 
-//make memory fit word
+/**
+ * @brief make x memory fit to it 
+ * 	ex) 000012345678 -> 12345678
+ * 
+ * @param x target bigint
+ */
 void bi_refine(bigint* x) {
 	if(x == NULL)
 		return;
@@ -126,14 +190,25 @@ void bi_refine(bigint* x) {
 }
 
 
-//array copy, need to valid check
+/**
+ * @brief copy array
+ * 
+ * @param dst 
+ * @param arr 
+ * @param wordlen 
+ */
 void array_copy(word* dst, word* arr,int wordlen) {
 	memcpy(dst, arr, wordlen*sizeof(word)*BYTE);
 }
 
-//assign y <- x
+/**
+ * @brief make bigint y to be equal with bigint x
+ * 
+ * @param y bigint** same amount with bigint x
+ * @param x bigint* you want to copy
+ */
 void bi_assign(bigint** y, bigint *x) {
-	if(*y != NULL)
+	if( *y != NULL)
 		bi_delete(y);
 
 	bi_new(y, x->wordlen);
@@ -145,18 +220,18 @@ void bi_assign(bigint** y, bigint *x) {
 //need to change, low security
 void array_rand(word* dst, int wordlen) {
 	byte* p = (byte*)dst;
-	int cnt = wordlen * sizeof(word);
-	while(cnt > 0) {
+	int i;
+	for (i=0; i<wordlen*sizeof(word); i++) {
 		*p = rand() & 0xff;
-		p++;
-		cnt--;
+		p++;                                                                                                                                                                                              
 	}
 }
 //create random bigint
-void bi_gen_rand(bigint**x) {
-	int wordlen = rand() % 0xf;
+void bi_gen_rand(bigint**x, int sign, int wordlen) {
+	if (*x != NULL)
+		bi_delete(x);
 	bi_new(x, wordlen);
-	(*x)->sign = rand() % 2;
+	(*x)->sign = sign;
 	array_rand((*x)->a, wordlen);
 
 	bi_refine(*x);
@@ -189,6 +264,8 @@ int bi_get_flipsign(bigint* x) {
 
 //create bigint 1
 void bi_set_one(bigint** x) {
+	if (*x != NULL)
+		bi_delete(x);
 	bi_new(x, 1);
 	(*x)->sign = NON_NEGATIVE;
 	(*x)->a[0] = 0x1;
@@ -197,6 +274,8 @@ void bi_set_one(bigint** x) {
 
 //create bigint 0
 void bi_set_zero(bigint** x) {
+	if(*x != NULL)
+		bi_delete(x);
 	bi_new(x, 1);
 	(*x)->sign = NON_NEGATIVE;
 	(*x)->a[0] = 0x0;
@@ -307,10 +386,13 @@ void bi_lshift(bigint** x, int r) {
 
 void bi_realloc(bigint** x, int i) {
 	int n;
-	realloc((*x)->a, ((*x)->wordlen + i)*sizeof(word));
+	word *w;
+	w = (word*)malloc(((*x)->wordlen + i)*sizeof(word));
+	memcpy(w, (*x)->a, (*x)->wordlen*sizeof(word));
 	for(n=0; n<i; n++) {
-		(*x)->a[(*x)->wordlen + n] = 0;
+		w[(*x)->wordlen + n] = 0;
 	}
 	(*x)->wordlen+= i;
-
+	free((*x)->a);
+	(*x)->a = w;
 }

@@ -1,6 +1,8 @@
 #include "bigint.h"
 #include "DIV.h"
 #include "SUB.h"
+#include "ADD.h"
+#include "MUL.h"
 
 
 
@@ -79,18 +81,28 @@ void DIVCC(bigint** A, bigint* B, word* Q, bigint** R) {
 
 
 	if ((*A)->wordlen == B->wordlen) {
-		*Q = (*(*A)->a + (*A)->wordlen) / (*(B->a + B->wordlen));
+		*Q = (word)((*A)->a[(*A)->wordlen] / B->a[B->wordlen]);
 	}
-	else if ((*A)->wordlen == (*B).wordlen + 1) {
-		if (*((*A)->a + (*A)->wordlen) == *(B->a + B->wordlen)) {
+	else if ((*A)->wordlen == B->wordlen + 1) {
+		if ((*A)->a[(*A)->wordlen] == B->a[B->wordlen]) {
+
 			*Q = 65534;
+
 		}
 		else {
-			LDA(*((*A)->a + (*A)->wordlen), *((*A)->a + (*A)->wordlen - 1), *(B->a + B->wordlen), Q);
+			LDA((*A)->a[(*A)->wordlen], (*A)->a[(*A)->wordlen - 1], B->a[B->wordlen], Q);
 		}
 	}
-	//	SUB(A, mul(B, Q), R);
-	while ((*R)->sign < 0) {
+
+	bigint** Q_2 = NULL;
+	word Q_array_1[1] = {*Q};
+	bi_set_by_array(Q_2, NON_NEGATIVE, Q_array_1, 1);
+
+	bigint** BQ = NULL;
+	MULC(B, Q_2, BQ);
+	SUB(A,BQ , R);
+
+	while ((*R)->sign == NEGATIVE ) {
 		Q--;
 		bigint_ADD(*R, B, R);
 	}
@@ -110,29 +122,28 @@ Output : Q, R	( such that A = B*Q + R ( 0 <= R < B , Q in [0,W) )
 
 */
 
-void DIVC(bigint** A, bigint* B, bigint** Q, word i, int k) {
+void DIVC(bigint** A, bigint** B, bigint** Q, word i, int k) {
 
-	if (bi_compare(B, A)) {
+	if (bi_compare(*B, *A) == 1) {
 		*((*Q)->a + i) = 0;
 	}
 	else {
-		bigint** A_2 = NULL;
-		bigint** B_2 = NULL;
-		bi_assign(A_2, *A);
-		bi_assign(B_2, B);
 
-		bi_lshift(A_2, k);
-		bi_lshift(B_2, k);
+		bi_lshift(A, k);
+		bi_lshift(B, k);
 
 		word* Q_2 = NULL;
 		bigint** R_2 = NULL;
 
-		DIVCC(A_2, B_2, Q, R_2);
+		DIVCC(A, B, Q_2, R_2);
 
 		bi_rshift(R_2, k);
 
 		bi_assign(A, R_2);
+		*((*Q)->a + i) = Q_2;
 	}
+
+
 
 
 }
@@ -147,38 +158,37 @@ Output : Q  ( A = BQ + R ( 0 <= R < B, 0 < Q_j <= W ))
 
 
 
-void DIV(bigint* A, bigint* B, bigint** Q, bigint** R) {
+void DIV(bigint** A, bigint** B, bigint** Q, bigint** R) {
 
 
 
-	if (bi_compare(B, A)) {		// if A < B then
+	if (bi_compare(*B,*A) == 1) {		// if A < B then
 
-		bi_new(R, A->wordlen);
-		bi_assign(R, A);		// return (0,A)   :   A = 0 * B + A
+		bi_assign(R, *A);		// return (0,A)   :   A = 0 * B + A
 		bi_set_zero(Q);
 
 	}
 	else {
 
 		int k = 0;
-		word B_most_num = B->a[B->wordlen - 1];
+		word B_most_num = (*B)->a[(*B)->wordlen - 1];
 		while (k < sizeof(word) * 8) {
 			if (1 <= (B_most_num >> (sizeof(word) * 8 - k - 1)) && (B_most_num >> (sizeof(word) * 8 - k - 1)) < 2)
 				break;
 			k++;
 		}
 
-		bi_new(Q, A->wordlen - B->wordlen + 1);
-		bi_new(R, B->wordlen);
+		bi_new(Q, (*A)->wordlen - (*B)->wordlen + 1);
+		bi_new(R, (*B)->wordlen);
 
-		for (word i = A->wordlen - 1; i > 0; i--) {
+		for (word i = (*A)->wordlen - 1; i > 0; i--) {
 
+			bi_lshift(R, sizeof(word) * 8);
 
-			bi_rshift(R, sizeof(word) * 8);
-
-			*((*R)->a) = *(A->a + i);
+			*((*R)->a) = *((*A)->a + i);
 
 			DIVC(R, B, Q, i, k);					// ( Q, R )  <-  DIVC( R , B )
+
 
 		}
 	}

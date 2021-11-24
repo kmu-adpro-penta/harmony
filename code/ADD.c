@@ -1,4 +1,4 @@
-#include "bigint.h"
+ï»¿#include "bigint.h"
 #include "ADD.h"
 #include "SUB.h"
 
@@ -36,15 +36,20 @@ Input : A , B  ( A,B > 0 and A > B )
 
 Output : C ( C > 0 ) +---------------------------******9
 
-A ÀÇ ±æÀÌ = n
-B ÀÇ ±æÀÌ = m  ( n > m )
+A ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ = n
+B ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ = m  ( n > m )
 
 */
 void ADDC(bigint* A, bigint* B, bigint** C) {
 
+	//if (A->wordlen > B->wordlen)
+	//	bi_realloc(&B, A->wordlen - B->wordlen);
+	//if (A->wordlen < B->wordlen)
+	//	bi_realloc(&A, B->wordlen - A->wordlen);
+	
 	word c = 0;					// c : carry
 	for (int j = 0; j < A->wordlen; j++) {
-		if(j == B->wordlen)
+		if(j >= B->wordlen)
 			c = ADD_ABc(*(A->a + j), 0, c, (*C)->a + j);
 		else
 			c = ADD_ABc(*(A->a + j), *(B->a + j), c, (*C)->a+j);
@@ -88,25 +93,30 @@ case 5. A > B or A < B  ( A,B > 0 )
 	if (B->wordlen == 0)
 		bi_assign(C,A);
 
+	bi_new(C, MAX(A->wordlen, B->wordlen) + 1);
+
 	// if A > 0  and  B < 0  then return A - |B|
-	if (A->sign > 0 && B->sign < 0) {
+	if (A->sign == NON_NEGATIVE && B->sign == NEGATIVE) {
 		B->sign = NON_NEGATIVE;
 		SUBC(A, B, C);
 	}
 
 	// if A < 0  and  B > 0  then return B - |A|
-	if (A->sign < 0 && B->sign > 0) {
+	else if (A->sign == NEGATIVE && B->sign == NON_NEGATIVE) {
 		A->sign = NON_NEGATIVE;
 		SUBC(B, A, C);
 		(*C)->sign = NEGATIVE;
 	}
 
 	// if A >= B then 
-	if (A->wordlen >= B->wordlen)
+	else if (A->wordlen >= B->wordlen)
 		ADDC(A, B, C);  // return A + B
 	// else (A < B)
 	else
 		ADDC(B, A, C);	// return B + A
+
+	bi_refine(*C);
+
 }
 
 

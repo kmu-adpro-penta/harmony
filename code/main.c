@@ -4,29 +4,98 @@
 #include "MUL.h"
 //#include "DIV.h"
 #define MAIN
-int main() {
-	srand((unsigned)time(NULL));
-	bigint* A = NULL;
-	bi_gen_rand(&A);
-	//bi_new(&A, 2);
-	//word x0[2] = { 0x10eb, 0x8d27 };
-	//bi_set_by_array(&A, 0, x0, 2);
 
+
+
+void toy1() {
+	bigint* A = NULL;
 	bigint* B = NULL;
-	bi_gen_rand(&B);
-	//bi_new(&B, 8);
-	//word x1[12] = { 0x8e53, 0x17b9, 0xe60d, 0x685d, 0xcfa2, 0x2ee8,
-	//0xb05f, 0x943b};
-	//bi_set_by_array(&B, 0, x1, 8);
-	bigint* C = NULL;
-	printf("A = ");
+
+	word A_array[3] = { 0x1234,0x2345,0x3456 };
+	word B_array[2] = { 0x3122,0x1234 };
+
+	bi_set_by_array(&A, NON_NEGATIVE, A_array, 3);
+	bi_set_by_array(&B, NON_NEGATIVE, B_array, 2);
+
+
+	bigint* Q = NULL;
+	bigint* R = NULL;
+
+
+	printf("A = \n");
 	bi_show_hex(A);
-	printf("\nB = ");
+	printf("\nB = \n");
 	bi_show_hex(B);
-	SUB(A, B, &C);
-	bi_refine(C);
-	printf("\nC = ");
-	bi_show_hex(C);
+
+	DIV(&A, &B, &Q, &R);
+
+	printf("\nQ = \n");
+	bi_show_hex(Q);
+	printf("\nR = \n");
+	bi_show_hex(R);
+}
+
+int main(){
+	
+	for (int i = 0; i < 100000; i++) {
+		bigint* A = NULL;
+		bi_gen_rand(&A, NON_NEGATIVE, 31);
+		//bi_show_hex(A);
+		//printf("\n");
+
+		//bi_new(&A, 23);
+		//word w[2] = { 0x5678, 0x1237 };
+		//bi_set_by_array(&A, NON_NEGATIVE, w, 2);
+		//bi_set_by_string(&A, NON_NEGATIVE, "e2a1851a03e0c28d8be31cbcb06862b0a92e66c93c6d25598796337c114b6b3c12a0d6e40191daa35ec5a663c084", 92);
+
+		bigint* B = NULL;
+		bi_gen_rand(&B, NON_NEGATIVE, 25);
+		//bi_show_hex(B);
+		//printf("\n");
+
+		//bi_new(&B, 20);
+		//word w_2[3] = { 0x5678, 0x1234, 0x1234 }; 
+		//bi_set_by_string(&B, NON_NEGATIVE, "1c3dd01e222eef766b7a0220298c4b58d8b515544c285f64f93ac74e83dab8ea874dd6fcaa2ca850", 80);
+		//bi_set_by_array(&B, NON_NEGATIVE, w_2, 3);
+
+		bigint* C = NULL;
+
+		//bi_show_hex(A);
+		//printf("\n");
+		//bi_show_hex(B);
+		//printf("\n");
+
+		SUB(&A, &B, &C);
+
+		bi_refine(C);
+
+		//bi_show_hex(C);
+		//printf("\n");
+
+		//bi_show_hex(C);
+
+		bigint* AA = NULL;
+		bigint_ADD(B, C, &AA);
+
+		//bi_show_hex(AA);
+		//printf("\n");
+
+		if (bi_compare(A, AA) != 0) {
+
+			//bi_realloc(&A, 4);
+			bi_show_hex(A);
+			printf("\n");
+			bi_show_hex(B);
+			printf("\n");
+			bi_show_hex(C);
+			printf("\n");
+			bi_show_hex(AA);
+			printf("you die%d", i);
+			return 0;
+		}
+	}
+
+	printf("ok");
 
 	return 0;
 }
