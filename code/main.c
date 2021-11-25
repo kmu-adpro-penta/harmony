@@ -6,37 +6,7 @@
 #define MAIN
 
 
-
-void toy1() {
-	bigint* A = NULL;
-	bigint* B = NULL;
-
-	word A_array[3] = { 0x1234,0x2345,0x3456 };
-	word B_array[2] = { 0x3122,0x1234 };
-
-	bi_set_by_array(&A, NON_NEGATIVE, A_array, 3);
-	bi_set_by_array(&B, NON_NEGATIVE, B_array, 2);
-
-
-	bigint* Q = NULL;
-	bigint* R = NULL;
-
-
-	printf("A = \n");
-	bi_show_hex(A);
-	printf("\nB = \n");
-	bi_show_hex(B);
-
-	DIV(&A, &B, &Q, &R);
-
-	printf("\nQ = \n");
-	bi_show_hex(Q);
-	printf("\nR = \n");
-	bi_show_hex(R);
-}
-
-int main(){
-	
+void toy0() {
 	for (int i = 0; i < 100000; i++) {
 		bigint* A = NULL;
 		bi_gen_rand(&A, NON_NEGATIVE, 31);
@@ -98,4 +68,38 @@ int main(){
 	printf("ok");
 
 	return 0;
+}
+void toy1() {
+	bigint* A = NULL;
+	bigint* B = NULL;
+
+	//word A_array[3] = { 0x1234,0x2345,0x3456 };
+	word B_array[2] = { 0x3122,0x1234 };
+
+	bi_set_by_string(&A, NON_NEGATIVE, "1234", 4);
+	bi_set_by_array(&B, NON_NEGATIVE, B_array, 2);
+
+	bi_lshift(&A,1);
+	bi_lshift(&B, 1);
+
+	bigint* Q = NULL;
+	bigint* R = NULL;
+
+
+	printf("A = \n");
+	bi_show_hex(A);
+	printf("\nB = \n");
+	bi_show_hex(B);
+
+	DIV(&A, &B, &Q, &R);
+
+	printf("\nQ = \n");
+	bi_show_hex(Q);
+	printf("\nR = \n");
+	bi_show_hex(R);
+}
+
+int main(){
+	
+	toy0();
 }
