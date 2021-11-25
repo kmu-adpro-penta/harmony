@@ -26,7 +26,7 @@ void MULC(bigint* A, bigint* B, bigint** C) {
 	word i, j;
 	// AB연산을 받아줄 T 생성
 	bigint* T = NULL;
-	//T와 C의 크기를 나올 수 있는 최대치로 만들기
+	//C와 T의 크기를 나올 수 있는 최대치로 만들기
 	bi_new(C, A->wordlen + B->wordlen);
 	bi_new(&T, A->wordlen + B->wordlen);
 	if (T != NULL) {
@@ -48,3 +48,82 @@ void MULC(bigint* A, bigint* B, bigint** C) {
 	(*C)->sign = (A->sign) ^ (B->sign);
 }
 
+void Karatsuba(int* flag, bigint* A, bigint* B, bigint** C){
+	//사용자가 지정한 횟수 or A, B둘 중 한 값이 0이라면 재귀 빠져나가기
+	if (!*flag || !(MIN(A->wordlen, B->wordlen))) 
+		MULC(A, B, C);
+	
+	else {
+		*flag -= 1;
+		int l = (MAX(A->wordlen, B->wordlen) + 1) >> 1;
+		int i, sign;
+		/*
+		A1 = A >> lw, A0 = A % 2^lw
+		B1 = B >> lw, B0 = B % 2^lw
+		*/
+		bigint* A0 = NULL;
+		bigint* B0 = NULL;
+		bigint* T0 = NULL;
+		bigint* T1 = NULL;
+		bigint* S = NULL;
+		bigint* S0 = NULL;
+		bigint* S1 = NULL;
+
+		bi_new(&A0, MIN(A->wordlen, l));
+		bi_new(&B0, MIN(B->wordlen, l));
+
+		for (i = 0; i < MIN(A->wordlen, l); i++)
+			A0->a[i] = A->a[i];
+		for (i = 0; i < MIN(B->wordlen, l); i++)
+			B0->a[i] = B->a[i];
+
+		bi_rshift(&A, MIN(A->wordlen, l) * sizeof(word) * BYTE);
+		bi_rshift(&B, MIN(B->wordlen, l) * sizeof(word) * BYTE);
+		if (*flag == 1) {
+			printf("A = ");
+			bi_show_hex(A);
+			printf("\nB = ");
+			bi_show_hex(B);
+			printf("\nA0 = ");
+			bi_show_hex(A0);
+			printf("\nB0 = ");
+			bi_show_hex(B0);
+			printf("\n");
+		}
+		//T1 = A1 * B1, T0 = A0 * B0
+		Karatsuba(flag, A, B, &T1);
+		Karatsuba(flag, A0, B0, &T0);
+
+		bi_show_hex(T1);
+		// A1 * B1 + A0 * B0
+		bi_lshift(&T1, 2 * l * BYTE * sizeof(word));
+		ADD(*C, T1, C);
+		ADD(*C, T0, C);
+
+		//(A0 - A1)(B1 - B0)
+		SUB(A0, A, &S1);
+		SUB(B, B0, &S0);
+		sign = S0->sign ^ S1->sign;
+		S0->sign = 0;
+		S1->sign = 0;
+		Karatsuba(flag, S1, S0, &S);
+		S->sign = sign;
+
+		bi_rshift(&T1, 2 * l);
+		ADD(S, T1, &S);
+		ADD(S, T0, &S);
+
+		bi_lshift(&S, l);
+
+		ADD(*C, S, C);
+
+		bi_delete(&A0);
+		bi_delete(&B0);
+		bi_delete(&T0);
+		bi_delete(&T1);
+		bi_delete(&S);
+		bi_delete(&S0);
+		bi_delete(&S1);
+	}
+
+}

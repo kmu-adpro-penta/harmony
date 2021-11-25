@@ -3,14 +3,21 @@
 
 #define MAX(a, b) (((a) > (b)) ? (a) : (b))
 #define MIN(a, b) (((a) < (b)) ? (a) : (b))
+
 #define NON_NEGATIVE 0
 #define NEGATIVE 1
+#define FALSE 0
+#define TRUE 1
+#define GREATER 1
+#define EQUAL 0
+#define LESS -1
+#define BYTE 8
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 
-typedef unsigned short word;
+typedef unsigned int word;
 typedef unsigned char byte;
 
 typedef struct {

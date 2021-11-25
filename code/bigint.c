@@ -4,13 +4,6 @@
 #include <string.h>
 #include <time.h>
 
-#define FALSE 0
-#define TRUE 1
-#define GREATER 1
-#define EQUAL 0
-#define LESS -1
-#define BYTE 8
-
 /**
  * @brief delete bigint x
  * 
@@ -35,7 +28,7 @@ void bi_delete(bigint** x) {
  * @param wordlen word length of bigint
  */
 void bi_new(bigint** x, int wordlen) {
-	if(*x != NULL)	
+	if(*x != NULL)
 		bi_delete(x);
 	*x = (bigint*)malloc(sizeof(bigint));
 	(*x)->sign = NON_NEGATIVE;
@@ -367,7 +360,7 @@ void bi_lshift(bigint** x, int r) {
 	k = r/(sizeof(word)*BYTE);
 	re = r & (sizeof(word)*BYTE - 1);
 	len = (*x)->wordlen;
-
+	bi_show_hex(*x);
 	bi_realloc(x, k+1);
 	memmove(&((*x)->a[k]), (*x)->a, len*sizeof(word));
 	memset((*x)->a, 0, k*sizeof(word));
