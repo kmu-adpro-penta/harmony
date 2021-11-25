@@ -17,7 +17,7 @@
 #include <stdlib.h>
 #include <time.h>
 
-typedef unsigned int word;
+typedef unsigned short word;
 typedef unsigned char byte;
 
 typedef struct {
@@ -40,7 +40,7 @@ void bi_refine(bigint* x);
 
 void bi_assign(bigint** y, bigint* x);
 
-void bi_gen_rand(bigint** x);//fix
+void bi_gen_rand(bigint** x, int sign, int wordlen);//fix
 
 int bi_get_wordlen(bigint* x);
 int bi_get_bitlen(bigint* x);

@@ -42,7 +42,7 @@ void MULC(bigint* A, bigint* B, bigint** C) {
 				T->a[i + j + 1] = 0;
 			}
 		//T를 다 썼으니 삭제
-		bi_delete(T);
+		bi_delete(&T);
 	}
 	//각 부호에 따라 C의 부호 결정 
 	(*C)->sign = (A->sign) ^ (B->sign);

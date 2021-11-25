@@ -16,8 +16,12 @@ void bi_delete(bigint** x) {
 #ifdef ZERORIZE 
 	array_init((*x)->a, (*x)->wordlen);
 #endif
+
+
+
 	free((*x)->a);
 	free((*x));
+
 	*x = NULL;
 }
 
@@ -241,9 +245,10 @@ int bi_get_bitlen(bigint* x) {
 }
 
 // what do you want to get??
+/*
 int bi_get_ibit(bigint* x, int i) {
 	x->a[i>>(sizeof(word)*BYTE)] >> ((1<<(sizeof(word)*BYTE) - 1) & i);
-}
+}*/
 
 //return sign
 int bi_get_sign(bigint* x) {
