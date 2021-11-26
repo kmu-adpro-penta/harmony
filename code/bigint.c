@@ -138,12 +138,14 @@ void bi_set_by_string(bigint** x, int sign, char* str, int base) {
  * @param x bigint
  */
 void bi_show_hex(bigint* x) {
+	printf("\n");
 	if(x == NULL) {fprintf(stdout, "0"); return;}
 	int i;
 	if(bi_get_sign(x) == NEGATIVE)
 		fprintf(stdout, "-");
 	for(i = x->wordlen-1; i >= 0; i--)
 		fprintf(stdout, "%04x", x->a[i]);
+	printf("\n");
 }
 
 /**
@@ -365,7 +367,7 @@ void bi_lshift(bigint** x, int r) {
 	k = r/(sizeof(word)*BYTE);
 	re = r & (sizeof(word)*BYTE - 1);
 	len = (*x)->wordlen;
-	bi_show_hex(*x);
+	//bi_show_hex(*x);
 	bi_realloc(x, k+1);
 	memmove(&((*x)->a[k]), (*x)->a, len*sizeof(word));
 	memset((*x)->a, 0, k*sizeof(word));

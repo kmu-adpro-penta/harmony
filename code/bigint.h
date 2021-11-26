@@ -20,6 +20,8 @@
 typedef unsigned short word;
 typedef unsigned char byte;
 
+
+
 typedef struct {
 	int sign;
 	int wordlen;
