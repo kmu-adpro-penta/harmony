@@ -53,14 +53,14 @@ void SchoolbookMUL(bigint* A, bigint* B, bigint** C) {
 	MULC(A, B, C);
 }
 
-void KaratsubaMUL(int* flag, bigint* A, bigint* B, bigint** C){
+void KaratsubaMUL(int flag, bigint* A, bigint* B, bigint** C){
 	bi_new(C, A->wordlen + B->wordlen);
 	//사용자가 지정한 횟수 or A, B둘 중 한 값이 0이라면 재귀 빠져나가기
-	if (!*flag || !(MIN(A->wordlen, B->wordlen))) 
+	if (!flag || !(MIN(A->wordlen, B->wordlen))) 
 		MULC(A, B, C);
 	
 	else {
-		*flag -= 1;
+
 		int l = (MAX(A->wordlen, B->wordlen) + 1) >> 1;
 		int i, sign;
 		/*
@@ -82,27 +82,28 @@ void KaratsubaMUL(int* flag, bigint* A, bigint* B, bigint** C){
 			A0->a[i] = A->a[i];
 		for (i = 0; i < MIN(B->wordlen, l); i++)
 			B0->a[i] = B->a[i];
-		printf("A0 = ");
+		printf("%d A0 = ", 2 - flag);
 		bi_show_hex(A0);
-		printf("\nB0 = ");
+		printf("\n%d B0 = ", 2 - flag);
 		bi_show_hex(B0);
-		printf("\nA = ");
+		printf("\n%d A = ", 2 - flag);
 		bi_rshift(&A, MIN(A->wordlen, l) * sizeof(word) * BYTE);
 		bi_rshift(&B, MIN(B->wordlen, l) * sizeof(word) * BYTE);
 		bi_show_hex(A);
-		printf("\nB = ");
+		printf("\n%d B = ", 2 - flag);
 		bi_show_hex(B);
 		printf("\n");
 		//T1 = A1 * B1, T0 = A0 * B0
-		KaratsubaMUL(flag, A, B, &T1);
-		KaratsubaMUL(flag, A0, B0, &T0);
+		KaratsubaMUL(flag - 1, A, B, &T1);
+		KaratsubaMUL(flag - 1, A0, B0, &T0);
 
+		printf("%d T1 = ", 2 - flag);
 		bi_show_hex(T1);
-		printf("\n");
+		printf("\n%d T0 = ", 2 - flag);
 		bi_show_hex(T0);
 		printf("\n");
 		// A1 * B1 + A0 * B0
-		bi_lshift(&T1, 2 * l * BYTE * sizeof(word));
+		bi_lshift(&T1, 2 * l * BYTE * sizeof(word));//ㅠ
 		ADD(*C, T1, C);
 		ADD(*C, T0, C);
 
@@ -112,7 +113,7 @@ void KaratsubaMUL(int* flag, bigint* A, bigint* B, bigint** C){
 		sign = S0->sign ^ S1->sign;
 		S0->sign = 0;
 		S1->sign = 0;
-		KaratsubaMUL(flag, S1, S0, &S);
+		KaratsubaMUL(flag - 1, S1, S0, &S);
 		S->sign = sign;
 
 		bi_rshift(&T1, 2 * l * BYTE * sizeof(word));

@@ -1,28 +1,28 @@
 ﻿#include "SUB.h"
 
 void SUBAbB(word* A, word* B, word* C, word* b) {
-	//A�� input borrow�� �� ���� C�� �ִ´�
+	//A - input borrow
 	*C = *A - *b;
 	/*
-	* C�� borrow���� ���� ���� A = 0, b = 1�� ���� �� �� next borrow = 1
-	* C�� B���� ���� ��� ������ �ϸ� next borrow = 1
-	* �� �� �� ��츸 �Ͼ��, borrow�� 0 or 1�̹Ƿ� �� ��츦 or���� ���־ ����
+	* A = 0, b = 1즉 A < b일 경우 next borrow = 1
+	* C < B인 경우 underflow가 일어났으니 next borrow = 1
+	* 둘 중 한 가지만 일어날 수 있으니 or연산
 	*/
 	word borrow = ((*A < *b) | (*C < *B));
-	//���������� A - b - B���� C�� ����
+	//C = A - b - B
 	*C -= *B;
-	//next borrow�� ���� input borrow���� �־��ش�
+	//next borrow를 *b에 input
 	*b = borrow;
 }
 
-void SUBC(bigint* A, bigint* B, bigint** C) {//��ȣ ���忭 �� �ٸ��� ����
+void SUBC(bigint* A, bigint* B, bigint** C) {
 
 	int i = 0;
-	//A�� ���̰� B���� ��� A���� - B���� ������ ���� 0�� �־�� �ϹǷ� ����
+	//B가 A보다 작은 경우 B대신 넣어줄 0
 	word x = 0;
-	//�ʱ� borrow�� 0���� ����
+	//초기 borrow = 0
 	word b = 0;
-	//�� �ڸ����� ����
+	//뺄셈 연산
 	for (i; i < B->wordlen; i++)
 		SUBAbB(&A->a[i], &B->a[i], &(*C)->a[i], &b);
 	for (i; i < A->wordlen; i++)
