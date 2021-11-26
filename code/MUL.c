@@ -27,7 +27,6 @@ void MULC(bigint* A, bigint* B, bigint** C) {
 	// AB연산을 받아줄 T 생성
 	bigint* T = NULL;
 	//C와 T의 크기를 나올 수 있는 최대치로 만들기
-	bi_new(C, A->wordlen + B->wordlen);
 	bi_new(&T, A->wordlen + B->wordlen);
 	if (T != NULL) {
 		for (i = 0; i < A->wordlen; i++)
@@ -42,13 +41,20 @@ void MULC(bigint* A, bigint* B, bigint** C) {
 				T->a[i + j + 1] = 0;
 			}
 		//T를 다 썼으니 삭제
-		bi_delete(T);
+		bi_delete(&T);
 	}
+
 	//각 부호에 따라 C의 부호 결정 
 	(*C)->sign = (A->sign) ^ (B->sign);
 }
 
-void Karatsuba(int* flag, bigint* A, bigint* B, bigint** C){
+void SchoolbookMUL(bigint* A, bigint* B, bigint** C) {
+	bi_new(C, A->wordlen + B->wordlen);
+	MULC(A, B, C);
+}
+
+void KaratsubaMUL(int* flag, bigint* A, bigint* B, bigint** C){
+	bi_new(C, A->wordlen + B->wordlen);
 	//사용자가 지정한 횟수 or A, B둘 중 한 값이 0이라면 재귀 빠져나가기
 	if (!*flag || !(MIN(A->wordlen, B->wordlen))) 
 		MULC(A, B, C);
@@ -76,25 +82,25 @@ void Karatsuba(int* flag, bigint* A, bigint* B, bigint** C){
 			A0->a[i] = A->a[i];
 		for (i = 0; i < MIN(B->wordlen, l); i++)
 			B0->a[i] = B->a[i];
-
+		printf("A0 = ");
+		bi_show_hex(A0);
+		printf("\nB0 = ");
+		bi_show_hex(B0);
+		printf("\nA = ");
 		bi_rshift(&A, MIN(A->wordlen, l) * sizeof(word) * BYTE);
 		bi_rshift(&B, MIN(B->wordlen, l) * sizeof(word) * BYTE);
-		if (*flag == 1) {
-			printf("A = ");
-			bi_show_hex(A);
-			printf("\nB = ");
-			bi_show_hex(B);
-			printf("\nA0 = ");
-			bi_show_hex(A0);
-			printf("\nB0 = ");
-			bi_show_hex(B0);
-			printf("\n");
-		}
+		bi_show_hex(A);
+		printf("\nB = ");
+		bi_show_hex(B);
+		printf("\n");
 		//T1 = A1 * B1, T0 = A0 * B0
-		Karatsuba(flag, A, B, &T1);
-		Karatsuba(flag, A0, B0, &T0);
+		KaratsubaMUL(flag, A, B, &T1);
+		KaratsubaMUL(flag, A0, B0, &T0);
 
 		bi_show_hex(T1);
+		printf("\n");
+		bi_show_hex(T0);
+		printf("\n");
 		// A1 * B1 + A0 * B0
 		bi_lshift(&T1, 2 * l * BYTE * sizeof(word));
 		ADD(*C, T1, C);
@@ -106,14 +112,14 @@ void Karatsuba(int* flag, bigint* A, bigint* B, bigint** C){
 		sign = S0->sign ^ S1->sign;
 		S0->sign = 0;
 		S1->sign = 0;
-		Karatsuba(flag, S1, S0, &S);
+		KaratsubaMUL(flag, S1, S0, &S);
 		S->sign = sign;
 
-		bi_rshift(&T1, 2 * l);
+		bi_rshift(&T1, 2 * l * BYTE * sizeof(word));
 		ADD(S, T1, &S);
 		ADD(S, T0, &S);
 
-		bi_lshift(&S, l);
+		bi_lshift(&S, l * BYTE * sizeof(word));
 
 		ADD(*C, S, C);
 

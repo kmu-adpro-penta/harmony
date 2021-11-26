@@ -4,6 +4,11 @@
 #include <string.h>
 #include <time.h>
 
+
+void array_init(word* a, int wordlen) {
+	for (int i = 0; i < wordlen; i++)
+		a[i] = 0x00;
+}
 /**
  * @brief delete bigint x
  * 
@@ -15,6 +20,7 @@ void bi_delete(bigint** x) {
 
 #ifdef ZERORIZE 
 	array_init((*x)->a, (*x)->wordlen);
+
 #endif
 	free((*x)->a);
 	free((*x));
@@ -139,7 +145,7 @@ void bi_show_hex(bigint* x) {
 	if(bi_get_sign(x) == NEGATIVE)
 		fprintf(stdout, "-");
 	for(i = x->wordlen-1; i >= 0; i--)
-		fprintf(stdout, "%04x", x->a[i]);
+		fprintf(stdout, "%016llx", x->a[i]);
 }
 
 /**
@@ -357,35 +363,64 @@ void bi_rshift(bigint** x, int r) {
 void bi_lshift(bigint** x, int r) {
 	int k, re, i, len;
 	word b;
-	k = r/(sizeof(word)*BYTE);
-	re = r & (sizeof(word)*BYTE - 1);
+	k = r / (sizeof(word) * BYTE);
+	re = r & (sizeof(word) * BYTE - 1);
 	len = (*x)->wordlen;
-	bi_show_hex(*x);
-	bi_realloc(x, k+1);
-	memmove(&((*x)->a[k]), (*x)->a, len*sizeof(word));
-	memset((*x)->a, 0, k*sizeof(word));
-	
-	if(re) {
+	//bi_show_hex(*x);
+	bi_realloc(x, k + 1);
+	memmove(&((*x)->a[k]), (*x)->a, len * sizeof(word));
+	memset((*x)->a, 0, k * sizeof(word));
+
+	if (re) {
 		b = (*x)->a[0];
 		(*x)->a[len + k] = (*x)->a[len + k - 1] >> (sizeof(word) * BYTE - re);
-		for(i=len-1; i>0; i--) {
+		for (i = len - 1; i > 0; i--) {
 			(*x)->a[i + k] = (*x)->a[i + k] << re | (*x)->a[i + k - 1] >> (sizeof(word) * BYTE - re);
 		}
 		(*x)->a[k] = (*x)->a[k] << re;
 	}
 	bi_refine(*x);
-	
+
 }
 
 void bi_realloc(bigint** x, int i) {
 	int n;
-	word *w;
-	w = (word*)malloc(((*x)->wordlen + i)*sizeof(word));
-	memcpy(w, (*x)->a, (*x)->wordlen*sizeof(word));
-	for(n=0; n<i; n++) {
+	word* w;
+	w = (word*)malloc(((*x)->wordlen + i) * sizeof(word));
+	memcpy(w, (*x)->a, (*x)->wordlen * sizeof(word));
+	for (n = 0; n < i; n++) {
 		w[(*x)->wordlen + n] = 0;
 	}
-	(*x)->wordlen+= i;
+	(*x)->wordlen += i;
 	free((*x)->a);
 	(*x)->a = w;
 }
+
+
+//void bi_lshift(bigint** x, int r) {
+//	int k, re, i, len;
+//	bigint* w = NULL;
+//	word b1, b0;
+//	k = r/(sizeof(word)*BYTE);
+//	re = r & (sizeof(word)*BYTE - 1);
+//	len = (*x)->wordlen;
+//	bi_new(&w, (*x)->wordlen + k + 1);
+//	w->sign = (*x)->sign;
+//	
+//	for (i = (*x)->wordlen; i > 0; i--)
+//		w->a[i + k - 1] = (*x)->a[i - 1];
+//	
+//	if(re) {
+//		b0 = w->a[k - 1] >> re;
+//		for (i = 0; i < (*x)->wordlen; i++) {
+//			b1 = w->a[k + i] >> re;
+//			w->a[k - 1 + i] << re;
+//			w->a[k + i] =  (w->a[k + i] << re) | b0;
+//			b0 = b1;
+//		}
+//	}
+//	bi_refine(w);
+//	bi_assign(x, w);
+//	bi_delete(&w);
+//	
+//}

@@ -12,12 +12,13 @@
 #define EQUAL 0
 #define LESS -1
 #define BYTE 8
+#define ZERORIZE
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 
-typedef unsigned int word;
+typedef unsigned long long word;
 typedef unsigned char byte;
 
 typedef struct {
@@ -25,6 +26,8 @@ typedef struct {
 	int wordlen;
 	word* a;
 } bigint;
+
+void array_init(word* a, int wordlen);
 
 void bi_delete(bigint** x);
 void bi_new(bigint** x, int wordlen);
@@ -40,7 +43,7 @@ void bi_refine(bigint* x);
 
 void bi_assign(bigint** y, bigint* x);
 
-void bi_gen_rand(bigint** x);//fix
+void bi_gen_rand(bigint** x, int sign, int wordlen);//fix
 
 int bi_get_wordlen(bigint* x);
 int bi_get_bitlen(bigint* x);
@@ -59,6 +62,4 @@ int bi_compare(bigint* x, bigint* y);
 
 void bi_rshift(bigint** x, int r);
 void bi_lshift(bigint** x, int l);//yet
-
-void bi_realloc(bigint** x, int i);
 #endif

@@ -41,31 +41,21 @@ B ÀÇ ±æÀÌ = m  ( n > m )
 
 */
 void ADDC(bigint* A, bigint* B, bigint** C) {
-
-	//if (A->wordlen > B->wordlen)
-	//	bi_realloc(&B, A->wordlen - B->wordlen);
-	//if (A->wordlen < B->wordlen)
-	//	bi_realloc(&A, B->wordlen - A->wordlen);
 	
 	word c = 0;					// c : carry
 	for (int j = 0; j < A->wordlen; j++) {
-		if(j >= B->wordlen)
+		if (j >= B->wordlen)
 			c = ADD_ABc(*(A->a + j), 0, c, (*C)->a + j);
 		else
-			c = ADD_ABc(*(A->a + j), *(B->a + j), c, (*C)->a+j);
+			c = ADD_ABc(*(A->a + j), *(B->a + j), c, (*C)->a + j);
 	}
-
-	*((*C)->a + A->wordlen) = c;
-
+	
 	if (c == 1) {
+		*((*C)->a + A->wordlen) = c;
 		(*C)->wordlen = A->wordlen + 1;
-		(*C)->sign = NON_NEGATIVE;
 	}
-	else {
+	else 
 		(*C)->wordlen = A->wordlen;
-		(*C)->sign = NON_NEGATIVE;
-	}
-
 }
 
 
@@ -92,8 +82,8 @@ void ADD(bigint* A, bigint* B, bigint **C) {
 	// if B = 0	 then return A
 	if (B->wordlen == 0)
 		bi_assign(C,A);
-
-	bi_new(C, MAX(A->wordlen, B->wordlen) + 1);
+	if(*C == NULL)
+		bi_new(C, MAX(A->wordlen, B->wordlen) + 1);
 
 	// if A > 0  and  B < 0  then return A - |B|
 	if (A->sign == NON_NEGATIVE && B->sign == NEGATIVE) {

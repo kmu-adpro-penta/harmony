@@ -17,7 +17,7 @@ void SUBAbB(word* A, word* B, word* C, word* b) {
 
 void SUBC(bigint* A, bigint* B, bigint** C) {//��ȣ ���忭 �� �ٸ��� ����
 
-	word i = 0;
+	int i = 0;
 	//A�� ���̰� B���� ��� A���� - B���� ������ ���� 0�� �־�� �ϹǷ� ����
 	word x = 0;
 	//�ʱ� borrow�� 0���� ����
@@ -30,34 +30,28 @@ void SUBC(bigint* A, bigint* B, bigint** C) {//��ȣ ���忭 �� ��
 
 }
 
-void SUB(bigint* A, bigint* B, bigint** C) {//�Է°� üũ
-	//��ȣ�� ���� ���
-	bi_new(C, MAX(A->wordlen, B->wordlen));
+void SUB(bigint* A, bigint* B, bigint** C) {
+	//C가 NULL인 경우 C할당
+	if(*C == NULL)
+		bi_new(C, MAX(A->wordlen, B->wordlen));
+	//부호가 같은 경우
 	if (A->sign == B->sign) {
-		//printf("SUB\n");
-		//A�� B���� Ŭ ��� ����� +
-		if (A->wordlen > B->wordlen) SUBC(A, B, C);
-		
-		else if (A->wordlen < B->wordlen) {
+		//A >= B
+		if (bi_compare_abs(A, B) + 1) SUBC(A, B, C);
+		// A < B
+		else {
 			SUBC(B, A, C);
 			(*C)->sign = NEGATIVE;
 		}
-		//A���� B�� Ŭ ��� ����� -
-		else
-			if (A->a[A->wordlen - 1] < B->a[B->wordlen - 1]) {
-				SUBC(B, A, C);
-				(*C)->sign = NEGATIVE;
-			}
-		//A�� B���� Ŭ ��� ����� non_negative
-		else SUBC(A, B, C);
 	}
-	//��ȣ�� �ٸ� ���
+	//부호가 다른 경우
 	else {
-		//
+		//A가 양수
 		if (!(A->sign)) {
 			B->sign = NON_NEGATIVE;
 			ADD(A, B, C);
 		}
+		//B가 양수
 		else {
 			A->sign = NON_NEGATIVE;
 			ADD(A, B, C);
