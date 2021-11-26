@@ -1,28 +1,28 @@
-ï»¿#include "SUB.h"
+#include "SUB.h"
 
 void SUBAbB(word* A, word* B, word* C, word* b) {
 	//A - input borrow
 	*C = *A - *b;
 	/*
-	* A = 0, b = 1ì¦‰ A < bì¼ ê²½ìš° next borrow = 1
-	* C < Bì¸ ê²½ìš° underflowê°€ ì¼ì–´ë‚¬ìœ¼ë‹ˆ next borrow = 1
-	* ë‘˜ ì¤‘ í•œ ê°€ì§€ë§Œ ì¼ì–´ë‚  ìˆ˜ ìžˆìœ¼ë‹ˆ orì—°ì‚°
+	* A = 0, b = 1Áï A < bÀÏ °æ¿ì next borrow = 1
+	* C < BÀÎ °æ¿ì underflow°¡ ÀÏ¾î³µÀ¸´Ï next borrow = 1
+	* µÑ Áß ÇÑ °¡Áö¸¸ ÀÏ¾î³¯ ¼ö ÀÖÀ¸´Ï or¿¬»ê
 	*/
 	word borrow = ((*A < *b) | (*C < *B));
 	//C = A - b - B
 	*C -= *B;
-	//next borrowë¥¼ *bì— input
+	//next borrow¸¦ *b¿¡ input
 	*b = borrow;
 }
 
 void SUBC(bigint* A, bigint* B, bigint** C) {
 
 	int i = 0;
-	//Bê°€ Aë³´ë‹¤ ìž‘ì€ ê²½ìš° BëŒ€ì‹  ë„£ì–´ì¤„ 0
+	//B°¡ Aº¸´Ù ÀÛÀº °æ¿ì B´ë½Å ³Ö¾îÁÙ 0
 	word x = 0;
-	//ì´ˆê¸° borrow = 0
+	//ÃÊ±â borrow = 0
 	word b = 0;
-	//ëº„ì…ˆ ì—°ì‚°
+	//»¬¼À ¿¬»ê
 	for (i; i < B->wordlen; i++)
 		SUBAbB(&A->a[i], &B->a[i], &(*C)->a[i], &b);
 	for (i; i < A->wordlen; i++)
@@ -31,10 +31,10 @@ void SUBC(bigint* A, bigint* B, bigint** C) {
 }
 
 void SUB(bigint* A, bigint* B, bigint** C) {
-	//Cê°€ NULLì¸ ê²½ìš° Cí• ë‹¹
+	//C°¡ NULLÀÎ °æ¿ì CÇÒ´ç
 	if(*C == NULL)
 		bi_new(C, MAX(A->wordlen, B->wordlen));
-	//ë¶€í˜¸ê°€ ê°™ì€ ê²½ìš°
+	//ºÎÈ£°¡ °°Àº °æ¿ì
 	if (A->sign == B->sign) {
 		//A >= B
 		if (bi_compare_abs(A, B) + 1) SUBC(A, B, C);
@@ -44,14 +44,14 @@ void SUB(bigint* A, bigint* B, bigint** C) {
 			(*C)->sign = NEGATIVE;
 		}
 	}
-	//ë¶€í˜¸ê°€ ë‹¤ë¥¸ ê²½ìš°
+	//ºÎÈ£°¡ ´Ù¸¥ °æ¿ì
 	else {
-		//Aê°€ ì–‘ìˆ˜
+		//A°¡ ¾ç¼ö
 		if (!(A->sign)) {
 			B->sign = NON_NEGATIVE;
 			ADD(A, B, C);
 		}
-		//Bê°€ ì–‘ìˆ˜
+		//B°¡ ¾ç¼ö
 		else {
 			A->sign = NON_NEGATIVE;
 			ADD(A, B, C);
