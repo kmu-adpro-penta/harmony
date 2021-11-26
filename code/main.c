@@ -29,13 +29,13 @@ int main(){
 		bi_show_hex(C);
 		//printf("\nAA = ");
 
-		//bigint* AA = NULL;
-		//ADD(B, C, &AA);
+	//bigint* AA = NULL;
+	//ADD(B, C, &AA);
 
-		//bi_show_hex(AA);
-		//printf("\n");
+	//bi_show_hex(AA);
+	//printf("\n");
 
-		//if (bi_compare(A, AA) != 0) {
+	//if (bi_compare(A, AA) != 0) {
 
 		//	//bi_realloc(&A, 4);
 		//	printf("you die%d", i);

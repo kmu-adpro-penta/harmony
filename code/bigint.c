@@ -20,7 +20,6 @@ void bi_delete(bigint** x) {
 
 #ifdef ZERORIZE 
 	array_init((*x)->a, (*x)->wordlen);
-
 #endif
 	free((*x)->a);
 	free((*x));
@@ -140,6 +139,7 @@ void bi_set_by_string(bigint** x, int sign, char* str, int base) {
  * @param x bigint
  */
 void bi_show_hex(bigint* x) {
+	printf("\n");
 	if(x == NULL) {fprintf(stdout, "0"); return;}
 	int i;
 	if(bi_get_sign(x) == NEGATIVE)

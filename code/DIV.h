@@ -5,7 +5,7 @@
 #include "SUB.h"
 #include "ADD.h"
 
-void LDA(word A_1, word A_2, word B, word* Q);
+word LDA(word A_1, word A_2, word B);
 void DIVCC(bigint** A, bigint* B, word* Q, bigint** R);
 void DIVC(bigint** A, bigint* B, bigint** Q, word i, int k);
 void DIV(bigint* A, bigint* B, bigint** Q, bigint** R);

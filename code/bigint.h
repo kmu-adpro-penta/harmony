@@ -62,4 +62,6 @@ int bi_compare(bigint* x, bigint* y);
 
 void bi_rshift(bigint** x, int r);
 void bi_lshift(bigint** x, int l);//yet
+
+void bi_realloc(bigint** x, int i);
 #endif

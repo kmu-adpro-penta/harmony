@@ -42,8 +42,9 @@ Multi-Precision Long Division
 
 
 
-void LDA(word A_1, word A_2, word B, word* Q) {
-	*Q = 0;
+word LDA(word A_1, word A_2, word B) {
+
+	word Q = 0;
 	word R = A_1;
 
 	for (int j = sizeof(word) * 8 - 1; j > 0; j--) {
@@ -55,17 +56,19 @@ void LDA(word A_1, word A_2, word B, word* Q) {
 			a_j = 1;
 
 		if ((R >> (sizeof(word) * 8 - 1)) > 0) {
-			*Q = *Q + (1 << j);
-			R = R + R - B + a_j;
+			Q = Q + (1 << j);
+			R = R + a_j - (B-R);
 		}
 		else {
 			R = R + R + a_j;
 			if (R >= B) {
-				*Q = *Q + (1 << j);
+				Q = Q + (1 << j);
 				R = R - B;
 			}
 		}
 	}
+
+	return Q;
 
 }
 
@@ -79,28 +82,39 @@ DIVCC(A,B)
 
 void DIVCC(bigint** A, bigint* B, word* Q, bigint** R) {
 
+	bi_show_hex(*A);
+	bi_show_hex(B);
 
 	if ((*A)->wordlen == B->wordlen) {
 		*Q = (word)((*A)->a[(*A)->wordlen] / B->a[B->wordlen]);
 	}
 	else if ((*A)->wordlen == B->wordlen + 1) {
-		if ((*A)->a[(*A)->wordlen] == B->a[B->wordlen]) {
+		printf("%x \t %x", (*A)->a[(*A)->wordlen], B->a[B->wordlen]);
+		printf("%x \t %x", (*A)->wordlen, B->wordlen);
+		if (*((*A)->a + (*A)->wordlen -1) == *(B->a+B->wordlen-1)) {
 
 			*Q = 65534;
 
 		}
 		else {
-			LDA((*A)->a[(*A)->wordlen], (*A)->a[(*A)->wordlen - 1], B->a[B->wordlen], Q);
+			*Q = LDA((*A)->a[B->wordlen], (*A)->a[B->wordlen - 1], B->a[B->wordlen-1]);
 		}
 	}
 
-	bigint** Q_2 = NULL;
+	bigint* Q_2 = NULL;
 	word Q_array_1[1] = {*Q};
-	bi_set_by_array(Q_2, NON_NEGATIVE, Q_array_1, 1);
+	bi_set_by_array(&Q_2, NON_NEGATIVE, Q_array_1, 1);
 
-	bigint** BQ = NULL;
-	MULC(B, Q_2, BQ);
-	SUB(*A,*BQ , R);
+	bigint* BQ = NULL;
+	MULC(B, Q_2, &BQ);
+	bi_show_hex(BQ);
+
+	bi_show_hex(*A);
+	bi_show_hex(BQ);
+
+	SUB(*A,BQ , R);
+
+	bi_show_hex(*R);
 
 	while ((*R)->sign == NEGATIVE ) {
 		Q--;
@@ -132,10 +146,10 @@ void DIVC(bigint** A, bigint** B, bigint** Q, word i, int k) {
 		bi_lshift(A, k);
 		bi_lshift(B, k);
 
-		word* Q_2 = NULL;
-		bigint** R_2 = NULL;
+		word Q_2 = 0;
+		bigint* R_2 = NULL;
 
-		DIVCC(A, B, Q_2, R_2);
+		DIVCC(A, *B, &Q_2, &R_2);
 
 		bi_rshift(R_2, k);
 
@@ -181,11 +195,23 @@ void DIV(bigint** A, bigint** B, bigint** Q, bigint** R) {
 		bi_new(Q, (*A)->wordlen - (*B)->wordlen + 1);
 		bi_new(R, (*B)->wordlen);
 
+		bi_show_hex(*R);
+		bi_show_hex(*Q);
+
+
+
 		for (word i = (*A)->wordlen - 1; i > 0; i--) {
+
+			bi_show_hex(*R);
+			bi_show_hex(*Q);
 
 			bi_lshift(R, sizeof(word) * 8);
 
 			*((*R)->a) = *((*A)->a + i);
+
+
+			bi_show_hex(*R);
+			bi_show_hex(*Q);
 
 			DIVC(R, B, Q, i, k);					// ( Q, R )  <-  DIVC( R , B )
 
