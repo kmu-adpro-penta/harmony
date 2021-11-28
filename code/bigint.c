@@ -431,6 +431,21 @@ void bi_realloc(bigint** x, int i) {
 	(*x)->a = w;
 }
 
+void bi_mod(bigint* x, int r, bigint** n) {
+	if(x == NULL) {
+		bi_set_zero(n);
+		return;
+	}
+	if(x->wordlen <= r) {
+		bi_assign(n, x);
+		return;
+	}
+	bi_new(n, r);
+	(*n)->sign = bi_get_sign(x);
+	for(int i=0; i<r; i++) {
+		(*n)->a[i] = x->a[i];
+	}
+}
 
 //void bi_lshift(bigint** x, int r) {
 //	int k, re, i, len;

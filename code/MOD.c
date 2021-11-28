@@ -42,3 +42,24 @@ void ex_rtl_mul(bigint* x, bigint* n, bigint** t0) {
 		ADD(t1, t1, &t1);
 	}
 }
+
+void MontRed(bigint* x, bigint* r, bigint* n, bigint* nn, bigint** t) {
+	bigint* m = NULL;
+	bigint* temp = NULL;
+	bi_mod(x, bi_get_wordlen(r), &temp);
+	SchoolbookMUL(temp, nn, &temp);
+	bi_mod(temp, r, &m);
+	
+	SchoolbookMUL(m, n, &temp);
+	ADD(temp, x, t);
+	bi_rshift(t, bi_get_bitlen(r)-1);
+	if(bi_compare(*t, n))
+		SUB(*t, n, t);
+}
+
+void ModExp_by_MontRed(bigint* x, int e, bigint* n, bigint* nn, bigint* r, bigint* phil) {
+	bigint* phix = NULL;
+	bigint* temp = NULL;
+	bi_assign(&temp, x);
+	bi_lshift(&temp, bi_get_bitlen(r) - 1);
+}

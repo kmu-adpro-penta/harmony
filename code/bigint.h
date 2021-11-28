@@ -77,4 +77,6 @@ void bi_rshift(bigint** x, int r);
 void bi_lshift(bigint** x, int l);//yet
 
 void bi_realloc(bigint** x, int i);
+
+void bi_mod(bigint*x, int r, bigint** n);
 #endif
