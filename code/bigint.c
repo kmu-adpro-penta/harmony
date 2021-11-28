@@ -50,16 +50,14 @@ void bi_new(bigint** x, int wordlen) {
  * @param wordlen word length of a
  */
 void bi_set_by_array(bigint** x, int sign, word* a, int wordlen) {
-
 	if (*x == NULL) {
 		bi_new(x, wordlen);
 	}
-	
 	(*x)->sign = sign;
 	(*x)->wordlen = wordlen;
-	free((*x)->a);
-
-	(*x)->a = a;
+	for(int i=0; i<wordlen; i++) {
+		(*x)->a[i] = a[i];
+	}
 }
 
 
@@ -139,13 +137,25 @@ void bi_set_by_string(bigint** x, int sign, char* str, int base) {
  * @param x bigint
  */
 void bi_show_hex(bigint* x) {
-	printf("\n");
-	if(x == NULL) {fprintf(stdout, "0"); return;}
+	if(x == NULL) {fprintf(stdout, "0x0"); return;}
 	int i;
 	if(bi_get_sign(x) == NEGATIVE)
 		fprintf(stdout, "-");
-	for(i = x->wordlen-1; i >= 0; i--)
+	fprintf(stdout, "0x");
+	for(i = x->wordlen-1; i >= 0; i--) {
+		#ifdef BIT64
 		fprintf(stdout, "%016llx", x->a[i]);
+		#endif
+		#ifdef BIT32
+		fprintf(stdout, "%08x", x->a[i]);
+		#endif
+		#ifdef BIT16
+		fprintf(stdout, "%04x", x->a[i]);
+		#endif
+		#ifdef BIT8
+		fprintf(stdout, "%02x", x->a[i]);
+		#endif
+	}
 }
 
 /**
@@ -154,7 +164,13 @@ void bi_show_hex(bigint* x) {
  * @param x bigint 
  */
 void bi_show_bin(bigint* x) {
+	if(x == NULL) {fprintf(stdout, "0b0"); return;}
 	int i, j;
+
+	if(bi_get_sign(x) == NEGATIVE)
+		fprintf(stdout, "-");
+	fprintf(stdout, "0b");
+
 	for(i = x->wordlen-1; i >= 0; i--) {
 		int temp = x->a[i];
 		for(j = sizeof(word)*BYTE-1; j>=0; j--) {
@@ -238,25 +254,30 @@ void bi_gen_rand(bigint**x, int sign, int wordlen) {
 
 //return wordlen
 int bi_get_wordlen(bigint* x) {
+	if(x == NULL) return 0;
 	return x->wordlen;
 }
 
 //return wordlen * BYTE(8) * sizeof(word)
 int bi_get_bitlen(bigint* x) {
+	if (x == NULL) return 0;
 	return x->wordlen*BYTE*sizeof(word);
 }
 
 // what do you want to get??
+/*
 int bi_get_ibit(bigint* x, int i) {
 	x->a[i>>(sizeof(word)*BYTE)] >> ((1<<(sizeof(word)*BYTE) - 1) & i);
-}
+}*/
 
 //return sign
 int bi_get_sign(bigint* x) {
+	if (x == NULL) return NON_NEGATIVE;
 	return x->sign;
 }
 //return !sign
 int bi_get_flipsign(bigint* x) {
+	if (x == NULL) return NEGATIVE;
 	return x->sign ? NON_NEGATIVE : NEGATIVE;
 }
 

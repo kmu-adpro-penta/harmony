@@ -13,12 +13,25 @@
 #define LESS -1
 #define BYTE 8
 #define ZERORIZE
+#define BIT16
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 
+#ifdef BIT64
 typedef unsigned long long word;
+#endif
+#ifdef BIT32
+typedef unsigned int word;
+#endif
+#ifdef BIT8
+typedef unsigned char word;
+#endif
+#ifdef BIT16
+typedef unsigned short word;
+#endif
+
 typedef unsigned char byte;
 
 typedef struct {
