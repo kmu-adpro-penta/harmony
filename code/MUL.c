@@ -49,19 +49,28 @@ void MULC(bigint* A, bigint* B, bigint** C) {
 }
 
 void SchoolbookMUL(bigint* A, bigint* B, bigint** C) {
-	bi_new(C, A->wordlen + B->wordlen);
-	MULC(A, B, C);
+	bigint* temp = NULL;
+	bi_new(&temp, A->wordlen + B->wordlen);
+	MULC(A, B, &temp);
+	bi_refine(temp);
+	bi_delete(C);
+	*C = temp;
 }
 
 void KaratsubaMUL(int flag, bigint* A, bigint* B, bigint** C){
-	bi_new(C, A->wordlen + B->wordlen);
+	bigint* A1 = NULL;
+	bigint* B1 = NULL;
+	printf("hello");
+	bi_assign(&A1, A);
+	bi_assign(&B1, B);
+	bi_new(C, A1->wordlen + B1->wordlen);
 	//사용자가 지정한 횟수 or A, B둘 중 한 값이 0이라면 재귀 빠져나가기
-	if (!flag || !(MIN(A->wordlen, B->wordlen))) 
-		MULC(A, B, C);
-	
+	printf("one");
+	if (!flag || !(MIN(A1->wordlen, B1->wordlen))) 
+		MULC(A1, B1, C);
 	else {
 
-		int l = (MAX(A->wordlen, B->wordlen) + 1) >> 1;
+		int l = (MAX(A1->wordlen, B1->wordlen) + 1) >> 1;
 		int i, sign;
 		/*
 		A1 = A >> lw, A0 = A % 2^lw
@@ -79,22 +88,22 @@ void KaratsubaMUL(int flag, bigint* A, bigint* B, bigint** C){
 		bi_new(&B0, MIN(B->wordlen, l));
 
 		for (i = 0; i < MIN(A->wordlen, l); i++)
-			A0->a[i] = A->a[i];
+			A0->a[i] = A1->a[i];
 		for (i = 0; i < MIN(B->wordlen, l); i++)
-			B0->a[i] = B->a[i];
+			B0->a[i] = B1->a[i];
 		printf("%d A0 = ", 2 - flag);
 		bi_show_hex(A0);
 		printf("\n%d B0 = ", 2 - flag);
 		bi_show_hex(B0);
 		printf("\n%d A = ", 2 - flag);
-		bi_rshift(&A, MIN(A->wordlen, l) * sizeof(word) * BYTE);
-		bi_rshift(&B, MIN(B->wordlen, l) * sizeof(word) * BYTE);
-		bi_show_hex(A);
+		bi_rshift(&A, MIN(A1->wordlen, l) * sizeof(word) * BYTE);
+		bi_rshift(&B, MIN(B1->wordlen, l) * sizeof(word) * BYTE);
+		bi_show_hex(A1);
 		printf("\n%d B = ", 2 - flag);
-		bi_show_hex(B);
+		bi_show_hex(B1);
 		printf("\n");
 		//T1 = A1 * B1, T0 = A0 * B0
-		KaratsubaMUL(flag - 1, A, B, &T1);
+		KaratsubaMUL(flag - 1, A1, B1, &T1);
 		KaratsubaMUL(flag - 1, A0, B0, &T0);
 
 		printf("%d T1 = ", 2 - flag);
@@ -108,8 +117,8 @@ void KaratsubaMUL(int flag, bigint* A, bigint* B, bigint** C){
 		ADD(*C, T0, C);
 
 		//(A0 - A1)(B1 - B0)
-		SUB(A0, A, &S1);
-		SUB(B, B0, &S0);
+		SUB(A0, A1, &S1);
+		SUB(B1, B0, &S0);
 		sign = S0->sign ^ S1->sign;
 		S0->sign = 0;
 		S1->sign = 0;

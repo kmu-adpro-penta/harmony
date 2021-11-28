@@ -7,7 +7,7 @@
 
 void array_init(word* a, int wordlen) {
 	for (int i = 0; i < wordlen; i++)
-		a[i] = 0x00;
+		a[i] = 0x0;
 }
 /**
  * @brief delete bigint x
@@ -102,9 +102,9 @@ int cdevide(int a, int b) {
 //string to bigint
 void bi_set_by_string(bigint** x, int sign, char* str, int base) {
 	int i;
-	int len;
+	//int len;
 	byte* w= NULL;
-	int n;
+	//int n;
 
 	if(*x == NULL) {
 		bi_new(x, cdevide(base, sizeof(word)*2));
@@ -213,7 +213,11 @@ void bi_refine(bigint* x) {
  * @param wordlen 
  */
 void array_copy(word* dst, word* arr,int wordlen) {
-	memcpy(dst, arr, wordlen*sizeof(word)*BYTE);
+	for(int i=0; i<wordlen; i++) {
+		*dst = *arr;
+		dst++;
+		arr++;
+	}
 }
 
 /**
@@ -225,7 +229,6 @@ void array_copy(word* dst, word* arr,int wordlen) {
 void bi_assign(bigint** y, bigint *x) {
 	if( *y != NULL)
 		bi_delete(y);
-
 	bi_new(y, x->wordlen);
 	(*y)->sign = x->sign;
 	array_copy((*y)->a, x->a, x->wordlen);
@@ -261,14 +264,26 @@ int bi_get_wordlen(bigint* x) {
 //return wordlen * BYTE(8) * sizeof(word)
 int bi_get_bitlen(bigint* x) {
 	if (x == NULL) return 0;
-	return x->wordlen*BYTE*sizeof(word);
+	int bitlen = x->wordlen*BYTE*sizeof(word);
+	for(int i=x->wordlen-1; i>=0; i--) {
+		if (x->a[i] == 0)
+			bitlen -= BYTE*sizeof(word);
+		else {
+			for (int j=BYTE*sizeof(word)-1; j>=0; j--) {
+				if (x->a[i] >> j & 0x1)
+					break;
+				bitlen--;
+			}
+			break;
+		}
+	}
+	return bitlen;
 }
 
 // what do you want to get??
-/*
 int bi_get_ibit(bigint* x, int i) {
-	x->a[i>>(sizeof(word)*BYTE)] >> ((1<<(sizeof(word)*BYTE) - 1) & i);
-}*/
+	return (x->a[i/(sizeof(word)*BYTE)] >> i%(sizeof(word)*BYTE)) & 0x1;
+}
 
 //return sign
 int bi_get_sign(bigint* x) {
@@ -288,7 +303,7 @@ void bi_set_one(bigint** x) {
 		bi_delete(x);
 	bi_new(x, 1);
 	(*x)->sign = NON_NEGATIVE;
-	(*x)->a[0] = 0x1;
+	*((*x)->a)= 0x1;
 }
 
 
@@ -298,15 +313,15 @@ void bi_set_zero(bigint** x) {
 		bi_delete(x);
 	bi_new(x, 1);
 	(*x)->sign = NON_NEGATIVE;
-	(*x)->a[0] = 0x0;
+	*((*x)->a) = 0x0;
 }
 //if bigint is 0, return 1 else 0
 int bi_is_zero(bigint* x) {
 	int i;
-	if(x->sign == NEGATIVE | x->a[0] != 0)
+	if( (x->sign == NEGATIVE) | (x->a[0] != 0) )
 		return FALSE;
 	
-	for(i=x->wordlen; i>0; i--) {
+	for(i=x->wordlen-1; i>0; i--) {
 		if(x->a[i])
 			return FALSE;
 	}
@@ -315,10 +330,10 @@ int bi_is_zero(bigint* x) {
 //if bigint is 1, return 1 else 0
 int bi_is_one(bigint* x) {
 	int i;
-	if(x->sign == NEGATIVE | x->a[0] != 0)
+	if( (x->sign == NEGATIVE) | (x->a[0] != 1) )
 		return FALSE;
 	
-	for(i=x->wordlen; i>0; i--) {
+	for(i=x->wordlen-1; i>0; i--) {
 		if(x->a[i])
 			return FALSE;
 	}
@@ -344,9 +359,9 @@ int bi_compare_abs(bigint* x, bigint* y) {
 //compare 
 
 int bi_compare(bigint* x, bigint* y) {
-	if(x->sign==NON_NEGATIVE & y->sign==NEGATIVE)
+	if( (x->sign==NON_NEGATIVE) & (y->sign==NEGATIVE) )
 		return GREATER;
-	if(x->sign==NEGATIVE & y->sign==NON_NEGATIVE)
+	if( (x->sign==NEGATIVE) & (y->sign==NON_NEGATIVE) )
 		return LESS;
 	
 	int com_abs = bi_compare_abs(x,y);
@@ -383,7 +398,6 @@ void bi_rshift(bigint** x, int r) {
 
 void bi_lshift(bigint** x, int r) {
 	int k, re, i, len;
-	word b;
 	k = r / (sizeof(word) * BYTE);
 	re = r & (sizeof(word) * BYTE - 1);
 	len = (*x)->wordlen;
@@ -393,7 +407,7 @@ void bi_lshift(bigint** x, int r) {
 	memset((*x)->a, 0, k * sizeof(word));
 
 	if (re) {
-		b = (*x)->a[0];
+		//word b = (*x)->a[0];
 		(*x)->a[len + k] = (*x)->a[len + k - 1] >> (sizeof(word) * BYTE - re);
 		for (i = len - 1; i > 0; i--) {
 			(*x)->a[i + k] = (*x)->a[i + k] << re | (*x)->a[i + k - 1] >> (sizeof(word) * BYTE - re);

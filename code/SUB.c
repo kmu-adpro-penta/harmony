@@ -17,15 +17,15 @@ void SUBAbB(word* A, word* B, word* C, word* b) {
 
 void SUBC(bigint* A, bigint* B, bigint** C) {
 
-	int i = 0;
+	int i;
 	//B가 A보다 작은 경우 B대신 넣어줄 0
 	word x = 0;
 	//초기 borrow = 0
 	word b = 0;
 	//뺄셈 연산
-	for (i; i < B->wordlen; i++)
+	for (i=0; i < B->wordlen; i++)
 		SUBAbB(&A->a[i], &B->a[i], &(*C)->a[i], &b);
-	for (i; i < A->wordlen; i++)
+	for (i=B->wordlen; i < A->wordlen; i++)
 		SUBAbB(&A->a[i], &x, &(*C)->a[i], &b);
 
 }

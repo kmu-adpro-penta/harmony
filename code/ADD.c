@@ -84,6 +84,8 @@ void ADD(bigint* A, bigint* B, bigint **C) {
 		bi_assign(C,A);
 	if(*C == NULL)
 		bi_new(C, MAX(A->wordlen, B->wordlen) + 1);
+	if ((*C)->wordlen < MAX(A->wordlen, B->wordlen) + 1)
+		bi_realloc(C, MAX(A->wordlen, B->wordlen) + 1 - (*C)->wordlen);
 
 	// if A > 0  and  B < 0  then return A - |B|
 	if (A->sign == NON_NEGATIVE && B->sign == NEGATIVE) {
