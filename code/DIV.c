@@ -5,7 +5,7 @@
 #include "MUL.h"
 
 
-
+int flag = 1;
 
 
 //void shift(int arr[], int start, int end) {
@@ -33,7 +33,7 @@
 
 Multi-Precision Long Division
 
-ÀÌÁø ±ä ³ª´°¼À ¾Ë°í¸®µëÀº ´ÙÁß ¿öµå ´ÜÀ§ ±ä ³ª´°¼À DIV·Î È®ÀåÇÒ ¼ö ÀÖ´Ù.
+ì´ì§„ ê¸´ ë‚˜ëˆ—ì…ˆ ì•Œê³ ë¦¬ë“¬ì€ ë‹¤ì¤‘ ì›Œë“œ ë‹¨ìœ„ ê¸´ ë‚˜ëˆ—ì…ˆ DIVë¡œ í™•ìž¥í•  ìˆ˜ ìžˆë‹¤.
 
 2-word long division => DIVCC(A,B) => DIVC(A,B) => DIV(A,B)
 
@@ -42,14 +42,14 @@ Multi-Precision Long Division
 
 
 
-word LDA(word A_1, word A_2, word B) {
+word LDA(word A_1, word A_0, word B) {
 
 	word Q = 0;
 	word R = A_1;
 
-	for (int j = sizeof(word) * 8 - 1; j > 0; j--) {
+	for (int j = sizeof(word) * 8 - 1; j > -1; j--) {
 		word a_j = 1 << j;
-		a_j = a_j & A_2;
+		a_j = a_j & A_0;
 		if (a_j == 0)
 			a_j = 0;
 		else
@@ -60,7 +60,7 @@ word LDA(word A_1, word A_2, word B) {
 			R = R + a_j - (B-R);
 		}
 		else {
-			R = R + R + a_j;
+			R = 2*R + a_j;
 			if (R >= B) {
 				Q = Q + (1 << j);
 				R = R - B;
@@ -81,17 +81,19 @@ DIVCC(A,B)
 */
 
 void DIVCC(bigint** A, bigint* B, word* Q, bigint** R) {
-
-	bi_show_hex(*A);
-	bi_show_hex(B);
-
+	if (flag) {
+		printf("\n==============DIVCC START================\nA = ");
+		bi_show_hex(*A);
+		printf("\nB = ");
+		bi_show_hex(B);
+		printf("\n");
+	}
 	if ((*A)->wordlen == B->wordlen) {
-		*Q = (word)((*A)->a[(*A)->wordlen] / B->a[B->wordlen]);
+		*Q = (*A)->a[B->wordlen-1] / B->a[B->wordlen-1] ;
 	}
 	else if ((*A)->wordlen == B->wordlen + 1) {
-		printf("%x \t %x", (*A)->a[(*A)->wordlen], B->a[B->wordlen]);
-		printf("%x \t %x", (*A)->wordlen, B->wordlen);
-		if (*((*A)->a + (*A)->wordlen -1) == *(B->a+B->wordlen-1)) {
+
+		if ( (*A)->a[B->wordlen] == B->a[B->wordlen-1] ) {
 
 			*Q = 65534;
 
@@ -100,26 +102,65 @@ void DIVCC(bigint** A, bigint* B, word* Q, bigint** R) {
 			*Q = LDA((*A)->a[B->wordlen], (*A)->a[B->wordlen - 1], B->a[B->wordlen-1]);
 		}
 	}
+	if (flag) {
+		printf("\nQ = %d", *Q);
+	}
 
-	bigint* Q_2 = NULL;
-	word Q_array_1[1] = {*Q};
-	bi_set_by_array(&Q_2, NON_NEGATIVE, Q_array_1, 1);
+	if (*Q == 1) {
+		printf("\nstop\n");
+	}
+
+
+	bigint* Q_temp = NULL;
+	word Q_temp_array_1[1] = {*Q};
+	bi_set_by_array(&Q_temp, NON_NEGATIVE, Q_temp_array_1, 1);
+
 
 	bigint* BQ = NULL;
-	MULC(B, Q_2, &BQ);
-	bi_show_hex(BQ);
+	SchoolbookMUL(B, Q_temp, &BQ);
+	bi_refine(BQ);
 
-	bi_show_hex(*A);
-	bi_show_hex(BQ);
+	bigint* A_minus_BQ = NULL;
 
-	SUB(*A,BQ , R);
+	SUB(*A, BQ , &A_minus_BQ);
 
-	bi_show_hex(*R);
-
-	while ((*R)->sign == NEGATIVE ) {
-		Q--;
-		ADD(*R, B, R);
+	if (flag) {
+		printf("\nA = ");
+		bi_show_hex(*A);
+		printf("\nBQ = ");
+		bi_show_hex(BQ);
+		printf("\nA-BQ = ");
+		bi_show_hex(A_minus_BQ);
 	}
+	bigint* R_temp = NULL;
+
+	while (A_minus_BQ->sign == NEGATIVE) {
+
+		(*Q)--;
+
+
+		ADD(A_minus_BQ, B, &R_temp);		// R = R+B		R<0
+
+		bi_assign(&A_minus_BQ, R_temp);
+
+		if (flag) {
+			printf("\nR = ");
+			bi_show_hex(A_minus_BQ);
+			printf("\n");
+		}
+
+		R_temp->sign = NON_NEGATIVE;
+
+	}
+	
+	bi_assign(R,A_minus_BQ);
+
+
+	bi_delete(&Q_temp);
+	bi_delete(&BQ);
+	bi_delete(&A_minus_BQ);
+
+
 }
 
 
@@ -136,27 +177,43 @@ Output : Q, R	( such that A = B*Q + R ( 0 <= R < B , Q in [0,W) )
 
 */
 
-void DIVC(bigint** A, bigint** B, bigint** Q, word i, int k) {
+void DIVC(bigint** A, bigint* B, bigint** Q, word i, int k) {
 
-	if (bi_compare(*B, *A) == 1) {
-		*((*Q)->a + i) = 0;
+	if (flag) {
+		printf("\n===================DIVC START=================\n");
+	}
+	
+	if (bi_compare(B, *A) == 1) {
+		(*Q)->a[i] = 0;
 	}
 	else {
+		bigint* B_temp = NULL;
+		bi_assign(&B_temp, B);
+		bi_lshift(&B_temp, k);
 
-		bi_lshift(A, k);
-		bi_lshift(B, k);
+		bigint* A_temp = NULL;
+		bi_assign(&A_temp, *A);
+		bi_lshift(&A_temp, k);
 
 		word Q_2 = 0;
-		bigint* R_2 = NULL;
+		bigint* R_temp = NULL;
 
-		DIVCC(A, *B, &Q_2, &R_2);
+		DIVCC(&A_temp, B_temp, &Q_2, &R_temp);
 
-		bi_rshift(R_2, k);
+		bi_rshift(&R_temp, k);
 
-		bi_assign(A, R_2);
-		*((*Q)->a + i) = Q_2;
+		bi_assign(A, R_temp);
+		
+		(*Q)->a[i] = Q_2;
+
+
+		bi_delete(&R_temp);
+		bi_delete(&B_temp);
+		bi_delete(&A_temp);
+
+		
+
 	}
-
 
 
 
@@ -172,52 +229,61 @@ Output : Q  ( A = BQ + R ( 0 <= R < B, 0 < Q_j <= W ))
 
 
 
-void DIV(bigint** A, bigint** B, bigint** Q, bigint** R) {
+void DIV(bigint* A, bigint* B, bigint** Q, bigint** R) {
 
+	if (flag)
+		printf("\n=======================DIV START=====================\n");
 
+	if (bi_compare(B,A) == 1) {		// if A < B then
 
-	if (bi_compare(*B,*A) == 1) {		// if A < B then
-
-		bi_assign(R, *A);		// return (0,A)   :   A = 0 * B + A
+		bi_assign(R, A);		// return (0,A)   :   A = 0 * B + A
 		bi_set_zero(Q);
 
 	}
 	else {
 
-		int k = 0;
-		word B_most_num = (*B)->a[(*B)->wordlen - 1];
+		word k = 0;
+		word B_most_num = B->a[B->wordlen - 1];
 		while (k < sizeof(word) * 8) {
 			if (1 <= (B_most_num >> (sizeof(word) * 8 - k - 1)) && (B_most_num >> (sizeof(word) * 8 - k - 1)) < 2)
 				break;
 			k++;
 		}
 
-		bi_new(Q, (*A)->wordlen - (*B)->wordlen + 1);
-		bi_new(R, (*B)->wordlen);
+		if (flag)
+			printf("\n k = %d", k);
 
-		bi_show_hex(*R);
-		bi_show_hex(*Q);
+		bi_new(Q, A->wordlen - B->wordlen + 1);
+		bi_new(R, B->wordlen);
 
 
 
-		for (word i = (*A)->wordlen - 1; i > 0; i--) {
-
-			bi_show_hex(*R);
-			bi_show_hex(*Q);
+		for (int i = A->wordlen - 1; i > -1; i--) {
 
 			bi_lshift(R, sizeof(word) * 8);
 
-			*((*R)->a) = *((*A)->a + i);
+			(*R)->a[0] = A->a[i];
 
-
-			bi_show_hex(*R);
-			bi_show_hex(*Q);
+			if (flag) {
+				printf("\n R = ");
+				bi_show_hex(*R);
+				printf("\n Q = ");
+				bi_show_hex(*Q);
+			}
 
 			DIVC(R, B, Q, i, k);					// ( Q, R )  <-  DIVC( R , B )
 
 
+				
+
 		}
+
 	}
+	bi_refine(*R);
+	bi_refine(*Q);
+
 }
+
+
 
 
