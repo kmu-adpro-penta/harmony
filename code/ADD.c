@@ -95,7 +95,6 @@ void ADD(bigint* A, bigint* B, bigint **C) {
 	else if (A->sign == NEGATIVE && B->sign == NON_NEGATIVE) {
 		A->sign = NON_NEGATIVE;
 		SUB(B, A, &temp);
-		(*C)->sign = NEGATIVE;
 	}
 
 	// if A >= B then 

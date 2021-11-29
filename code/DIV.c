@@ -5,27 +5,7 @@
 #include "MUL.h"
 
 
-int flag = 1;
-
-
-//void shift(int arr[], int start, int end) {
-//	int temp;
-//	end = end - 1;
-//	while (start < end) {
-//		temp = arr[start];
-//		arr[start] = arr[end];
-//		arr[end] = temp;
-//		start++;
-//		end--;
-//	}
-//}
-//void shiftLeft(int arr[], int d, int n) {
-//	shift(arr, 0, d);
-//	shift(arr, d, n);
-//	shift(arr, 0, n);
-//}
-
-
+int flag = 0;
 
 
 
@@ -81,13 +61,7 @@ DIVCC(A,B)
 */
 
 void DIVCC(bigint** A, bigint* B, word* Q, bigint** R) {
-	if (flag) {
-		printf("\n==============DIVCC START================\nA = ");
-		bi_show_hex(*A);
-		printf("\nB = ");
-		bi_show_hex(B);
-		printf("\n");
-	}
+
 	if ((*A)->wordlen == B->wordlen) {
 		*Q = (*A)->a[B->wordlen-1] / B->a[B->wordlen-1] ;
 	}
@@ -102,13 +76,12 @@ void DIVCC(bigint** A, bigint* B, word* Q, bigint** R) {
 			*Q = LDA((*A)->a[B->wordlen], (*A)->a[B->wordlen - 1], B->a[B->wordlen-1]);
 		}
 	}
+
+
 	if (flag) {
 		printf("\nQ = %d", *Q);
 	}
 
-	if (*Q == 1) {
-		printf("\nstop\n");
-	}
 
 
 	bigint* Q_temp = NULL;
@@ -124,14 +97,6 @@ void DIVCC(bigint** A, bigint* B, word* Q, bigint** R) {
 
 	SUB(*A, BQ , &A_minus_BQ);
 
-	if (flag) {
-		printf("\nA = ");
-		bi_show_hex(*A);
-		printf("\nBQ = ");
-		bi_show_hex(BQ);
-		printf("\nA-BQ = ");
-		bi_show_hex(A_minus_BQ);
-	}
 	bigint* R_temp = NULL;
 
 	while (A_minus_BQ->sign == NEGATIVE) {
@@ -142,12 +107,6 @@ void DIVCC(bigint** A, bigint* B, word* Q, bigint** R) {
 		ADD(A_minus_BQ, B, &R_temp);		// R = R+B		R<0
 
 		bi_assign(&A_minus_BQ, R_temp);
-
-		if (flag) {
-			printf("\nR = ");
-			bi_show_hex(A_minus_BQ);
-			printf("\n");
-		}
 
 		R_temp->sign = NON_NEGATIVE;
 
@@ -179,10 +138,6 @@ Output : Q, R	( such that A = B*Q + R ( 0 <= R < B , Q in [0,W) )
 
 void DIVC(bigint** A, bigint* B, bigint** Q, word i, int k) {
 
-	if (flag) {
-		printf("\n===================DIVC START=================\n");
-	}
-	
 	if (bi_compare(B, *A) == 1) {
 		(*Q)->a[i] = 0;
 	}
@@ -231,8 +186,6 @@ Output : Q  ( A = BQ + R ( 0 <= R < B, 0 < Q_j <= W ))
 
 void DIV(bigint* A, bigint* B, bigint** Q, bigint** R) {
 
-	if (flag)
-		printf("\n=======================DIV START=====================\n");
 
 	if (bi_compare(B,A) == 1) {		// if A < B then
 
@@ -250,9 +203,6 @@ void DIV(bigint* A, bigint* B, bigint** Q, bigint** R) {
 			k++;
 		}
 
-		if (flag)
-			printf("\n k = %d", k);
-
 		bi_new(Q, A->wordlen - B->wordlen + 1);
 		bi_new(R, B->wordlen);
 
@@ -264,17 +214,7 @@ void DIV(bigint* A, bigint* B, bigint** Q, bigint** R) {
 
 			(*R)->a[0] = A->a[i];
 
-			if (flag) {
-				printf("\n R = ");
-				bi_show_hex(*R);
-				printf("\n Q = ");
-				bi_show_hex(*Q);
-			}
-
 			DIVC(R, B, Q, i, k);					// ( Q, R )  <-  DIVC( R , B )
-
-
-				
 
 		}
 

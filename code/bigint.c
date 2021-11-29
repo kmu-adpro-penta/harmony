@@ -213,7 +213,7 @@ void bi_refine(bigint* x) {
  * @param wordlen 
  */
 void array_copy(word* dst, word* arr,int wordlen) {
-	memcpy(dst, arr, wordlen*sizeof(word)*BYTE);
+	memcpy(dst, arr, wordlen*sizeof(word));
 }
 
 /**
