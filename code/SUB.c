@@ -32,16 +32,16 @@ void SUBC(bigint* A, bigint* B, bigint** C) {
 
 void SUB(bigint* A, bigint* B, bigint** C) {
 	//C가 NULL인 경우 C할당
-	if(*C == NULL)
-		bi_new(C, MAX(A->wordlen, B->wordlen));
+	bigint* temp = NULL;
+	bi_new(&temp, MAX(A->wordlen, B->wordlen));
 	//부호가 같은 경우
 	if (A->sign == B->sign) {
 		//A >= B
-		if (bi_compare_abs(A, B) + 1) SUBC(A, B, C);
+		if (bi_compare_abs(A, B) + 1) SUBC(A, B, &temp);
 		// A < B
 		else {
-			SUBC(B, A, C);
-			(*C)->sign = NEGATIVE;
+			SUBC(B, A, &temp);
+			temp->sign = NEGATIVE;
 		}
 	}
 	//부호가 다른 경우
@@ -49,14 +49,16 @@ void SUB(bigint* A, bigint* B, bigint** C) {
 		//A가 양수
 		if (!(A->sign)) {
 			B->sign = NON_NEGATIVE;
-			ADD(A, B, C);
+			ADD(A, B, &temp);
 		}
 		//B가 양수
 		else {
 			A->sign = NON_NEGATIVE;
-			ADD(A, B, C);
-			(*C)->sign = NEGATIVE;
+			ADD(A, B, &temp);
+			temp->sign = NEGATIVE;
 		}
 	}
-	bi_refine(*C);
+	bi_refine(temp);
+	bi_assign(C, temp);
+	bi_delete(&temp);
 }

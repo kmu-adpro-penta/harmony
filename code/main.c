@@ -104,7 +104,7 @@ void kara() {
 	printf("\n");
 
 	KaratsubaMUL(2, A, B, &C);
-	printf("C =");
+	printf("C = ");
 	bi_show_hex(C);
 	printf("\n");
 	printf("A = ");
@@ -134,4 +134,52 @@ void kara() {
 	//bi_delete(&AA);
 //}
 	printf("hi");
+}
+
+void toy2() {
+	for (int i = 0; i < 100; i++) {
+		bigint* A = NULL;
+		bi_gen_rand(&A, NON_NEGATIVE, 5);
+		bigint* B = NULL;
+		bi_gen_rand(&B, NON_NEGATIVE, 3);
+
+		bigint* Q = NULL;
+		bigint* R = NULL;
+
+		printf("\n");
+		printf("print(");
+		bi_show_hex(A);
+		printf(" // ");
+		bi_show_hex(B);
+		DIV(A, B, &Q, &R);
+		printf(" == ");
+		bi_show_hex(Q);
+		printf(")");
+
+		printf("\n");
+		printf("print(");
+		bi_show_hex(A);
+		printf(" %% ");
+		bi_show_hex(B);
+		printf(" == ");
+		bi_show_hex(R);
+		printf(")");
+
+
+	}
+
+}
+
+void toy3() {
+
+	bigint* C = NULL;
+	bigint* D = NULL;
+	bigint** A = NULL;
+	bi_gen_rand(&C, NON_NEGATIVE, 3);
+
+
+	bi_assign(&D, C);
+	bi_assign(A, C);
+
+
 }

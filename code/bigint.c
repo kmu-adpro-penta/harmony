@@ -213,11 +213,7 @@ void bi_refine(bigint* x) {
  * @param wordlen 
  */
 void array_copy(word* dst, word* arr,int wordlen) {
-	for(int i=0; i<wordlen; i++) {
-		*dst = *arr;
-		dst++;
-		arr++;
-	}
+	memcpy(dst, arr, wordlen*sizeof(word));
 }
 
 /**
@@ -446,6 +442,17 @@ void bi_mod(bigint* x, int r, bigint** n) {
 		(*n)->a[i] = x->a[i];
 	}
 }
+void bi_max_number(word* Q) {
+	if (sizeof(word) == 1)
+		*Q = 255;
+	else if (sizeof(word) == 2)
+		*Q = 65535;
+	else if (sizeof(word) == 4)
+		*Q = 4294967295;
+	else if (sizeof(word) == 8)
+		*Q = 18446744073709551615;
+}
+
 
 //void bi_lshift(bigint** x, int r) {
 //	int k, re, i, len;

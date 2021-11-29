@@ -6,50 +6,33 @@
 
 
 
-
-
-//void shift(int arr[], int start, int end) {
-//	int temp;
-//	end = end - 1;
-//	while (start < end) {
-//		temp = arr[start];
-//		arr[start] = arr[end];
-//		arr[end] = temp;
-//		start++;
-//		end--;
-//	}
-//}
-//void shiftLeft(int arr[], int d, int n) {
-//	shift(arr, 0, d);
-//	shift(arr, d, n);
-//	shift(arr, 0, n);
-//}
-
-
-
-
-
 /*
 
 Multi-Precision Long Division
 
-���� �� ������ �˰������� ���� ���� ���� �� ������ DIV�� Ȯ���� �� �ִ�.
+이진 긴 나눗셈 알고리듬은 다중 워드 단위 긴 나눗셈 DIV로 확장할 수 있다.
 
 2-word long division => DIVCC(A,B) => DIVC(A,B) => DIV(A,B)
 
 
 */
 
+/*
+Long Division Algorithm
 
+Input : A = A_1 * W + A_0	, B ( A_1,B_0 in [0,W), w-1 <= B의 비트 길이 < w )
 
-word LDA(word A_1, word A_2, word B) {
+Output : Q, R	( such that A = B*Q + R ( 0 <= R < B , Q in [0,W) )
+
+*/
+word LDA(word A_1, word A_0, word B) {
 
 	word Q = 0;
 	word R = A_1;
 
-	for (int j = sizeof(word) * 8 - 1; j > 0; j--) {
+	for (int j = sizeof(word) * 8 - 1; j > -1; j--) {
 		word a_j = 1 << j;
-		a_j = a_j & A_2;
+		a_j = a_j & A_0;
 		if (a_j == 0)
 			a_j = 0;
 		else
@@ -60,7 +43,7 @@ word LDA(word A_1, word A_2, word B) {
 			R = R + a_j - (B-R);
 		}
 		else {
-			R = R + R + a_j;
+			R = 2*R + a_j;
 			if (R >= B) {
 				Q = Q + (1 << j);
 				R = R - B;
@@ -74,52 +57,60 @@ word LDA(word A_1, word A_2, word B) {
 
 
 /*
+DIVCC
 
-DIVCC(A,B)
+Input : A, B	( A_j,B_j in [0,W), 0 <= A < B*W ) , ( A의 워드 길이 = n , B의 워드 길이 = m )
 
+Output : Q, R	( such that A = B*Q + R ( 0 <= R < B , Q in [0,W) )
 
 */
 
 void DIVCC(bigint** A, bigint* B, word* Q, bigint** R) {
 
-	bi_show_hex(*A);
-	bi_show_hex(B);
+	// A와 B의 워드길이가 같다면 Q에 A_(m-1) / B_(m-1) 을 대입
+	if ((*A)->wordlen == B->wordlen)
+		*Q = (*A)->a[B->wordlen-1] / B->a[B->wordlen-1] ;
 
-	if ((*A)->wordlen == B->wordlen) {
-		*Q = (word)((*A)->a[(*A)->wordlen] / B->a[B->wordlen]);
-	}
+	// A의 워드길이가 B의 워드길이 보다 1 큰 경우
 	else if ((*A)->wordlen == B->wordlen + 1) {
-		printf("%x \t %x", (*A)->a[(*A)->wordlen], B->a[B->wordlen]);
-		printf("%x \t %x", (*A)->wordlen, B->wordlen);
-		if (*((*A)->a + (*A)->wordlen -1) == *(B->a+B->wordlen-1)) {
-
-			*Q = 65534;
-
-		}
-		else {
+		// A_m이 B_(m-1)과 같은 경우
+		if ( (*A)->a[B->wordlen] == B->a[B->wordlen-1] )
+			bi_max_number(Q);
+		//  A_m이 B_(m-1)과 다를 경우
+		else
 			*Q = LDA((*A)->a[B->wordlen], (*A)->a[B->wordlen - 1], B->a[B->wordlen-1]);
-		}
 	}
 
-	bigint* Q_2 = NULL;
-	word Q_array_1[1] = {*Q};
-	bi_set_by_array(&Q_2, NON_NEGATIVE, Q_array_1, 1);
+	// R에 A - B * Q 을 대입
+	bigint* Q_temp = NULL;
+	word Q_temp_array_1[1] = {*Q};
+	bi_set_by_array(&Q_temp, NON_NEGATIVE, Q_temp_array_1, 1);
 
 	bigint* BQ = NULL;
-	MULC(B, Q_2, &BQ);
-	bi_show_hex(BQ);
+	SchoolbookMUL(B, Q_temp, &BQ);
+	bi_refine(BQ);
 
-	bi_show_hex(*A);
-	bi_show_hex(BQ);
+	bigint* A_minus_BQ = NULL;
+	SUB(*A, BQ , &A_minus_BQ);
+	bigint* R_temp = NULL;
 
-	SUB(*A,BQ , R);
+	// R의 크기가 0보다 작은 경우
+	while (A_minus_BQ->sign == NEGATIVE) {
+		// Q <- Q - 1
+		(*Q)--;
 
-	bi_show_hex(*R);
-
-	while ((*R)->sign == NEGATIVE ) {
-		Q--;
-		ADD(*R, B, R);
+		// R <- R + B
+		ADD(A_minus_BQ, B, &R_temp);		// R = R+B		R<0
+		bi_assign(&A_minus_BQ, R_temp);
+		R_temp->sign = NON_NEGATIVE;
 	}
+	
+	bi_assign(R,A_minus_BQ);
+
+	// 사용을 다한 메모리값들 해제
+	bi_delete(&Q_temp);
+	bi_delete(&BQ);
+	bi_delete(&A_minus_BQ);
 }
 
 
@@ -129,37 +120,50 @@ void DIVCC(bigint** A, bigint* B, word* Q, bigint** R) {
 // ( Q, R )  <-  DIVC( R , B )
 /*
 
-Input : A, B	( A_j,B_j in [0,W), 0 <= A < B*W
+Input : A, B	( A_j,B_j in [0,W), 0 <= A < B*W )
 
 Output : Q, R	( such that A = B*Q + R ( 0 <= R < B , Q in [0,W) )
 
 
 */
+void DIVC(bigint** A, bigint* B, bigint** Q, word i, int k) {
 
-void DIVC(bigint** A, bigint** B, bigint** Q, word i, int k) {
-
-	if (bi_compare(*B, *A) == 1) {
-		*((*Q)->a + i) = 0;
+	// A와 B를 비교하는 단계
+	// 만일 B가 A보다 크다면 Q = 0 , R = A 를 반환합니다.
+	if (bi_compare(B, *A) == 1) {
+		(*Q)->a[i] = 0;
 	}
 	else {
 
-		bi_lshift(A, k);
-		bi_lshift(B, k);
+		//B_temp에 2^k * B 를 대입
+		bigint* B_temp = NULL;
+		bi_assign(&B_temp, B);
+		bi_lshift(&B_temp, k);
 
+		//A_temp에 2^k * A 를 대입
+		bigint* A_temp = NULL;
+		bi_assign(&A_temp, *A);
+		bi_lshift(&A_temp, k);
+
+		//Q_2와 R_temp를 정의
 		word Q_2 = 0;
-		bigint* R_2 = NULL;
+		bigint* R_temp = NULL;
 
-		DIVCC(A, *B, &Q_2, &R_2);
+		// Q_2 , R_temp  <-   DIVCC(A_temp.B_temp)
+		DIVCC(&A_temp, B_temp, &Q_2, &R_temp);
 
-		bi_rshift(R_2, k);
+		//R에 2^(-k) * R_temp 를 대입
+		bi_rshift(&R_temp, k);
+		bi_assign(A, R_temp);
+		
+		//Q의 i번째 원소에 Q_2를 대입
+		(*Q)->a[i] = Q_2;
 
-		bi_assign(A, R_2);
-		*((*Q)->a + i) = Q_2;
+		//사용을 다한 메모리값 해제
+		bi_delete(&R_temp);
+		bi_delete(&B_temp);
+		bi_delete(&A_temp);
 	}
-
-
-
-
 }
 
 /*
@@ -169,55 +173,42 @@ Input : A,B ( 0 < A_j <= W )
 Output : Q  ( A = BQ + R ( 0 <= R < B, 0 < Q_j <= W ))
 
 */
+void DIV(bigint* A, bigint* B, bigint** Q, bigint** R) {
 
-
-
-void DIV(bigint** A, bigint** B, bigint** Q, bigint** R) {
-
-
-
-	if (bi_compare(*B,*A) == 1) {		// if A < B then
-
-		bi_assign(R, *A);		// return (0,A)   :   A = 0 * B + A
+	// A와 B를 비교하는 단계
+	// 만일 B가 A보다 크다면 Q = 0 , R = A 를 반환합니다.
+	if (bi_compare(B,A) == 1) {		
+		bi_assign(R, A);
 		bi_set_zero(Q);
-
 	}
 	else {
 
-		int k = 0;
-		word B_most_num = (*B)->a[(*B)->wordlen - 1];
+		//DIVC의 k값을 DIV에서 먼저 계산하여 할당한 후 DIVC로 전달하여 줍니다.
+		word k = 0;		word B_most_num = B->a[B->wordlen - 1];
 		while (k < sizeof(word) * 8) {
 			if (1 <= (B_most_num >> (sizeof(word) * 8 - k - 1)) && (B_most_num >> (sizeof(word) * 8 - k - 1)) < 2)
 				break;
 			k++;
 		}
 
-		bi_new(Q, (*A)->wordlen - (*B)->wordlen + 1);
-		bi_new(R, (*B)->wordlen);
-
-		bi_show_hex(*R);
-		bi_show_hex(*Q);
+		//Q와 R에 값을 입력하기 위해 메모리를 할당하여 줍니다.
+		bi_new(Q, A->wordlen - B->wordlen + 1);		bi_new(R, B->wordlen);
 
 
-
-		for (word i = (*A)->wordlen - 1; i > 0; i--) {
-
-			bi_show_hex(*R);
-			bi_show_hex(*Q);
-
-			bi_lshift(R, sizeof(word) * 8);
-
-			*((*R)->a) = *((*A)->a + i);
-
-
-			bi_show_hex(*R);
-			bi_show_hex(*Q);
-
+		//A의 길이 만큼 실행해줍니다.
+		for (int i = A->wordlen - 1; i > -1; i--) {
+			bi_lshift(R, sizeof(word) * 8);			// R <- R*W
+			(*R)->a[0] = A->a[i];					// R <- R + A_i
 			DIVC(R, B, Q, i, k);					// ( Q, R )  <-  DIVC( R , B )
-
-
 		}
 	}
+
+	//R과 Q의 필요없는 0제거
+	bi_refine(*R);
+	bi_refine(*Q);
+
 }
+
+
 
 

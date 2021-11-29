@@ -13,7 +13,7 @@
 #define LESS -1
 #define BYTE 8
 #define ZERORIZE
-#define BIT16
+#define BIT32
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -79,4 +79,6 @@ void bi_lshift(bigint** x, int l);//yet
 void bi_realloc(bigint** x, int i);
 
 void bi_mod(bigint*x, int r, bigint** n);
+void bi_max_number(word* Q);
+
 #endif

@@ -36,8 +36,8 @@ Input : A , B  ( A,B > 0 and A > B )
 
 Output : C ( C > 0 ) +---------------------------******9
 
-A ÀÇ ±æÀÌ = n
-B ÀÇ ±æÀÌ = m  ( n > m )
+A ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ = n
+B ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ = m  ( n > m )
 
 */
 void ADDC(bigint* A, bigint* B, bigint** C) {
@@ -82,33 +82,31 @@ void ADD(bigint* A, bigint* B, bigint **C) {
 	// if B = 0	 then return A
 	if (B->wordlen == 0)
 		bi_assign(C,A);
-	if(*C == NULL)
-		bi_new(C, MAX(A->wordlen, B->wordlen) + 1);
-	if ((*C)->wordlen < MAX(A->wordlen, B->wordlen) + 1)
-		bi_realloc(C, MAX(A->wordlen, B->wordlen) + 1 - (*C)->wordlen);
+	bigint* temp = NULL;
+	bi_new(&temp, MAX(A->wordlen, B->wordlen) + 1);
 
 	// if A > 0  and  B < 0  then return A - |B|
 	if (A->sign == NON_NEGATIVE && B->sign == NEGATIVE) {
 		B->sign = NON_NEGATIVE;
-		SUB(A, B, C);
+		SUB(A, B, &temp);
 	}
 
 	// if A < 0  and  B > 0  then return B - |A|
 	else if (A->sign == NEGATIVE && B->sign == NON_NEGATIVE) {
 		A->sign = NON_NEGATIVE;
-		SUB(B, A, C);
-		(*C)->sign = NEGATIVE;
+		SUB(B, A, &temp);
 	}
 
 	// if A >= B then 
 	else if (A->wordlen >= B->wordlen)
-		ADDC(A, B, C);  // return A + B
+		ADDC(A, B, &temp);  // return A + B
 	// else (A < B)
 	else
-		ADDC(B, A, C);	// return B + A
+		ADDC(B, A, &temp);	// return B + A
 
-	bi_refine(*C);
-
+	bi_refine(temp);
+	bi_assign(C, temp);
+	bi_delete(&temp);
 }
 
 
