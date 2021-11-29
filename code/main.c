@@ -49,7 +49,7 @@ void toy1() {
 void toy2() {
 	for (int i = 0; i < 100; i++) {
 		bigint* A = NULL;
-		bi_gen_rand(&A, NON_NEGATIVE, 5);
+		bi_gen_rand(&A, NON_NEGATIVE, 7);
 		bigint* B = NULL;
 		bi_gen_rand(&B, NON_NEGATIVE, 3);
 
@@ -97,6 +97,6 @@ void toy3() {
 
 int main() {
 
-	toy1();
+	toy2();
 	return 0;
 }

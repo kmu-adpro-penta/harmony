@@ -13,7 +13,7 @@
 #define LESS -1
 #define BYTE 8
 #define ZERORIZE
-#define BIT32
+#define BIT16
 
 #include <stdio.h>
 #include <stdlib.h>
