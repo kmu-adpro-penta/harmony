@@ -68,7 +68,9 @@ void KaratsubaMUL(int flag, bigint* A, bigint* B, bigint** C){
 		B1 = B >> lw, B0 = B % 2^lw
 		*/
 		bigint* A0 = NULL;
+		bigint* A1 = NULL;
 		bigint* B0 = NULL;
+		bigint* B1 = NULL;
 		bigint* T0 = NULL;
 		bigint* T1 = NULL;
 		bigint* S = NULL;
@@ -82,34 +84,21 @@ void KaratsubaMUL(int flag, bigint* A, bigint* B, bigint** C){
 			A0->a[i] = A->a[i];
 		for (i = 0; i < MIN(B->wordlen, l); i++)
 			B0->a[i] = B->a[i];
-		printf("%d A0 = ", 2 - flag);
-		bi_show_hex(A0);
-		printf("\n%d B0 = ", 2 - flag);
-		bi_show_hex(B0);
-		printf("\n%d A = ", 2 - flag);
-		bi_rshift(&A, MIN(A->wordlen, l) * sizeof(word) * BYTE);
-		bi_rshift(&B, MIN(B->wordlen, l) * sizeof(word) * BYTE);
-		bi_show_hex(A);
-		printf("\n%d B = ", 2 - flag);
-		bi_show_hex(B);
-		printf("\n");
+		bi_assign(&A1, A);
+		bi_assign(&B1, B);
+		bi_rshift(&A1, MIN(A->wordlen, l) * sizeof(word) * BYTE);
+		bi_rshift(&B1, MIN(B->wordlen, l) * sizeof(word) * BYTE);
 		//T1 = A1 * B1, T0 = A0 * B0
-		KaratsubaMUL(flag - 1, A, B, &T1);
+		KaratsubaMUL(flag - 1, A1, B1, &T1);
 		KaratsubaMUL(flag - 1, A0, B0, &T0);
-
-		printf("%d T1 = ", 2 - flag);
-		bi_show_hex(T1);
-		printf("\n%d T0 = ", 2 - flag);
-		bi_show_hex(T0);
-		printf("\n");
 		// A1 * B1 + A0 * B0
 		bi_lshift(&T1, 2 * l * BYTE * sizeof(word));//¤Ð
 		ADD(*C, T1, C);
 		ADD(*C, T0, C);
 
 		//(A0 - A1)(B1 - B0)
-		SUB(A0, A, &S1);
-		SUB(B, B0, &S0);
+		SUB(A0, A1, &S1);
+		SUB(B1, B0, &S0);
 		sign = S0->sign ^ S1->sign;
 		S0->sign = 0;
 		S1->sign = 0;
@@ -121,7 +110,27 @@ void KaratsubaMUL(int flag, bigint* A, bigint* B, bigint** C){
 		ADD(S, T0, &S);
 
 		bi_lshift(&S, l * BYTE * sizeof(word));
-
+		/*printf("\n%d A1 = ", 2 - flag);
+		bi_show_hex(A1);
+		printf("\n%dB1 = ", 2 - flag);
+		bi_show_hex(B1);
+		printf("\n%dA0 = ", 2 - flag);
+		bi_show_hex(A0);
+		printf("\n%dB0 = ", 2 - flag);
+		bi_show_hex(B0);
+		printf("\n%dT0 = ", 2 - flag);
+		bi_show_hex(T0);
+		printf("\n%dT1 = ", 2 - flag);
+		bi_show_hex(T1);
+		printf("\n%dS0 = ", 2 - flag);
+		bi_show_hex(S0);
+		printf("\n%dS1 = ", 2 - flag);
+		bi_show_hex(S1);
+		printf("\n%dS = ", 2 - flag);
+		bi_show_hex(S);
+		printf("\n%dC = ", 2 - flag);
+		bi_show_hex(*C);
+		printf("\n");*/
 		ADD(*C, S, C);
 
 		bi_delete(&A0);

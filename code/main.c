@@ -22,7 +22,7 @@ void toy1() {
 	printf("\n");
 
 	KaratsubaMUL(2, A, B, &C);
-	printf("C =");
+	printf("C = ");
 	bi_show_hex(C);
 	//printf("\nAA = ");
 
@@ -97,6 +97,6 @@ void toy3() {
 
 int main() {
 
-	toy2();
+	toy1();
 	return 0;
 }
