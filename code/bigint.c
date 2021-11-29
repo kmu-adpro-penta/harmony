@@ -417,6 +417,17 @@ void bi_realloc(bigint** x, int i) {
 	(*x)->a = w;
 }
 
+void bi_max_number(word* Q) {
+	if (sizeof(word) == 1)
+		*Q = 255;
+	else if (sizeof(word) == 2)
+		*Q = 65535;
+	else if (sizeof(word) == 4)
+		*Q = 4294967295;
+	else if (sizeof(word) == 8)
+		*Q = 18446744073709551615;
+}
+
 
 //void bi_lshift(bigint** x, int r) {
 //	int k, re, i, len;

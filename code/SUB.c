@@ -59,6 +59,6 @@ void SUB(bigint* A, bigint* B, bigint** C) {
 		}
 	}
 	bi_refine(temp);
-	bi_delete(C);
-	*C = temp;
+	bi_assign(C, temp);
+	bi_delete(&temp);
 }

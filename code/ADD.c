@@ -105,8 +105,8 @@ void ADD(bigint* A, bigint* B, bigint **C) {
 		ADDC(B, A, &temp);	// return B + A
 
 	bi_refine(temp);
-	bi_delete(C);
-	*C = temp;
+	bi_assign(C, temp);
+	bi_delete(&temp);
 }
 
 

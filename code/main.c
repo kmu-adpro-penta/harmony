@@ -49,9 +49,9 @@ void toy1() {
 void toy2() {
 	for (int i = 0; i < 100; i++) {
 		bigint* A = NULL;
-		bi_gen_rand(&A, NON_NEGATIVE, 7);
+		bi_gen_rand(&A, NON_NEGATIVE, 5);
 		bigint* B = NULL;
-		bi_gen_rand(&B, NON_NEGATIVE, 4);
+		bi_gen_rand(&B, NON_NEGATIVE, 3);
 
 		bigint* Q = NULL;
 		bigint* R = NULL;
