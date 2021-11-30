@@ -10,17 +10,16 @@
 
 Multi-Precision Long Division
 
-이진 긴 나눗셈 알고리듬은 다중 워드 단위 긴 나눗셈 DIV로 확장할 수 있다.
+binary long division algorithm can expand multiple words long division
 
 2-word long division => DIVCC(A,B) => DIVC(A,B) => DIV(A,B)
-
 
 */
 
 /*
 Long Division Algorithm
 
-Input : A = A_1 * W + A_0	, B ( A_1,B_0 in [0,W), w-1 <= B의 비트 길이 < w )
+Input : A = A_1 * W + A_0	, B ( A_1,B_0 in [0,W), w-1 <= B`s bit length < w )
 
 Output : Q, R	( such that A = B*Q + R ( 0 <= R < B , Q in [0,W) )
 
@@ -59,7 +58,7 @@ word LDA(word A_1, word A_0, word B) {
 /*
 DIVCC
 
-Input : A, B	( A_j,B_j in [0,W), 0 <= A < B*W ) , ( A의 워드 길이 = n , B의 워드 길이 = m )
+Input : A, B	( A_j,B_j in [0,W), 0 <= A < B*W ) , ( A wordlen = n , B의 wordlen = m )
 
 Output : Q, R	( such that A = B*Q + R ( 0 <= R < B , Q in [0,W) )
 
@@ -67,21 +66,21 @@ Output : Q, R	( such that A = B*Q + R ( 0 <= R < B , Q in [0,W) )
 
 void DIVCC(bigint** A, bigint* B, word* Q, bigint** R) {
 
-	// A와 B의 워드길이가 같다면 Q에 A_(m-1) / B_(m-1) 을 대입
+	//If A wordlen = B wordlen, Q = A_(m-1) / B_(m-1)
 	if ((*A)->wordlen == B->wordlen)
 		*Q = (*A)->a[B->wordlen-1] / B->a[B->wordlen-1] ;
 
-	// A의 워드길이가 B의 워드길이 보다 1 큰 경우
+	//If A wordlen = B wordlen + 1
 	else if ((*A)->wordlen == B->wordlen + 1) {
-		// A_m이 B_(m-1)과 같은 경우
+		//If A_m = B_(m-1)
 		if ( (*A)->a[B->wordlen] == B->a[B->wordlen-1] )
 			bi_max_number(Q);
-		//  A_m이 B_(m-1)과 다를 경우
+		//If  A_m != B_(m-1)
 		else
 			*Q = LDA((*A)->a[B->wordlen], (*A)->a[B->wordlen - 1], B->a[B->wordlen-1]);
 	}
 
-	// R에 A - B * Q 을 대입
+	// R = A - B * Q
 	bigint* Q_temp = NULL;
 	word Q_temp_array_1[1] = {*Q};
 	bi_set_by_array(&Q_temp, NON_NEGATIVE, Q_temp_array_1, 1);
@@ -94,7 +93,7 @@ void DIVCC(bigint** A, bigint* B, word* Q, bigint** R) {
 	SUB(*A, BQ , &A_minus_BQ);
 	bigint* R_temp = NULL;
 
-	// R의 크기가 0보다 작은 경우
+	//If R < 0
 	while (A_minus_BQ->sign == NEGATIVE) {
 		// Q <- Q - 1
 		(*Q)--;
@@ -107,7 +106,6 @@ void DIVCC(bigint** A, bigint* B, word* Q, bigint** R) {
 	
 	bi_assign(R,A_minus_BQ);
 
-	// 사용을 다한 메모리값들 해제
 	bi_delete(&Q_temp);
 	bi_delete(&BQ);
 	bi_delete(&A_minus_BQ);

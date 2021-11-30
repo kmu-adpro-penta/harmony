@@ -4,7 +4,9 @@
 #include <string.h>
 #include <time.h>
 
-
+/*
+* all of a value initialize
+*/
 void array_init(word* a, int wordlen) {
 	for (int i = 0; i < wordlen; i++)
 		a[i] = 0x00;
