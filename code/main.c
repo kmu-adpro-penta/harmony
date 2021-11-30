@@ -3,6 +3,8 @@
 #include "SUB.h"
 #include "MUL.h"
 #include "DIV.h"
+#include "includePython.h"
+
 #define MAIN
 
 void toy1() {
@@ -94,9 +96,35 @@ void toy3() {
 
 }
 
+void toy4() {
+
+	PyObject* pName, * pModule, * pFunc, * pValue;
+
+	Py_Initialize();
+
+	pName = PyUnicode_FromString("Big_int_test"); // testFile.py를 PyObject로 생성한다.
+
+	pModule = PyImport_Import(pName); // 생성한 PyObject pName을 import한다.
+
+	pFunc = PyObject_GetAttrString(pModule,"test_func"); // 실행할 함수인 test_func을 PyObject에 전달한다.
+
+	for (int i = 0; i < 100; i++) {
+		bigint* A = NULL;
+		bi_gen_rand(&A, NON_NEGATIVE, 7);
+		bigint* B = NULL;
+		bi_gen_rand(&B, NON_NEGATIVE, 3);
+
+		bigint* R = NULL;
+		pValue = PyObject_CallObject(pFunc, NULL); // pFunc에 매개변수를 전달해서 실행한다. 
+
+	}
+	Py_Finalize();
+
+}
 
 int main() {
 
 	toy2();
+
 	return 0;
 }
