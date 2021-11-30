@@ -86,7 +86,7 @@ void DIVCC(bigint** A, bigint* B, word* Q, bigint** R) {
 	bi_set_by_array(&Q_temp, NON_NEGATIVE, Q_temp_array_1, 1);
 
 	bigint* BQ = NULL;
-	SchoolbookMUL(B, Q_temp, &BQ);
+	MUL(B, Q_temp, &BQ);
 	bi_refine(BQ);
 
 	bigint* A_minus_BQ = NULL;

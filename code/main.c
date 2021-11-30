@@ -6,25 +6,26 @@
 #define MAIN
 
 void toy1() {
-	srand(time(NULL));
-	bigint* A = NULL;
-	bi_gen_rand(&A, NON_NEGATIVE, 3);
-	bigint* B = NULL;
-	bi_gen_rand(&B, NON_NEGATIVE, 3);
-	bigint* C = NULL;
-	printf("A = ");
-	bi_show_hex(A);
-	printf("\nB = ");
-	bi_show_hex(B);
-	printf("\n");
+	int i;
+	for (i = 0; i < repeat; i++) {
+		bigint* A = NULL;
+		bi_gen_rand(&A, NON_NEGATIVE, 100);
+		bigint* B = NULL;
+		bi_gen_rand(&B, NON_NEGATIVE, 100);
+		bigint* C = NULL;
+		//printf("A = ");
+		//bi_show_hex(A);
+		//printf("\nB = ");
+		//bi_show_hex(B);
+		//printf("\nC = ");
 
-	KaratsubaMUL(2, A, B, &C);
-	printf("C = ");
-	bi_show_hex(C);
+		KaratsubaMUL(2, A, B, &C);
+		//bi_show_hex(C);
 
-	bi_delete(&A);
-	bi_delete(&B);
-	bi_delete(&C);
+		bi_delete(&A);
+		bi_delete(&B);
+		bi_delete(&C);
+	}
 }
 
 void toy2() {
@@ -62,7 +63,6 @@ void toy2() {
 }
 
 void toy3() {
-
 	bigint* C = NULL;
 	bigint* D = NULL;
 	bigint** A = NULL;
@@ -77,7 +77,11 @@ void toy3() {
 
 
 int main() {
-
+	srand(time(NULL));
+	clock_t start, end;
+	start = clock();
 	toy1();
+	end = clock();
+	printf("\nruntime is %fms",(double)(end - start) / repeat);
 	return 0;
 }

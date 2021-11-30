@@ -14,7 +14,7 @@
 #define BYTE 8
 #define ZERORIZE
 #define BIT32
-
+#define repeat 1000
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
