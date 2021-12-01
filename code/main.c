@@ -24,13 +24,13 @@ void toy1() {
 		//bi_show_hex(B);
 		//printf("\nC = ");
 
-		ADD(A, B, &Q,&R);
+		DIV(A, B, &Q,&R);
 		//bi_show_hex(C);
 
 		bi_delete(&A);
 		bi_delete(&B);
-		bi_delete(Q);
-		bi_delete(R);
+		bi_delete(&Q);
+		bi_delete(&R);
 	}
 }
 
@@ -44,24 +44,24 @@ void toy2() {
 		bigint* Q = NULL;
 		bigint* R = NULL;
 
-		//printf("\n");
-		//printf("print(");
-		//bi_show_hex(A);
-		//printf(" // ");
-		//bi_show_hex(B);
+		printf("\n");
+		printf("print(");
+		bi_show_hex(A);
+		printf(" // ");
+		bi_show_hex(B);
 		DIV(A, B, &Q, &R);
-		//printf(" == ");
-		//bi_show_hex(Q);
-		//printf(")");
+		printf(" == ");
+		bi_show_hex(Q);
+		printf(")");
 
-		//printf("\n");
-		//printf("print(");
-		//bi_show_hex(A);
-		//printf(" %% ");
-		//bi_show_hex(B);
-		//printf(" == ");
-		//bi_show_hex(R);
-		//printf(")");
+		printf("\n");
+		printf("print(");
+		bi_show_hex(A);
+		printf(" %% ");
+		bi_show_hex(B);
+		printf(" == ");
+		bi_show_hex(R);
+		printf(")");
 
 		bi_delete(&A);
 		bi_delete(&B);

@@ -5,6 +5,9 @@ CFLAGS = -Wall
 bigint : main.o bigint.o sub.o add.o mul.o mod.o div.o
 	$(CC) $(CFLAGS) -o bigint main.o bigint.o sub.o add.o mul.o mod.o div.o
 
+test : test.o bigint.o sub.o add.o mul.o mod.o div.o
+	$(CC) $(CFLAGS) -o bigint test.o bigint.o sub.o add.o mul.o mod.o div.o
+
 add.o :
 	$(CC) $(CFLAGS) -c -o add.o ADD.c
 
@@ -25,6 +28,9 @@ bigint.o : bigint.c
 
 main.o : main.c
 	$(CC) $(CFLAGS) -c -o main.o main.c
+
+test.o :
+	$(CC) $(CFLAGS) -c -o test.o test.c
 
 clear :
 	rm *.o bigint
