@@ -103,5 +103,4 @@ int main() {
 	
 	printf("\n time = %fms", (double)(after_ClockCycle - before_ClockCycle) / LoopCTR);
 	return 0;
-
 }

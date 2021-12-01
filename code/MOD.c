@@ -3,9 +3,9 @@
 void ex_ltr_sq(bigint* x, bigint* n, bigint** t) {
 	bi_set_one(t);
 	for(int i=bi_get_bitlen(n)-1; i>=0; i--) {
-		SchoolbookMUL(*t, *t, t);
+		MUL(*t, *t, t);
 		if(bi_get_ibit(n, i))
-			SchoolbookMUL(*t, x, t);
+			MUL(*t, x, t);
 		bi_refine(*t);
 	}
 }
@@ -25,8 +25,8 @@ void ex_rtl_sq(bigint* x, bigint* n, bigint** t0) {
 	bi_set_one(t0);
 	for(int i=0; i<bi_get_bitlen(n); i++) {
 		if(bi_get_ibit(n, i))
-			SchoolbookMUL(*t0, t1, t0);
-		SchoolbookMUL(t1, t1, &t1);
+			MUL(*t0, t1, t0);
+		MUL(t1, t1, &t1);
 		bi_refine(*t0);
 		bi_refine(t1);
 	}
@@ -47,9 +47,9 @@ void MontRed(bigint* x, bigint* r, bigint* n, bigint* nn, bigint** t) {
 	bigint* m = NULL;
 	bigint* temp = NULL;
 	bi_mod(x, bi_get_wordlen(r), &temp);
-	SchoolbookMUL(temp, nn, &temp);
+	MUL(temp, nn, &temp);
 	bi_mod(temp, bi_get_wordlen(r), &m);
-	SchoolbookMUL(m, n, &temp);
+	MUL(m, n, &temp);
 	ADD(temp, x, t);
 	bi_rshift(t, bi_get_bitlen(r)-1);
 	if(bi_compare(*t, n))
@@ -69,11 +69,11 @@ void ModExp_by_MontRed(bigint* x, bigint* e, bigint* n, bigint* nn, bigint* r, b
 	bi_assign(&t, phi1);
 
 	while(l > -1) {
-		SchoolbookMUL(t, t, &t);
+		MUL(t, t, &t);
 		MontRed(t, r, n, n, &t);
 		bi_rshift(&e, 1);
 		if (e->a[0] & 0x1) {
-			SchoolbookMUL(t, phix, &t);
+			MUL(t, phix, &t);
 			MontRed(t, r, n, nn, &t);
 		}
 		l--;
@@ -115,24 +115,29 @@ void bi_expanded_euclid(bigint*a, bigint*b, bigint**x, bigint**y) {
 
 	while(!bi_is_zero(r2)) {
 		//GCD
-		printf("NONO");
 		DIV(r1, r2, &q, &r);
 		bi_assign(&r1, r2);
 		bi_assign(&r2, r);
+		printf("div");
 		/* 
 		s1 = s2 , s2 = s1 - q * s2
 		*/
-		SchoolbookMUL(q, s2, &temp);
+
+		MUL(q, s2, &temp);
+		printf("??");
 		SUB(s1, temp, &temp);
+		printf("sub");
 		bi_assign(&s1, s2);
 		bi_assign(&s2, temp);
+		printf("mul");
 		/*
 		t1 = t2 , t2 = t1 - q * t2
 		*/
-		SchoolbookMUL(q, t2, &temp);
+		MUL(q, t2, &temp);
 		SUB(t1, temp, &temp);
 		bi_assign(&t1, s2);
 		bi_assign(&t2, temp);
+		printf("end");
 	}
 	printf("end)");
 	if(bi_compare(a, b) == -1) {

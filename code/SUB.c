@@ -17,13 +17,13 @@ void SUBAbB(word* A, word* B, word* C, word* b) {
 
 void SUBC(bigint* A, bigint* B, bigint** C) {
 
-	int i = 0;
+	int i;
 	//if B->wordlen > A->wordlen, put 0 in SUBAbB instead of B
 	word x = 0;
 	//first borrow is 0
 	word b = 0;
 	//Subtract each word
-	for (i; i < B->wordlen; i++)
+	for (i=0; i < B->wordlen; i++)
 		SUBAbB(&A->a[i], &B->a[i], &(*C)->a[i], &b);
 	for (i=B->wordlen; i < A->wordlen; i++)
 		SUBAbB(&A->a[i], &x, &(*C)->a[i], &b);

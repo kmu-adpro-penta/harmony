@@ -191,7 +191,7 @@ void Squaring(bigint* A, bigint** C) {
 		}
 	}
 	//each Ai * Aj has two
-	bi_lshift(C0, 1);
+	bi_lshift(&C0, 1);
 	ADD(*C, C0, C);
 	bi_delete(&C0);
 	bi_delete(&T0);
