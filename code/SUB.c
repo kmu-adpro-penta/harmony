@@ -25,7 +25,7 @@ void SUBC(bigint* A, bigint* B, bigint** C) {
 	//Subtract each word
 	for (i; i < B->wordlen; i++)
 		SUBAbB(&A->a[i], &B->a[i], &(*C)->a[i], &b);
-	for (i; i < A->wordlen; i++)
+	for (i=B->wordlen; i < A->wordlen; i++)
 		SUBAbB(&A->a[i], &x, &(*C)->a[i], &b);
 
 }

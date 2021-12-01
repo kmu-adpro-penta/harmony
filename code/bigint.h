@@ -15,6 +15,7 @@
 #define ZERORIZE
 #define BIT8
 #define repeat 1000
+#define flag 4
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -31,6 +32,7 @@ typedef unsigned char word;
 #ifdef BIT16
 typedef unsigned short word;
 #endif
+
 
 typedef unsigned char byte;
 
@@ -77,6 +79,8 @@ void bi_rshift(bigint** x, int r);
 void bi_lshift(bigint** x, int l);//yet
 
 void bi_realloc(bigint** x, int i);
+
+void bi_mod(bigint*x, int r, bigint** n);
 void bi_max_number(word* Q);
 
 #endif

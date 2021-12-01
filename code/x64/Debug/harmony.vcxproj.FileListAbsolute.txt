@@ -1,2 +1,0 @@
-C:\Users\82105\source\repos\harmony\code\x64\Debug\harmony.exe
-C:\Users\82105\source\repos\harmony\code\x64\Debug\harmony.pdb
