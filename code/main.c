@@ -11,9 +11,9 @@ void toy1() {
 	int i;
 	for (i = 0; i < repeat; i++) {
 		bigint* A = NULL;
-		bi_gen_rand(&A, NON_NEGATIVE, 100);
+		bi_gen_rand(&A, NON_NEGATIVE, 15);
 		bigint* B = NULL;
-		bi_gen_rand(&B, NON_NEGATIVE, 100);
+		bi_gen_rand(&B, NON_NEGATIVE, 7);
 		bigint* C = NULL;
 		//printf("A = ");
 		//bi_show_hex(A);
@@ -21,12 +21,19 @@ void toy1() {
 		//bi_show_hex(B);
 		//printf("\nC = ");
 
-		KaratsubaMUL(2, A, B, &C);
+		KaratsubaMUL(flag, A, B, &C);
 		//bi_show_hex(C);
+		bigint* AA = NULL;
+		MUL(A, B, &AA);
+		if (bi_compare(C, AA)) {
+			printf("wrong %d", i);
+			break;
+		}
 
 		bi_delete(&A);
 		bi_delete(&B);
 		bi_delete(&C);
+		bi_delete(&AA);
 	}
 }
 
@@ -77,7 +84,7 @@ void toy3() {
 
 }
 
-void toy4() {
+/*void toy4() {
 
 	PyObject* pName, * pModule, * pFunc, * pValue;
 
@@ -102,7 +109,7 @@ void toy4() {
 	Py_Finalize();
 
 }
-
+*/
 int main() {
 	srand(time(NULL));
 	clock_t start, end;

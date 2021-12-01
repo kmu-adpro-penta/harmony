@@ -8,4 +8,4 @@ C:\Users\82105\source\repos\harmony\code\MUL.c(194,12): warning C4024: 'bi_lshif
   bigint.c
   main.c
   코드를 생성하고 있습니다...
-  harmony.vcxproj -> C:\Users\82105\source\repos\harmony\code\x64\Debug\harmony.exe
+  harmony.vcxproj -> C:\Users\82105\source\repos\harmony\code\x64\Release\harmony.exe

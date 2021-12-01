@@ -80,10 +80,10 @@ void MUL(bigint* A, bigint* B, bigint** C) {
 * = (A1 * B1 * W^2l + A0 * B0) + (A0 * B1 + A1 * B0) * W^l
 * = (A1 * B1 * W^2l + A0 * B0) + ((A0 - A1) * (B1 - B0) + A0B0 + A1B1) * W^l
 */
-void KaratsubaMUL(int flag, bigint* A, bigint* B, bigint** C){
+void KaratsubaMUL(int f, bigint* A, bigint* B, bigint** C){
 	bi_new(C, A->wordlen + B->wordlen);
-	//If flag is 0 or Either A or B is 0, stop karatsuba recursive
-	if (!flag || !(MIN(A->wordlen, B->wordlen))) 
+	//If f is 0 or Either A or B is 0, stop karatsuba recursive
+	if (!f || !(MIN(A->wordlen, B->wordlen))) 
 		MULC(A, B, C);
 	
 	else {
@@ -116,8 +116,8 @@ void KaratsubaMUL(int flag, bigint* A, bigint* B, bigint** C){
 		bi_rshift(&A1, MIN(A->wordlen, l) * sizeof(word) * BYTE);
 		bi_rshift(&B1, MIN(B->wordlen, l) * sizeof(word) * BYTE);
 		//T1 = A1 * B1 * W^2l, T0 = A0 * B0
-		KaratsubaMUL(flag - 1, A1, B1, &T1);
-		KaratsubaMUL(flag - 1, A0, B0, &T0);
+		KaratsubaMUL(f - 1, A1, B1, &T1);
+		KaratsubaMUL(f - 1, A0, B0, &T0);
 
 		bi_lshift(&T1, 2 * l * BYTE * sizeof(word));
 		ADD(*C, T1, C);
@@ -129,7 +129,7 @@ void KaratsubaMUL(int flag, bigint* A, bigint* B, bigint** C){
 		sign = S0->sign ^ S1->sign;
 		S0->sign = 0;
 		S1->sign = 0;
-		KaratsubaMUL(flag - 1, S1, S0, &S);
+		KaratsubaMUL(f - 1, S1, S0, &S);
 		S->sign = sign;
 
 		bi_rshift(&T1, 2 * l * BYTE * sizeof(word));
