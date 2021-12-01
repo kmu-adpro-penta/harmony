@@ -33,6 +33,9 @@
     <ClCompile Include="MUL.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="MOD.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ADD.h">
@@ -48,6 +51,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="MUL.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MOD.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

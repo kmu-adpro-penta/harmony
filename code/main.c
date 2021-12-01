@@ -3,12 +3,104 @@
 #include "SUB.h"
 #include "MUL.h"
 #include "DIV.h"
-#include "includePython.h"
-
+#include "MOD.h"
 #define MAIN
 
-void toy1() {
+void modt() {
+	for(int i=0; i<100000; i++)
+	{
 
+		bigint* a =NULL;
+		bigint* b= NULL;
+		bi_gen_rand(&a, NON_NEGATIVE, 6);
+		bi_gen_rand(&b, NON_NEGATIVE, 6);
+		/*
+		bi_show_hex(a);
+		printf("\n");
+		bi_show_hex(b);
+		printf("\n");
+
+		printf("ltr : ");
+		bigint* c= NULL;
+		ex_ltr_mul(a, b, &c);
+		bi_show_hex(c);
+		printf("\n");
+
+		printf("rtl : ");
+		bigint* d = NULL;
+		ex_rtl_mul(a, b, &d);
+		bi_show_hex(d);
+		printf("\n");
+
+		printf("mul : ");
+		bigint* e = NULL;
+		SchoolbookMUL(a, b, &e);
+		bi_show_hex(e);
+		printf("\n");
+
+		bi_delete(&c);
+		bi_delete(&d);
+		bi_delete(&e);
+		printf("end\n");
+		*/
+		bigint* c= NULL;
+		ex_ltr_mul(a, b, &c);
+		bigint* d = NULL;
+		ex_rtl_mul(a, b, &d);
+		bigint* e = NULL;
+		SchoolbookMUL(a, b, &e);
+		if((bi_compare(c, d) != 0 ) || (bi_compare(d, e) != 0)) {
+			printf("%d\n", i);
+			bi_show_hex(a);
+			printf("\n");
+			bi_show_hex(b);
+			printf("\n");
+
+			bi_show_hex(c);
+			printf("\n");
+			bi_show_hex(d);
+			printf("\n");
+			bi_show_hex(e);
+			printf("\n");
+			break;
+		}
+		bi_delete(&c);
+		bi_delete(&d);
+		bi_delete(&e);
+			printf("%d\n", i);
+	}
+	printf("ok");
+}
+
+void mont() {
+	bigint* N=NULL;
+	bi_gen_rand(&N, NON_NEGATIVE, 10);
+	bi_lshift(&N, 1);
+	bigint* R=NULL;
+	bi_set_one(&R);
+	ADD(N, R, &N);
+
+	bi_lshift(&R, bi_get_wordlen(N)*sizeof(word)*BYTE);
+	bi_show_hex(N);
+	printf("\n");
+	bi_show_hex(R);
+	bigint* NN=NULL;
+	invN(N, R, &NN);
+	bi_show_hex(NN);
+}
+
+
+int main() {
+	mont();
+	return 0;
+}
+
+
+
+
+
+void kara() {
+	
 	//int i = 0;
 	//for (i; i < 10000; i++) {
 	srand(time(NULL));
@@ -17,15 +109,27 @@ void toy1() {
 	bigint* B = NULL;
 	bi_gen_rand(&B, NON_NEGATIVE, 3);
 	bigint* C = NULL;
+	bigint* D = NULL;
+	printf("A = ");
+	bi_show_hex(A);
+	printf("\nB = ");
+	bi_show_hex(B);
+	printf("\n");
+	SchoolbookMUL(A, B, &D);
+	printf("D =");
+	bi_show_hex(D);
+	printf("\n");
+
+	KaratsubaMUL(2, A, B, &C);
+	printf("C = ");
+	bi_show_hex(C);
+	printf("\n");
 	printf("A = ");
 	bi_show_hex(A);
 	printf("\nB = ");
 	bi_show_hex(B);
 	printf("\n");
 
-	KaratsubaMUL(2, A, B, &C);
-	printf("C = ");
-	bi_show_hex(C);
 	//printf("\nAA = ");
 
 //bigint* AA = NULL;
@@ -46,6 +150,7 @@ void toy1() {
 	bi_delete(&C);
 	//bi_delete(&AA);
 //}
+	printf("hi");
 }
 
 void toy2() {
@@ -95,18 +200,18 @@ void toy3() {
 
 
 }
-
+/*
 void toy4() {
 
 	PyObject* pName, * pModule, * pFunc, * pValue;
 
 	Py_Initialize();
 
-	pName = PyUnicode_FromString("Big_int_test"); // testFile.py¸¦ PyObject·Î »ý¼ºÇÑ´Ù.
+	pName = PyUnicode_FromString("Big_int_test"); // testFile.pyï¿½ï¿½ PyObjectï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
 
-	pModule = PyImport_Import(pName); // »ý¼ºÇÑ PyObject pNameÀ» importÇÑ´Ù.
+	pModule = PyImport_Import(pName); // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ PyObject pNameï¿½ï¿½ importï¿½Ñ´ï¿½.
 
-	pFunc = PyObject_GetAttrString(pModule,"test_func"); // ½ÇÇàÇÒ ÇÔ¼öÀÎ test_funcÀ» PyObject¿¡ Àü´ÞÇÑ´Ù.
+	pFunc = PyObject_GetAttrString(pModule,"test_func"); // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ô¼ï¿½ï¿½ï¿½ test_funcï¿½ï¿½ PyObjectï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
 
 	for (int i = 0; i < 100; i++) {
 		bigint* A = NULL;
@@ -115,13 +220,13 @@ void toy4() {
 		bi_gen_rand(&B, NON_NEGATIVE, 3);
 
 		bigint* R = NULL;
-		pValue = PyObject_CallObject(pFunc, NULL); // pFunc¿¡ ¸Å°³º¯¼ö¸¦ Àü´ÞÇØ¼­ ½ÇÇàÇÑ´Ù. 
+		pValue = PyObject_CallObject(pFunc, NULL); // pFuncï¿½ï¿½ ï¿½Å°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ø¼ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. 
 
 	}
 	Py_Finalize();
 
 }
-
+*/
 int main() {
 
 	toy2();

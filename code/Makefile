@@ -1,24 +1,30 @@
+CC = gcc
+CFLAGS = -Wall
 
-bigint : main.o bigint.o sub.o add.o mul.o
-	gcc -o bigint main.o bigint.o sub.o add.o mul.o
+
+bigint : main.o bigint.o sub.o add.o mul.o mod.o div.o
+	$(CC) $(CFLAGS) -o bigint main.o bigint.o sub.o add.o mul.o mod.o div.o
 
 add.o :
-	gcc -c -o add.o ADD.c
+	$(CC) $(CFLAGS) -c -o add.o ADD.c
 
 sub.o :
-	gcc -c -o sub.o SUB.c
+	$(CC) $(CFLAGS) -c -o sub.o SUB.c
 
 div.o :
-	gcc -c -o div.o DIV.c
+	$(CC) $(CFLAGS) -c -o div.o DIV.c
 
 mul.o :
-	gcc -c -o mul.o MUL.c
+	$(CC) $(CFLAGS) -c -o mul.o MUL.c
+
+mod.o :
+	$(CC) $(CFLAGS) -c -o mod.o MOD.c
 
 bigint.o : bigint.c
-	gcc -c -o bigint.o bigint.c
+	$(CC) $(CFLAGS) -c -o bigint.o bigint.c
 
 main.o : main.c
-	gcc -c -o main.o main.c
+	$(CC) $(CFLAGS) -c -o main.o main.c
 
 clear :
 	rm *.o bigint

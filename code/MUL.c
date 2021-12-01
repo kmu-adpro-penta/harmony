@@ -49,19 +49,28 @@ void MULC(bigint* A, bigint* B, bigint** C) {
 }
 
 void SchoolbookMUL(bigint* A, bigint* B, bigint** C) {
-	bi_new(C, A->wordlen + B->wordlen);
-	MULC(A, B, C);
+	bigint* temp = NULL;
+	bi_new(&temp, A->wordlen + B->wordlen);
+	MULC(A, B, &temp);
+	bi_refine(temp);
+	bi_delete(C);
+	*C = temp;
 }
 
 void KaratsubaMUL(int flag, bigint* A, bigint* B, bigint** C){
-	bi_new(C, A->wordlen + B->wordlen);
+	bigint* A1 = NULL;
+	bigint* B1 = NULL;
+	printf("hello");
+	bi_assign(&A1, A);
+	bi_assign(&B1, B);
+	bi_new(C, A1->wordlen + B1->wordlen);
 	//사용자가 지정한 횟수 or A, B둘 중 한 값이 0이라면 재귀 빠져나가기
-	if (!flag || !(MIN(A->wordlen, B->wordlen))) 
-		MULC(A, B, C);
-	
+	printf("one");
+	if (!flag || !(MIN(A1->wordlen, B1->wordlen))) 
+		MULC(A1, B1, C);
 	else {
 
-		int l = (MAX(A->wordlen, B->wordlen) + 1) >> 1;
+		int l = (MAX(A1->wordlen, B1->wordlen) + 1) >> 1;
 		int i, sign;
 		/*
 		A1 = A >> lw, A0 = A % 2^lw
@@ -81,7 +90,7 @@ void KaratsubaMUL(int flag, bigint* A, bigint* B, bigint** C){
 		bi_new(&B0, MIN(B->wordlen, l));
 
 		for (i = 0; i < MIN(A->wordlen, l); i++)
-			A0->a[i] = A->a[i];
+			A0->a[i] = A1->a[i];
 		for (i = 0; i < MIN(B->wordlen, l); i++)
 			B0->a[i] = B->a[i];
 		bi_assign(&A1, A);
