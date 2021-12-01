@@ -94,7 +94,7 @@ void toy3() {
 
 	pModule = PyImport_Import(pName); // ������ PyObject pName�� import�Ѵ�.
 
-	pFunc = PyObject_GetAttrString(pModule,"test_func"); // ������ �Լ��� test_func�� PyObject�� �����Ѵ�.
+	pFunc = PyObject_GetAttrString(pModule, "test_func"); // ������ �Լ��� test_func�� PyObject�� �����Ѵ�.
 
 	for (int i = 0; i < 100; i++) {
 		bigint* A = NULL;
@@ -116,6 +116,6 @@ int main() {
 	start = clock();
 	toy1();
 	end = clock();
-	printf("\nruntime is %fms",(double)(end - start) / repeat);
+	printf("\nruntime is %fms", (double)(end - start) / repeat);
 	return 0;
 }
