@@ -210,3 +210,54 @@ void DIV(bigint* A, bigint* B, bigint** Q, bigint** R) {
 
 
 
+/*
+
+Division Algorithm (Naive Version)
+
+Input : A,B ( A,B in Z)
+
+Output : INAVALID ( A = BQ + R ( 0 <= R < B ))
+
+*/
+
+void  DIV_Naive(bigint* A, bigint* B,bigint** Q,bigint** R) {
+
+	// B <= 0 인 경우 INVALID
+	if (B->sign == NEGATIVE || bi_is_zero(B) == TRUE)
+		printf("\nINVALID INPUT VALUE\n");
+	// A < B 인 경우
+	else if (bi_compare(B, A) == 1) {
+		// ( Q , R )  <-  ( 0 , A )
+		bi_set_zero(Q);
+		bi_assign(R, A);
+	}
+	// B = 1 인경우
+	else if (bi_is_one(B)) {
+		// ( Q , R )  <-  ( A , 0 )
+		bi_assign(Q, A);
+		bi_set_zero(R);
+	}
+	else {
+		// ( Q , R )  <-  ( 0 , A )
+		bi_set_zero(Q);
+		bi_assign(R, A);
+
+		bigint* Q_temp = NULL;
+		word Q_temp_array_1[1] = { 1 };
+		bi_set_by_array(&Q_temp, NON_NEGATIVE, Q_temp_array_1, 1);
+
+		bigint* R_temp = NULL;
+
+		// R >= B 인 경우
+		while (bi_compare(*R,B) == 1) {
+			// ( Q , R )  <-  ( Q + 1 , R - B )
+			ADD(*Q, Q_temp, Q);
+			SUB(*R, B, &R_temp);
+			bi_assign(R, R_temp);
+		}
+
+		//사용이 끝난 메모리 해제
+		bi_delete(&R_temp);
+		bi_delete(&Q_temp);
+	}
+}

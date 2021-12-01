@@ -1,8 +1,10 @@
-#include "bigint.h"
+﻿#include "bigint.h"
 #include "ADD.h"
 #include "SUB.h"
 #include "MUL.h"
 #include "DIV.h"
+#include "includePython.h"
+
 #define MAIN
 
 void toy1() {
@@ -31,7 +33,7 @@ void toy1() {
 void toy2() {
 	for (int i = 0; i < 100; i++) {
 		bigint* A = NULL;
-		bi_gen_rand(&A, NON_NEGATIVE, 5);
+		bi_gen_rand(&A, NON_NEGATIVE, 7);
 		bigint* B = NULL;
 		bi_gen_rand(&B, NON_NEGATIVE, 3);
 
@@ -75,6 +77,31 @@ void toy3() {
 
 }
 
+void toy4() {
+
+	PyObject* pName, * pModule, * pFunc, * pValue;
+
+	Py_Initialize();
+
+	pName = PyUnicode_FromString("Big_int_test"); // testFile.py�� PyObject�� �����Ѵ�.
+
+	pModule = PyImport_Import(pName); // ������ PyObject pName�� import�Ѵ�.
+
+	pFunc = PyObject_GetAttrString(pModule,"test_func"); // ������ �Լ��� test_func�� PyObject�� �����Ѵ�.
+
+	for (int i = 0; i < 100; i++) {
+		bigint* A = NULL;
+		bi_gen_rand(&A, NON_NEGATIVE, 7);
+		bigint* B = NULL;
+		bi_gen_rand(&B, NON_NEGATIVE, 3);
+
+		bigint* R = NULL;
+		pValue = PyObject_CallObject(pFunc, NULL); // pFunc�� �Ű������� �����ؼ� �����Ѵ�. 
+
+	}
+	Py_Finalize();
+
+}
 
 int main() {
 	srand(time(NULL));
