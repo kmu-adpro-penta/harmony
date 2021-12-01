@@ -102,6 +102,7 @@ void DIVCC(bigint* A, bigint* B, word* Q, bigint** R) {
 		ADD(A_minus_BQ, B, &R_temp);		// R = R+B		R<0
 		bi_assign(&A_minus_BQ, R_temp);
 		R_temp->sign = NON_NEGATIVE;
+
 	}
 	
 	bi_assign(R,A_minus_BQ);
@@ -128,7 +129,8 @@ void DIVC(bigint** A, bigint* B, bigint** Q, word i, int k) {
 
 	// A와 B를 비교하는 단계
 	// 만일 B가 A보다 크다면 Q = 0 , R = A 를 반환합니다.
-	if (bi_compare(B, *A) == 1) {
+	if (bi_compare(B, *A) == 1) 
+	{
 		(*Q)->a[i] = 0;
 	}
 	else {
@@ -190,20 +192,26 @@ void DIV(bigint* A, bigint* B, bigint** Q, bigint** R) {
 		}
 
 		//Q와 R에 값을 입력하기 위해 메모리를 할당하여 줍니다.
-		bi_new(Q, A->wordlen - B->wordlen + 1);		bi_new(R, B->wordlen);
+		bigint* Q_temp = NULL;
+		bigint* R_temp = NULL;
+		bi_new(&Q_temp, A->wordlen);		bi_new(&R_temp, B->wordlen+1);
 
 
 		//A의 길이 만큼 실행해줍니다.
 		for (int i = A->wordlen - 1; i > -1; i--) {
-			bi_lshift(R, sizeof(word) * 8);			// R <- R*W
-			(*R)->a[0] = A->a[i];					// R <- R + A_i
-			DIVC(R, B, Q, i, k);					// ( Q, R )  <-  DIVC( R , B )
+			bi_lshift(&R_temp, sizeof(word) * 8);			// R <- R*W
+			R_temp->a[0] = A->a[i];					// R <- R + A_i
+			DIVC(&R_temp, B, &Q_temp, i, k);					// ( Q, R )  <-  DIVC( R , B )
 		}
-	}
+		bi_refine(R_temp);
+		bi_refine(Q_temp);
 
+
+
+		bi_assign(Q, Q_temp);
+		bi_assign(R, R_temp);
+	}
 	//R과 Q의 필요없는 0제거
-	bi_refine(*R);
-	bi_refine(*Q);
 
 }
 

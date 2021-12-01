@@ -1,4 +1,4 @@
-c#include "MUL.h"
+#include "MUL.h"
 
 void AB(word* A, word* B, word* C0, word* C1) {
 	word A0, A1, B0, B1, T, T0, T1, x;
