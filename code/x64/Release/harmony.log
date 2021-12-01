@@ -1,0 +1,11 @@
+﻿  ADD.c
+  DIV.c
+C:\Users\82105\source\repos\harmony\code\DIV.c(1,1): warning C4819: 현재 코드 페이지(949)에서 표시할 수 없는 문자가 파일에 들어 있습니다. 데이터가 손실되지 않게 하려면 해당 파일을 유니코드 형식으로 저장하십시오.
+  MUL.c
+C:\Users\82105\source\repos\harmony\code\MUL.c(194,14): warning C4047: '함수': 'bigint **'의 간접 참조 수준이 'bigint *'과(와) 다릅니다.
+C:\Users\82105\source\repos\harmony\code\MUL.c(194,12): warning C4024: 'bi_lshift': 형식 및 실제 매개 변수 1의 형식이 서로 다릅니다.
+  SUB.c
+  bigint.c
+  main.c
+  코드를 생성하고 있습니다...
+  harmony.vcxproj -> C:\Users\82105\source\repos\harmony\code\x64\Release\harmony.exe

@@ -1,4 +1,4 @@
-#include "bigint.h"
+﻿#include "bigint.h"
 #include "ADD.h"
 #include "SUB.h"
 #include "MUL.h"
@@ -188,7 +188,6 @@ void toy2() {
 }
 
 void toy3() {
-
 	bigint* C = NULL;
 	bigint* D = NULL;
 	bigint** A = NULL;
@@ -228,8 +227,11 @@ void toy4() {
 }
 */
 int main() {
-
-	toy2();
-
+	srand(time(NULL));
+	clock_t start, end;
+	start = clock();
+	toy1();
+	end = clock();
+	printf("\nruntime is %fms", (double)(end - start) / repeat);
 	return 0;
 }

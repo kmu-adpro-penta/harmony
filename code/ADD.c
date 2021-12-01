@@ -2,12 +2,6 @@
 #include "ADD.h"
 #include "SUB.h"
 
-
-
-
-
-
-
 /*
 
 Input : A,B and c  ( 0 < A,B <= W and c = 0 or 1)
@@ -34,10 +28,7 @@ word ADD_ABc(word A, word B,word c,word* C_j) {
 
 Input : A , B  ( A,B > 0 and A > B )
 
-Output : C ( C > 0 ) +---------------------------******9
-
-A �� ���� = n
-B �� ���� = m  ( n > m )
+Output : C ( C > 0 ) 
 
 */
 void ADDC(bigint* A, bigint* B, bigint** C) {
