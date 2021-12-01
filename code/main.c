@@ -2,7 +2,7 @@
 #include "ADD.h"
 #include "SUB.h"
 #include "MUL.h"
-//#include "DIV.h"
+#include "DIV.h"
 #include "MOD.h"
 #define MAIN
 
@@ -72,9 +72,26 @@ void modt() {
 	printf("ok");
 }
 
+void mont() {
+	bigint* N=NULL;
+	bi_gen_rand(&N, NON_NEGATIVE, 10);
+	bi_lshift(&N, 1);
+	bigint* R=NULL;
+	bi_set_one(&R);
+	ADD(N, R, &N);
+
+	bi_lshift(&R, bi_get_wordlen(N)*sizeof(word)*BYTE);
+	bi_show_hex(N);
+	printf("\n");
+	bi_show_hex(R);
+	bigint* NN=NULL;
+	invN(N, R, &NN);
+	bi_show_hex(NN);
+}
+
 
 int main() {
-	modt();
+	mont();
 	return 0;
 }
 

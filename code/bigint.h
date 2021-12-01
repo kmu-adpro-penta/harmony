@@ -13,7 +13,7 @@
 #define LESS -1
 #define BYTE 8
 #define ZERORIZE
-#define BIT32
+#define BIT8
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -31,6 +31,7 @@ typedef unsigned char word;
 #ifdef BIT16
 typedef unsigned short word;
 #endif
+
 
 typedef unsigned char byte;
 

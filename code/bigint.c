@@ -443,14 +443,18 @@ void bi_mod(bigint* x, int r, bigint** n) {
 	}
 }
 void bi_max_number(word* Q) {
-	if (sizeof(word) == 1)
+	#ifdef BIT8
 		*Q = 255;
-	else if (sizeof(word) == 2)
+	#endif
+	#ifdef BIT16
 		*Q = 65535;
-	else if (sizeof(word) == 4)
+	#endif
+	#ifdef BIT32
 		*Q = 4294967295;
-	else if (sizeof(word) == 8)
+	#endif
+	#ifdef BIT64
 		*Q = 18446744073709551615;
+	#endif
 }
 
 

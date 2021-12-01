@@ -2,8 +2,8 @@ CC = gcc
 CFLAGS = -Wall
 
 
-bigint : main.o bigint.o sub.o add.o mul.o mod.o
-	$(CC) $(CFLAGS) -o bigint main.o bigint.o sub.o add.o mul.o mod.o
+bigint : main.o bigint.o sub.o add.o mul.o mod.o div.o
+	$(CC) $(CFLAGS) -o bigint main.o bigint.o sub.o add.o mul.o mod.o div.o
 
 add.o :
 	$(CC) $(CFLAGS) -c -o add.o ADD.c
