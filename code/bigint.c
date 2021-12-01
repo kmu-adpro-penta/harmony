@@ -4,7 +4,9 @@
 #include <string.h>
 #include <time.h>
 
-
+/*
+* all of a value initialize
+*/
 void array_init(word* a, int wordlen) {
 	for (int i = 0; i < wordlen; i++)
 		a[i] = 0x00;
@@ -355,7 +357,9 @@ int bi_compare(bigint* x, bigint* y) {
 	else
 		return com_abs*(-1);
 }
-
+/*
+* bigint right shift
+*/
 void bi_rshift(bigint** x, int r) {
 	int k, re, i;
 	// case: r > wn
@@ -380,7 +384,9 @@ void bi_rshift(bigint** x, int r) {
 
 	}
 }
-
+/*
+* bigint left shift
+*/
 void bi_lshift(bigint** x, int r) {
 	int k, re, i, len;
 	word b;
@@ -403,7 +409,9 @@ void bi_lshift(bigint** x, int r) {
 	bi_refine(*x);
 
 }
-
+/*
+* bicint realloc
+*/
 void bi_realloc(bigint** x, int i) {
 	int n;
 	word* w;

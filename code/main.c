@@ -1,4 +1,4 @@
-#include "bigint.h"
+ï»¿#include "bigint.h"
 #include "ADD.h"
 #include "SUB.h"
 #include "MUL.h"
@@ -8,44 +8,26 @@
 #define MAIN
 
 void toy1() {
+	int i;
+	for (i = 0; i < repeat; i++) {
+		bigint* A = NULL;
+		bi_gen_rand(&A, NON_NEGATIVE, 100);
+		bigint* B = NULL;
+		bi_gen_rand(&B, NON_NEGATIVE, 100);
+		bigint* C = NULL;
+		//printf("A = ");
+		//bi_show_hex(A);
+		//printf("\nB = ");
+		//bi_show_hex(B);
+		//printf("\nC = ");
 
-	//int i = 0;
-	//for (i; i < 10000; i++) {
-	srand(time(NULL));
-	bigint* A = NULL;
-	bi_gen_rand(&A, NON_NEGATIVE, 3);
-	bigint* B = NULL;
-	bi_gen_rand(&B, NON_NEGATIVE, 3);
-	bigint* C = NULL;
-	printf("A = ");
-	bi_show_hex(A);
-	printf("\nB = ");
-	bi_show_hex(B);
-	printf("\n");
+		KaratsubaMUL(2, A, B, &C);
+		//bi_show_hex(C);
 
-	KaratsubaMUL(2, A, B, &C);
-	printf("C = ");
-	bi_show_hex(C);
-	//printf("\nAA = ");
-
-//bigint* AA = NULL;
-//ADD(B, C, &AA);
-
-//bi_show_hex(AA);
-//printf("\n");
-
-//if (bi_compare(A, AA) != 0) {
-
-	//	//bi_realloc(&A, 4);
-	//	printf("you die%d", i);
-	//	printf("\n");
-	//	return 0;
-	//}
-	bi_delete(&A);
-	bi_delete(&B);
-	bi_delete(&C);
-	//bi_delete(&AA);
-//}
+		bi_delete(&A);
+		bi_delete(&B);
+		bi_delete(&C);
+	}
 }
 
 void toy2() {
@@ -76,12 +58,13 @@ void toy2() {
 		printf(" == ");
 		bi_show_hex(R);
 		printf(")");
+
+
 	}
 
 }
 
 void toy3() {
-
 	bigint* C = NULL;
 	bigint* D = NULL;
 	bigint** A = NULL;
@@ -100,62 +83,32 @@ void toy4() {
 
 	Py_Initialize();
 
-	pName = PyUnicode_FromString("Big_int_test"); // testFile.py¸¦ PyObject·Î »ý¼ºÇÑ´Ù.
+	pName = PyUnicode_FromString("Big_int_test"); // testFile.pyï¿½ï¿½ PyObjectï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
 
-	pModule = PyImport_Import(pName); // »ý¼ºÇÑ PyObject pNameÀ» importÇÑ´Ù.
+	pModule = PyImport_Import(pName); // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ PyObject pNameï¿½ï¿½ importï¿½Ñ´ï¿½.
 
-	pFunc = PyObject_GetAttrString(pModule,"test_func"); // ½ÇÇàÇÒ ÇÔ¼öÀÎ test_funcÀ» PyObject¿¡ Àü´ÞÇÑ´Ù.
+	pFunc = PyObject_GetAttrString(pModule, "test_func"); // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ô¼ï¿½ï¿½ï¿½ test_funcï¿½ï¿½ PyObjectï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½.
 
 	for (int i = 0; i < 100; i++) {
 		bigint* A = NULL;
 		bi_gen_rand(&A, NON_NEGATIVE, 7);
 		bigint* B = NULL;
 		bi_gen_rand(&B, NON_NEGATIVE, 3);
-		bigint* C = NULL;
 
-		ADD(A, B, &C);
-
-		pValue = PyObject_CallObject(pFunc, A->a,B->a,C->a,"ADD"); // pFunc¿¡ ¸Å°³º¯¼ö¸¦ Àü´ÞÇØ¼­ ½ÇÇàÇÑ´Ù. 
+		bigint* R = NULL;
+		pValue = PyObject_CallObject(pFunc, NULL); // pFuncï¿½ï¿½ ï¿½Å°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ø¼ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½Ñ´ï¿½. 
 
 	}
-
 	Py_Finalize();
 
 }
 
-void toy5() {
-	for (int i = 0; i < 100; i++) {
-		bigint* A = NULL;
-		bi_gen_rand(&A, NON_NEGATIVE, 7);
-		bigint* B = NULL;
-		bi_gen_rand(&B, NON_NEGATIVE, 3);
-
-		bigint* C= NULL;
-
-		printf("\n");
-		printf("print(");
-		bi_show_hex(A);
-		printf(" // ");
-		bi_show_hex(B);
-		DIV(A, B, &Q, &R);
-		printf(" == ");
-		bi_show_hex(Q);
-		printf(")");
-
-		printf("\n");
-		printf("print(");
-		bi_show_hex(A);
-		printf(" %% ");
-		bi_show_hex(B);
-		printf(" == ");
-		bi_show_hex(R);
-		printf(")");
-	}
-}
-
 int main() {
-
-	toy2();
-
+	srand(time(NULL));
+	clock_t start, end;
+	start = clock();
+	toy1();
+	end = clock();
+	printf("\nruntime is %fms", (double)(end - start) / repeat);
 	return 0;
 }
