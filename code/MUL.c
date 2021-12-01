@@ -1,4 +1,4 @@
-c#include "MUL.h"
+#include "MUL.h"
 
 void AB(word* A, word* B, word* C0, word* C1) {
 	word A0, A1, B0, B1, T, T0, T1, x;
@@ -191,7 +191,7 @@ void Squaring(bigint* A, bigint** C) {
 		}
 	}
 	//each Ai * Aj has two
-	bi_lshift(C0, 1);
+	bi_lshift(&C0, 1);
 	ADD(*C, C0, C);
 	bi_delete(&C0);
 	bi_delete(&T0);

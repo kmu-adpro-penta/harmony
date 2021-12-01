@@ -34,7 +34,7 @@ void modt() {
 
 		printf("mul : ");
 		bigint* e = NULL;
-		SchoolbookMUL(a, b, &e);
+		MUL(a, b, &e);
 		bi_show_hex(e);
 		printf("\n");
 
@@ -48,7 +48,7 @@ void modt() {
 		bigint* d = NULL;
 		ex_rtl_mul(a, b, &d);
 		bigint* e = NULL;
-		SchoolbookMUL(a, b, &e);
+		MUL(a, b, &e);
 		if((bi_compare(c, d) != 0 ) || (bi_compare(d, e) != 0)) {
 			printf("%d\n", i);
 			bi_show_hex(a);
@@ -115,7 +115,7 @@ void kara() {
 	printf("\nB = ");
 	bi_show_hex(B);
 	printf("\n");
-	SchoolbookMUL(A, B, &D);
+	MUL(A, B, &D);
 	printf("D =");
 	bi_show_hex(D);
 	printf("\n");
@@ -226,6 +226,7 @@ void toy4() {
 
 }
 */
+/*
 int main() {
 	srand(time(NULL));
 	clock_t start, end;
@@ -234,4 +235,4 @@ int main() {
 	end = clock();
 	printf("\nruntime is %fms", (double)(end - start) / repeat);
 	return 0;
-}
+}*/
