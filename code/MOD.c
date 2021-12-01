@@ -49,7 +49,6 @@ void MontRed(bigint* x, bigint* r, bigint* n, bigint* nn, bigint** t) {
 	bi_mod(x, bi_get_wordlen(r), &temp);
 	SchoolbookMUL(temp, nn, &temp);
 	bi_mod(temp, bi_get_wordlen(r), &m);
-	
 	SchoolbookMUL(m, n, &temp);
 	ADD(temp, x, t);
 	bi_rshift(t, bi_get_bitlen(r)-1);
@@ -116,6 +115,7 @@ void bi_expanded_euclid(bigint*a, bigint*b, bigint**x, bigint**y) {
 
 	while(!bi_is_zero(r2)) {
 		//GCD
+		printf("NONO");
 		DIV(r1, r2, &q, &r);
 		bi_assign(&r1, r2);
 		bi_assign(&r2, r);
@@ -134,6 +134,7 @@ void bi_expanded_euclid(bigint*a, bigint*b, bigint**x, bigint**y) {
 		bi_assign(&t1, s2);
 		bi_assign(&t2, temp);
 	}
+	printf("end)");
 	if(bi_compare(a, b) == -1) {
 		bi_assign(y, s1);
 		bi_assign(x, t1);
