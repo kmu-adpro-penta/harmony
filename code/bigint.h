@@ -13,7 +13,7 @@
 #define LESS -1
 #define BYTE 8
 #define ZERORIZE
-#define BIT32
+#define BIT8
 #define repeat 1000
 #include <stdio.h>
 #include <stdlib.h>

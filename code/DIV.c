@@ -64,20 +64,20 @@ Output : Q, R	( such that A = B*Q + R ( 0 <= R < B , Q in [0,W) )
 
 */
 
-void DIVCC(bigint** A, bigint* B, word* Q, bigint** R) {
+void DIVCC(bigint* A, bigint* B, word* Q, bigint** R) {
 
 	//If A wordlen = B wordlen, Q = A_(m-1) / B_(m-1)
-	if ((*A)->wordlen == B->wordlen)
-		*Q = (*A)->a[B->wordlen-1] / B->a[B->wordlen-1] ;
+	if (A->wordlen == B->wordlen)
+		*Q = (word)(A->a[B->wordlen-1] / B->a[B->wordlen-1]) ;
 
 	//If A wordlen = B wordlen + 1
-	else if ((*A)->wordlen == B->wordlen + 1) {
+	else if (A->wordlen == B->wordlen + 1) {
 		//If A_m = B_(m-1)
-		if ( (*A)->a[B->wordlen] == B->a[B->wordlen-1] )
+		if ( A->a[B->wordlen] == B->a[B->wordlen-1] )
 			bi_max_number(Q);
 		//If  A_m != B_(m-1)
 		else
-			*Q = LDA((*A)->a[B->wordlen], (*A)->a[B->wordlen - 1], B->a[B->wordlen-1]);
+			*Q = LDA(A->a[B->wordlen], A->a[B->wordlen - 1], B->a[B->wordlen-1]);
 	}
 
 	// R = A - B * Q
@@ -90,7 +90,7 @@ void DIVCC(bigint** A, bigint* B, word* Q, bigint** R) {
 	bi_refine(BQ);
 
 	bigint* A_minus_BQ = NULL;
-	SUB(*A, BQ , &A_minus_BQ);
+	SUB(A, BQ , &A_minus_BQ);
 	bigint* R_temp = NULL;
 
 	//If R < 0
@@ -148,7 +148,7 @@ void DIVC(bigint** A, bigint* B, bigint** Q, word i, int k) {
 		bigint* R_temp = NULL;
 
 		// Q_2 , R_temp  <-   DIVCC(A_temp.B_temp)
-		DIVCC(&A_temp, B_temp, &Q_2, &R_temp);
+		DIVCC(A_temp, B_temp, &Q_2, &R_temp);
 
 		//R에 2^(-k) * R_temp 를 대입
 		bi_rshift(&R_temp, k);
@@ -249,7 +249,7 @@ void  DIV_Naive(bigint* A, bigint* B,bigint** Q,bigint** R) {
 		bigint* R_temp = NULL;
 
 		// R >= B 인 경우
-		while (bi_compare(*R,B) == 1) {
+		while (bi_compare(*R,B) >= 0 ) {
 			// ( Q , R )  <-  ( Q + 1 , R - B )
 			ADD(*Q, Q_temp, Q);
 			SUB(*R, B, &R_temp);

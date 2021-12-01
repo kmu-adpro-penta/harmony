@@ -3,7 +3,6 @@
 #include "SUB.h"
 #include "MUL.h"
 #include "DIV.h"
-#include "includePython.h"
 
 #define MAIN
 
@@ -33,9 +32,9 @@ void toy1() {
 void toy2() {
 	for (int i = 0; i < 100; i++) {
 		bigint* A = NULL;
-		bi_gen_rand(&A, NON_NEGATIVE, 7);
+		bi_gen_rand(&A, NON_NEGATIVE, 2);
 		bigint* B = NULL;
-		bi_gen_rand(&B, NON_NEGATIVE, 3);
+		bi_gen_rand(&B, NON_NEGATIVE, 1);
 
 		bigint* Q = NULL;
 		bigint* R = NULL;
@@ -45,7 +44,7 @@ void toy2() {
 		bi_show_hex(A);
 		printf(" // ");
 		bi_show_hex(B);
-		DIV(A, B, &Q, &R);
+		DIV_Naive(A, B, &Q, &R);
 		printf(" == ");
 		bi_show_hex(Q);
 		printf(")");
@@ -77,38 +76,10 @@ void toy3() {
 
 }
 
-void toy4() {
 
-	PyObject* pName, * pModule, * pFunc, * pValue;
-
-	Py_Initialize();
-
-	pName = PyUnicode_FromString("Big_int_test"); // testFile.py�� PyObject�� �����Ѵ�.
-
-	pModule = PyImport_Import(pName); // ������ PyObject pName�� import�Ѵ�.
-
-	pFunc = PyObject_GetAttrString(pModule, "test_func"); // ������ �Լ��� test_func�� PyObject�� �����Ѵ�.
-
-	for (int i = 0; i < 100; i++) {
-		bigint* A = NULL;
-		bi_gen_rand(&A, NON_NEGATIVE, 7);
-		bigint* B = NULL;
-		bi_gen_rand(&B, NON_NEGATIVE, 3);
-
-		bigint* R = NULL;
-		pValue = PyObject_CallObject(pFunc, NULL); // pFunc�� �Ű������� �����ؼ� �����Ѵ�. 
-
-	}
-	Py_Finalize();
-
-}
 
 int main() {
-	srand(time(NULL));
-	clock_t start, end;
-	start = clock();
-	toy1();
-	end = clock();
-	printf("\nruntime is %fms", (double)(end - start) / repeat);
+
+	toy2();
 	return 0;
 }
