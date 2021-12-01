@@ -76,8 +76,6 @@ void toy2() {
 		printf(" == ");
 		bi_show_hex(R);
 		printf(")");
-
-
 	}
 
 }
@@ -113,13 +111,46 @@ void toy4() {
 		bi_gen_rand(&A, NON_NEGATIVE, 7);
 		bigint* B = NULL;
 		bi_gen_rand(&B, NON_NEGATIVE, 3);
+		bigint* C = NULL;
 
-		bigint* R = NULL;
-		pValue = PyObject_CallObject(pFunc, NULL); // pFunc에 매개변수를 전달해서 실행한다. 
+		ADD(A, B, &C);
+
+		pValue = PyObject_CallObject(pFunc, A->a,B->a,C->a,"ADD"); // pFunc에 매개변수를 전달해서 실행한다. 
 
 	}
+
 	Py_Finalize();
 
+}
+
+void toy5() {
+	for (int i = 0; i < 100; i++) {
+		bigint* A = NULL;
+		bi_gen_rand(&A, NON_NEGATIVE, 7);
+		bigint* B = NULL;
+		bi_gen_rand(&B, NON_NEGATIVE, 3);
+
+		bigint* C= NULL;
+
+		printf("\n");
+		printf("print(");
+		bi_show_hex(A);
+		printf(" // ");
+		bi_show_hex(B);
+		DIV(A, B, &Q, &R);
+		printf(" == ");
+		bi_show_hex(Q);
+		printf(")");
+
+		printf("\n");
+		printf("print(");
+		bi_show_hex(A);
+		printf(" %% ");
+		bi_show_hex(B);
+		printf(" == ");
+		bi_show_hex(R);
+		printf(")");
+	}
 }
 
 int main() {
