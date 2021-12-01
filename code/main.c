@@ -49,7 +49,7 @@ void toy2() {
 		bi_show_hex(A);
 		printf(" // ");
 		bi_show_hex(B);
-		DIV(A, B, &Q, &R);
+		DIV_Naive(A, B, &Q, &R);
 		printf(" == ");
 		bi_show_hex(Q);
 		printf(")");
