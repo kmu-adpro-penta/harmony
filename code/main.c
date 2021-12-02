@@ -8,48 +8,29 @@
 
 #define MAIN
 
-void toy1() {
-	int i;
-	for (i = 0; i < 10; i++) {
+
+
+void Bigint_test() {
+	for (int i = 0; i < 10; i++) {
 		bigint* A = NULL;
 		bi_gen_rand(&A, NON_NEGATIVE, 5);
 		bigint* B = NULL;
-		bi_gen_rand(&B, NON_NEGATIVE, 2);
-		bigint* Q = NULL;
-		bigint* R = NULL;
+		bi_gen_rand(&B, NON_NEGATIVE, 3);
 
-		//printf("A = ");
-		//bi_show_hex(A);
-		//printf("\nB = ");
-		//bi_show_hex(B);
-		//printf("\nC = ");
-
-		ADD(A, B, &Q,&R);
-		//bi_show_hex(C);
-
-		bi_delete(&A);
-		bi_delete(&B);
-		bi_delete(Q);
-		bi_delete(R);
-	}
-}
-
-void toy2() {
-	for (int i = 0; i < LoopCTR; i++) {
-		bigint* A = NULL;
-		bi_gen_rand(&A, NON_NEGATIVE, 100);
-		bigint* B = NULL;
-		bi_gen_rand(&B, NON_NEGATIVE, 30);
+		//bigint* C = NULL;
 
 		bigint* Q = NULL;
 		bigint* R = NULL;
+
+		DIV_Naive(A, B, &Q, &R);
+		//MUL(A, B, &C);
+		//ADD(A, B, &C);
 
 		//printf("\n");
 		//printf("print(");
 		//bi_show_hex(A);
 		//printf(" // ");
 		//bi_show_hex(B);
-		DIV(A, B, &Q, &R);
 		//printf(" == ");
 		//bi_show_hex(Q);
 		//printf(")");
@@ -65,6 +46,7 @@ void toy2() {
 
 		bi_delete(&A);
 		bi_delete(&B);
+		//bi_delete(&C);
 		bi_delete(&Q);
 		bi_delete(&R);
 		
@@ -97,10 +79,13 @@ int main() {
 	clock_t after_ClockCycle, before_ClockCycle;
 	
 	//! Measure Clock Cycles
-	before_ClockCycle = clock();
-	toy2();
-	after_ClockCycle = clock();
+	before_ClockCycle = clockcycles();
+	Bigint_test();
+	after_ClockCycle = clockcycles();
 	
-	printf("\n time = %fms", (double)(after_ClockCycle - before_ClockCycle) / LoopCTR);
+	printf("\n [ Bigint_test ] \n ClockCylce = %lld", (after_ClockCycle - before_ClockCycle) / LoopCTR);
+
+
+
 	return 0;
 }

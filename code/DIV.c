@@ -230,39 +230,52 @@ Output : INAVALID ( A = BQ + R ( 0 <= R < B ))
 
 void  DIV_Naive(bigint* A, bigint* B,bigint** Q,bigint** R) {
 
+
+	bigint* Q_temp = NULL;
+	bigint* R_temp = NULL;
+	bi_new(&Q_temp, A->wordlen);		bi_new(&R_temp, B->wordlen + 1);
+
+
 	// B <= 0 인 경우 INVALID
 	if (B->sign == NEGATIVE || bi_is_zero(B) == TRUE)
 		printf("\nINVALID INPUT VALUE\n");
 	// A < B 인 경우
 	else if (bi_compare(B, A) == 1) {
 		// ( Q , R )  <-  ( 0 , A )
-		bi_set_zero(Q);
-		bi_assign(R, A);
+		bi_set_zero(&Q_temp);
+		bi_assign(&R_temp, A);
 	}
 	// B = 1 인경우
 	else if (bi_is_one(B)) {
 		// ( Q , R )  <-  ( A , 0 )
-		bi_assign(Q, A);
-		bi_set_zero(R);
+		bi_assign(&Q_temp, A);
+		bi_set_zero(&R_temp);
 	}
 	else {
 		// ( Q , R )  <-  ( 0 , A )
-		bi_set_zero(Q);
-		bi_assign(R, A);
+		bi_set_zero(&Q_temp);
+		bi_assign(&R_temp, A);
 
-		bigint* Q_temp = NULL;
-		word Q_temp_array_1[1] = { 1 };
-		bi_set_by_array(&Q_temp, NON_NEGATIVE, Q_temp_array_1, 1);
-
-		bigint* R_temp = NULL;
+		bigint* Q_1 = NULL;
+		word Q_1_array_1[1] = { 1 };
+		bi_set_by_array(&Q_1, NON_NEGATIVE, Q_1_array_1, 1);
 
 		// R >= B 인 경우
-		while (bi_compare(*R,B) >= 0 ) {
+		while (bi_compare(R_temp,B) >= 0 ) {
 			// ( Q , R )  <-  ( Q + 1 , R - B )
-			ADD(*Q, Q_temp, Q);
-			SUB(*R, B, &R_temp);
-			bi_assign(R, R_temp);
+			ADD(Q_temp, Q_1, &Q_temp);
+			SUB(R_temp, B, &R_temp);
+
+			//printf("\nQ = ");
+			//bi_show_hex(Q_temp);
+
+
+			//printf("\nR = ");
+			//bi_show_hex(R_temp);
 		}
+
+		bi_assign(R, R_temp);
+		bi_assign(Q, Q_temp);
 
 		//사용이 끝난 메모리 해제
 		bi_delete(&R_temp);

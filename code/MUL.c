@@ -108,7 +108,7 @@ void KaratsubaMUL(int f, bigint* A, bigint* B, bigint** C){
 		bi_new(&B0, MIN(B->wordlen, l));
 
 		for (i = 0; i < MIN(A->wordlen, l); i++)
-			A0->a[i] = A1->a[i];
+ 			A0->a[i] = A->a[i];
 		for (i = 0; i < MIN(B->wordlen, l); i++)
 			B0->a[i] = B->a[i];
 		bi_assign(&A1, A);
