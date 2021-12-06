@@ -6,7 +6,7 @@ bigint : main.o bigint.o sub.o add.o mul.o mod.o div.o
 	$(CC) $(CFLAGS) -o bigint main.o bigint.o sub.o add.o mul.o mod.o div.o
 
 test : test.o bigint.o sub.o add.o mul.o mod.o div.o
-	$(CC) $(CFLAGS) -o bigint test.o bigint.o sub.o add.o mul.o mod.o div.o
+	$(CC) $(CFLAGS) -o test test.o bigint.o sub.o add.o mul.o mod.o div.o
 
 add.o :
 	$(CC) $(CFLAGS) -c -o add.o ADD.c
@@ -32,5 +32,7 @@ main.o : main.c
 test.o :
 	$(CC) $(CFLAGS) -c -o test.o test.c
 
-clear :
+clean :
 	rm *.o bigint
+cleantest :
+	del *.o test

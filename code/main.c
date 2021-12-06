@@ -37,9 +37,9 @@ void toy1() {
 void toy2() {
 	for (int i = 0; i < LoopCTR; i++) {
 		bigint* A = NULL;
-		bi_gen_rand(&A, NON_NEGATIVE, 100);
+		bi_gen_rand(&A, NON_NEGATIVE, 50);
 		bigint* B = NULL;
-		bi_gen_rand(&B, NON_NEGATIVE, 30);
+		bi_gen_rand(&B, NON_NEGATIVE, 13);
 
 		bigint* Q = NULL;
 		bigint* R = NULL;

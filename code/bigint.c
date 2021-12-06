@@ -102,11 +102,12 @@ int cdevide(int a, int b) {
 }
 
 //string to bigint
-void bi_set_by_string(bigint** x, int sign, char* str, int base) {
+void bi_set_by_string(bigint** x, int sign, char* str) {
 	int i;
 	//int len;
 	byte* w = NULL;
 	//int n;
+	int base = strlen(str);
 
 	if (*x == NULL) {
 		bi_new(x, cdevide(base, sizeof(word) * 2));

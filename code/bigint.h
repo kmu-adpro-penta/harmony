@@ -13,12 +13,23 @@
 #define LESS -1
 #define BYTE 8
 #define ZERORIZE
-#define BIT32
 #define LoopCTR 1000
 #define flag 4
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+
+#ifndef BIT8
+#ifndef BIT16
+#ifndef BIT32
+#ifndef BIT64
+#define BIT8
+#endif
+#endif
+#endif
+#endif
+
+
 
 #ifdef BIT64
 typedef unsigned long long word;
@@ -48,7 +59,7 @@ void bi_delete(bigint** x);
 void bi_new(bigint** x, int wordlen);
 
 void bi_set_by_array(bigint** x, int sign, word* a, int wordlen);
-void bi_set_by_string(bigint** x, int sign, char*str, int base);
+void bi_set_by_string(bigint** x, int sign, char*str);
 
 void bi_show_hex(bigint* x);
 void bi_show_dec(bigint* x);//too hard
