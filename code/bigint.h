@@ -13,8 +13,9 @@
 #define LESS -1
 #define BYTE 8
 #define ZERORIZE
+#define BIT8
 #define LoopCTR 1000
-#define flag 4
+#define flag 2
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
