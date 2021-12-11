@@ -3,6 +3,7 @@
 #include "SUB.h"
 #include "MUL.h"
 #include "DIV.h"
+#include "Mod.h"
 #include <intrin.h>
 #include <stdint.h>
 
@@ -92,8 +93,27 @@ uint64_t clockcycles()
 	return __rdtsc();
 }
 
+
+void modt() {
+	bigint* n = NULL;
+	bigint* r = NULL;
+	bigint* nn = NULL;
+	bi_set_by_string(&n, NON_NEGATIVE, "3942ad939dedf");
+	bi_set_one(&r);
+	bi_lshift(&r, n->wordlen*sizeof(word)*BYTE);
+	bi_show_hex(n);
+	printf("\n");
+	bi_show_hex(r);
+	printf("\n");
+	invN(n, r, &nn);
+	bi_show_hex(nn);
+	printf("\n");
+}
+
+
 int main() {
-	
+	modt();
+	/*
 	clock_t after_ClockCycle, before_ClockCycle;
 	
 	//! Measure Clock Cycles
@@ -102,5 +122,6 @@ int main() {
 	after_ClockCycle = clock();
 	
 	printf("\n time = %fms", (double)(after_ClockCycle - before_ClockCycle) / LoopCTR);
+	*/
 	return 0;
 }

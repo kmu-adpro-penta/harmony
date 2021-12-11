@@ -63,22 +63,18 @@ void multest() {
 		bi_gen_rand(&a, NON_NEGATIVE, 50);
 		bi_gen_rand(&b, NON_NEGATIVE, 10);
 		printf("a = ");
-		bi_show_hex(b);
-		printf("\nb = ");
 		bi_show_hex(a);
+		printf("\nb = ");
+		bi_show_hex(b);
 		printf("\n");
 		bigint* c = NULL;
-		bigint* d = NULL;
-		DIV(a, b, &c, &d);
+		ADD(a, b, &c);
 		printf("c = ");
 		bi_show_hex(c);
-		printf("\nd = ");	
-		bi_show_hex(d);
 		printf("\n");
-		printf("\nif a//b == c and a%%b == d:\n\tprint('ok')\nelse:\n\tprint('error')\n");
+		printf("\nif a+b == c:\n\tprint('ok')\nelse:\n\tprint('error')\n");
 		bi_delete(&a);
 		bi_delete(&b);
 		bi_delete(&c);
 	}
 }
-
