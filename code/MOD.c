@@ -52,33 +52,35 @@ void MontRed(bigint* x, bigint* r, bigint* n, bigint* nn, bigint** t) {
 	MUL(m, n, &temp);
 	ADD(temp, x, t);
 	bi_rshift(t, bi_get_bitlen(r)-1);
-	if(bi_compare(*t, n))
+	if(bi_compare(*t, n)+1)
 		SUB(*t, n, t);
+	bi_delete(&m);
+	bi_delete(&temp);
 }
 
-void ModExp_by_MontRed(bigint* x, bigint* e, bigint* n, bigint* nn, bigint* r, bigint* phi1) {
+void ModExp_by_MontRed(bigint* x, bigint* e, bigint* n, bigint* nn, bigint* r, bigint* phi1, bigint** t) {
 	bigint* phix = NULL;
 	bigint* temp = NULL;
+	bigint* q = NULL;
 	bi_assign(&temp, x);
 	bi_lshift(&temp, bi_get_bitlen(r) - 1);
-	bigint* q = NULL;
 	DIV(temp, n, &q ,&phix);
 	int l = bi_get_bitlen(e) - 1;
-
-	bigint* t = NULL;
-	bi_assign(&t, phi1);
+	bi_assign(t, phi1);
 
 	while(l > -1) {
-		MUL(t, t, &t);
-		MontRed(t, r, n, n, &t);
-		bi_rshift(&e, 1);
-		if (e->a[0] & 0x1) {
-			MUL(t, phix, &t);
-			MontRed(t, r, n, nn, &t);
+		MUL(*t, *t, t);
+		MontRed(*t, r, n, nn, t);
+
+		bi_assign(&temp, e);
+		bi_rshift(&temp, l);
+		if (temp->a[0] & 0x1) {
+			MUL(*t, phix, t);
+			MontRed(*t, r, n, nn, t);
 		}
 		l--;
 	}
-	MontRed(t, r, n, nn, &t);
+	MontRed(*t, r, n, nn, t);
 }
 
 void invN(bigint* n, bigint* r, bigint** nn) {
@@ -118,28 +120,23 @@ void bi_expanded_euclid(bigint*a, bigint*b, bigint**x, bigint**y) {
 		DIV(r1, r2, &q, &r);
 		bi_assign(&r1, r2);
 		bi_assign(&r2, r);
-		printf("div");
 		/* 
 		s1 = s2 , s2 = s1 - q * s2
 		*/
 
+
 		MUL(q, s2, &temp);
-		printf("??");
 		SUB(s1, temp, &temp);
-		printf("sub");
 		bi_assign(&s1, s2);
 		bi_assign(&s2, temp);
-		printf("mul");
 		/*
 		t1 = t2 , t2 = t1 - q * t2
 		*/
 		MUL(q, t2, &temp);
 		SUB(t1, temp, &temp);
-		bi_assign(&t1, s2);
+		bi_assign(&t1, t2);
 		bi_assign(&t2, temp);
-		printf("end");
 	}
-	printf("end)");
 	if(bi_compare(a, b) == -1) {
 		bi_assign(y, s1);
 		bi_assign(x, t1);
