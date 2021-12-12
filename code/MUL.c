@@ -212,14 +212,17 @@ void TextbookSq(bigint* A, bigint** C) {
 }
 /*
 * This is Karatsuba Squaring
-* 
+* A^2 = (A1 * W^l + A0)*(A1 * W^l + A0)
+*	  = (A1^2 * W^2l + A0^2) + 2 * A0 * A1 * W^l
 */
 void KaratsubaSq(int f, bigint* A, bigint** C) {
 	bi_new(C, A->wordlen * 2);
+	//If f is 0 or A is 0, stop karatsuba recursive
 	if (!f || !A->wordlen)
 		TextbookSq(A, C);
 
 	else {
+		//Divide top, bottom bit
 		int l = (A->wordlen + 1) >> 1;
 		int i, sign;
 
@@ -229,6 +232,7 @@ void KaratsubaSq(int f, bigint* A, bigint** C) {
 		bigint* T1 = NULL;
 		bigint* S = NULL;
 
+		//A1 = A >> lw, A0 = A % 2 ^ lw
 		bi_new(&A0, MIN(A->wordlen, l));
 
 		for (i = 0; i < MIN(A->wordlen, l); i++)
@@ -239,14 +243,17 @@ void KaratsubaSq(int f, bigint* A, bigint** C) {
 		KaratsubaSq(f - 1, A1, &T1);
 		KaratsubaSq(f - 1, A0, &T0);
 
+		//A1^2 * W^2l + A0^2
 		bi_lshift(&T1, 2 * l * BYTE * sizeof(word));
 		ADD(*C, T1, C);
 		ADD(*C, T0, C);
 
+		//2 * A0 * A1 * W^l
 		bi_rshift(&T1, 2 * l * BYTE * sizeof(word));
 		MUL(A0, A1, &S);
 		bi_lshift(&S, l * BYTE * sizeof(word) + 1);
 		
+		//A1^2 * W^2l + A0^2 + 2 * A0 * A1 * W^l
 		ADD(*C, S, C);
 		
 		bi_delete(&A0);
