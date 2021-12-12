@@ -175,6 +175,7 @@ Output : Q  ( A = BQ + R ( 0 <= R < B, 0 < Q_j <= W ))
 */
 void DIV(bigint* A, bigint* B, bigint** Q, bigint** R) {
 
+	int A_sign = A->sign;
 	int B_sign = B->sign;
 
 	// A와 B를 비교하는 단계
@@ -208,7 +209,18 @@ void DIV(bigint* A, bigint* B, bigint** Q, bigint** R) {
 		bi_refine(R_temp);
 		bi_refine(Q_temp);
 
-		Q_temp->sign = B_sign;
+		if (A->sign == NON_NEGATIVE && B->sign == NEGATIVE) {
+			Q_temp->sign == NEGATIVE;
+		}
+		else if (A->sign == NEGATIVE && B->sign == NON_NEGATIVE) {
+			SUB(B, R_temp, &R_temp);
+			ADD(Q_temp, 1, &Q_temp);
+			Q_temp->sign == NEGATIVE;
+		}
+		else if (A->sign == NEGATIVE && B->sign == NEGATIVE) {
+			SUB(B, R_temp, &R_temp);
+			ADD(Q_temp, 1, &Q_temp);
+		}
 
 		bi_assign(Q, Q_temp);
 		bi_assign(R, R_temp);
