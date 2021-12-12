@@ -175,6 +175,8 @@ Output : Q  ( A = BQ + R ( 0 <= R < B, 0 < Q_j <= W ))
 */
 void DIV(bigint* A, bigint* B, bigint** Q, bigint** R) {
 
+	int B_sign = B->sign;
+
 	// A와 B를 비교하는 단계
 	// 만일 B가 A보다 크다면 Q = 0 , R = A 를 반환합니다.
 	if (bi_compare(B,A) == 1) {		
@@ -206,7 +208,7 @@ void DIV(bigint* A, bigint* B, bigint** Q, bigint** R) {
 		bi_refine(R_temp);
 		bi_refine(Q_temp);
 
-
+		Q_temp->sign = B_sign;
 
 		bi_assign(Q, Q_temp);
 		bi_assign(R, R_temp);
