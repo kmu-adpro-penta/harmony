@@ -134,16 +134,16 @@ void modt() {
 
 
 int main() {
-	//modt();
+	modt();
 	
-	clock_t after_ClockCycle, before_ClockCycle;
-	
-	//! Measure Clock Cycles
-	before_ClockCycle = clock();
-	toy2();
-	after_ClockCycle = clock();
-	
-	printf("\n time = %fms", (double)(after_ClockCycle - before_ClockCycle) / LoopCTR);
-	
+	//clock_t after_ClockCycle, before_ClockCycle;
+	//
+	////! Measure Clock Cycles
+	//before_ClockCycle = clock();
+	//toy2();
+	//after_ClockCycle = clock();
+	//
+	//printf("\n time = %fms", (double)(after_ClockCycle - before_ClockCycle) / LoopCTR);
+	//
 	return 0;
 }

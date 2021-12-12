@@ -209,15 +209,20 @@ void DIV(bigint* A, bigint* B, bigint** Q, bigint** R) {
 		bi_refine(R_temp);
 		bi_refine(Q_temp);
 
-		if (A->sign == NON_NEGATIVE && B->sign == NEGATIVE) {
+		if (A_sign == NON_NEGATIVE && B_sign == NEGATIVE) {
 			Q_temp->sign == NEGATIVE;
 		}
-		else if (A->sign == NEGATIVE && B->sign == NON_NEGATIVE) {
+		else if (A_sign == NEGATIVE && B_sign == NON_NEGATIVE) {
+
+			bigint* value_1 = NULL;
+			word value_1_array_1[1] = { 1 };
+			bi_set_by_array(&value_1, NON_NEGATIVE, value_1_array_1, 1);
+
 			SUB(B, R_temp, &R_temp);
-			ADD(Q_temp, 1, &Q_temp);
+			ADD(Q_temp, value_1, &Q_temp);
 			Q_temp->sign == NEGATIVE;
 		}
-		else if (A->sign == NEGATIVE && B->sign == NEGATIVE) {
+		else if (A_sign == NEGATIVE && B_sign == NEGATIVE) {
 			SUB(B, R_temp, &R_temp);
 			ADD(Q_temp, 1, &Q_temp);
 		}
