@@ -110,6 +110,8 @@ void modt() {
 	invN(n, r, &nn);
 	bi_show_hex(nn);
 	printf("\n");
+	nn->sign = bi_get_flipsign(nn);
+	DIV(nn, r, &temp, &nn);
 
 	bigint* phi1 = NULL;
 	DIV(r, n, &temp, &phi1);

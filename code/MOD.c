@@ -58,6 +58,17 @@ void MontRed(bigint* x, bigint* r, bigint* n, bigint* nn, bigint** t) {
 	bi_delete(&temp);
 }
 
+/**
+ * @brief t = x^e % n
+ * 
+ * @param x bigint* x
+ * @param e bigint* e
+ * @param n bigint* N 
+ * @param nn bigint* nn, (-invN)%R (precalculated value)
+ * @param r bigint R, gcd(R, N) = 1 and R = W^i
+ * @param phi1 (precalculated value)
+ * @param t bigint** treturn value
+ */
 void ModExp_by_MontRed(bigint* x, bigint* e, bigint* n, bigint* nn, bigint* r, bigint* phi1, bigint** t) {
 	bigint* phix = NULL;
 	bigint* temp = NULL;
@@ -83,15 +94,29 @@ void ModExp_by_MontRed(bigint* x, bigint* e, bigint* n, bigint* nn, bigint* r, b
 	MontRed(*t, r, n, nn, t);
 }
 
-void invN(bigint* n, bigint* r, bigint** nn) {
+/**
+ * @brief n * y + r * x = 1, invn = y%r
+ * 
+ * @param n 
+ * @param r 
+ * @param invn 
+ */
+void invN(bigint* n, bigint* r, bigint** invn) {
 	bigint* x = NULL;
 	bigint* y = NULL;
 	bi_expanded_euclid(r, n, &x, &y);
-	DIV(y, r, &x, nn);
+	DIV(y, r, &x, invn);
 	bi_delete(&x);
 	bi_delete(&y);
 }
-
+/**
+ * @brief a*x + b*y == gcd(a, b) return x, y
+ * 
+ * @param a 
+ * @param b 
+ * @param x 
+ * @param y 
+ */
 void bi_expanded_euclid(bigint*a, bigint*b, bigint**x, bigint**y) {
 	bigint* r1=NULL;
 	bigint* r2=NULL;

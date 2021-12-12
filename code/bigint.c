@@ -256,9 +256,13 @@ void bi_gen_rand(bigint** x, int sign, int wordlen) {
 
 	bi_refine(*x);
 }
+
 void bi_gen_full_rand(bigint**x) {
-	int n = rand() & 0x1;
-	
+	int sign = rand() & 0x1;
+	int wordlen = rand() % 1000;
+	if (*x != NULL)
+		bi_delete(x);
+	bi_gen_rand(x, sign, wordlen);
 }
 //return wordlen
 int bi_get_wordlen(bigint* x) {

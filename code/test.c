@@ -56,23 +56,23 @@ int main() {
 
 
 void multest() {
-	for(int i=0; i<1000; i++)
+	for(int i=0; i<10; i++)
 	{
 		bigint* a = NULL;
 		bigint* b = NULL;
-		bi_gen_rand(&a, NON_NEGATIVE, 50);
-		bi_gen_rand(&b, NON_NEGATIVE, 10);
+		bi_gen_rand(&a, NON_NEGATIVE, 1000);
+		bi_gen_rand(&b, NON_NEGATIVE, 1000);
 		printf("a = ");
 		bi_show_hex(a);
 		printf("\nb = ");
 		bi_show_hex(b);
 		printf("\n");
 		bigint* c = NULL;
-		ADD(a, b, &c);
+		KaratsubaMUL(3, a, b, &c);
 		printf("c = ");
 		bi_show_hex(c);
 		printf("\n");
-		printf("\nif a+b == c:\n\tprint('ok')\nelse:\n\tprint('error')\n");
+		printf("\nif a*b == c:\n\tprint('ok')\nelse:\n\tprint('error')\n");
 		bi_delete(&a);
 		bi_delete(&b);
 		bi_delete(&c);
