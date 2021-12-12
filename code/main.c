@@ -98,6 +98,7 @@ void modt() {
 	bigint* n = NULL;
 	bigint* r = NULL;
 	bigint* nn = NULL;
+	bigint* temp = NULL;
 	bi_set_by_string(&n, NON_NEGATIVE, "3942ad939dedf");
 	bi_set_one(&r);
 	bi_lshift(&r, n->wordlen*sizeof(word)*BYTE);
@@ -105,8 +106,29 @@ void modt() {
 	printf("\n");
 	bi_show_hex(r);
 	printf("\n");
+	
 	invN(n, r, &nn);
 	bi_show_hex(nn);
+	printf("\n");
+
+	bigint* phi1 = NULL;
+	DIV(r, n, &temp, &phi1);
+	bi_show_hex(phi1);
+	printf("\n");
+
+	bigint* x = NULL;
+	bigint* e = NULL;
+	bi_set_by_string(&x, NON_NEGATIVE, "17081f820b5ad");
+	bi_set_by_string(&e, NON_NEGATIVE, "7281a");
+	bi_show_hex(x);
+	printf("\n");
+	bi_show_hex(e);
+	printf("\n");
+
+	bigint* answer = NULL;
+
+	ModExp_by_MontRed(x, e, n, nn, r, phi1, &answer);
+	bi_show_hex(answer);
 	printf("\n");
 }
 
