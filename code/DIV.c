@@ -220,7 +220,9 @@ void DIV(bigint* A, bigint* B, bigint** Q, bigint** R) {
 
 			SUB(B, R_temp, &R_temp);
 			ADD(Q_temp, value_1, &Q_temp);
-			Q_temp->sign == NEGATIVE;
+			Q_temp->sign == NEGATIVE; 
+
+			bi_delete(&value_1);
 		}
 		else if (A_sign == NEGATIVE && B_sign == NEGATIVE) {
 			SUB(B, R_temp, &R_temp);
