@@ -81,6 +81,8 @@ void MUL(bigint* A, bigint* B, bigint** C) {
 * = (A1 * B1 * W^2l + A0 * B0) + ((A0 - A1) * (B1 - B0) + A0B0 + A1B1) * W^l
 */
 void KaratsubaMUL(int f, bigint* A, bigint* B, bigint** C){
+	if (!bi_compare(A, B))
+		KaratsubaSq(f, A, C);
 	bi_new(C, A->wordlen + B->wordlen);
 	//If f is 0 or Either A or B is 0, stop karatsuba recursive
 	if (!f || !(MIN(A->wordlen, B->wordlen))) 
@@ -207,4 +209,50 @@ void TextbookSq(bigint* A, bigint** C) {
 	bi_refine(temp);
 	bi_assign(C, temp);
 	bi_delete(&temp);
+}
+/*
+* This is Karatsuba Squaring
+* 
+*/
+void KaratsubaSq(int f, bigint* A, bigint** C) {
+	bi_new(C, A->wordlen * 2);
+	if (!f || !A->wordlen)
+		TextbookSq(A, C);
+
+	else {
+		int l = (A->wordlen + 1) >> 1;
+		int i, sign;
+
+		bigint* A0 = NULL;
+		bigint* A1 = NULL;
+		bigint* T0 = NULL;
+		bigint* T1 = NULL;
+		bigint* S = NULL;
+
+		bi_new(&A0, MIN(A->wordlen, l));
+
+		for (i = 0; i < MIN(A->wordlen, l); i++)
+			A0->a[i] = A->a[i];
+
+		bi_assign(&A1, A);
+		bi_rshift(&A1, MIN(A->wordlen, l) * sizeof(word) * BYTE);
+		KaratsubaSq(f - 1, A1, &T1);
+		KaratsubaSq(f - 1, A0, &T0);
+
+		bi_lshift(&T1, 2 * l * BYTE * sizeof(word));
+		ADD(*C, T1, C);
+		ADD(*C, T0, C);
+
+		bi_rshift(&T1, 2 * l * BYTE * sizeof(word));
+		MUL(A0, A1, &S);
+		bi_lshift(&S, l * BYTE * sizeof(word) + 1);
+		
+		ADD(*C, S, C);
+		
+		bi_delete(&A0);
+		bi_delete(&A1);
+		bi_delete(&T0);
+		bi_delete(&T1);
+		bi_delete(&S);
+	}
 }

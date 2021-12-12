@@ -11,27 +11,38 @@
 
 void toy1() {
 	int i;
-	for (i = 0; i < 10; i++) {
+	srand(time(NULL));
+	for (i = 0; i < 1000; i++) {
 		bigint* A = NULL;
-		bi_gen_rand(&A, NON_NEGATIVE, 5);
+		bi_gen_rand(&A, NON_NEGATIVE, 100);
+		
 		bigint* B = NULL;
-		bi_gen_rand(&B, NON_NEGATIVE, 2);
-		bigint* Q = NULL;
-		bigint* R = NULL;
-
+		//bi_gen_rand(&B, NON_NEGATIVE, 50);
+		bigint* C = NULL;
+		bigint* C1 = NULL;
 		//printf("A = ");
 		//bi_show_hex(A);
 		//printf("\nB = ");
 		//bi_show_hex(B);
 		//printf("\nC = ");
-
-		DIV(A, B, &Q,&R);
+		KaratsubaSq(flag, A, &C);
+		TextbookSq(A, &C1);
 		//bi_show_hex(C);
-
+		if (bi_compare(C, C1)) {
+			printf("error %d", i);
+			printf("\n");
+			bi_show_hex(A);
+			printf("\n");
+			bi_show_hex(C);
+			printf("\n");
+			bi_show_hex(C1);
+			break;
+		}
 		bi_delete(&A);
-		bi_delete(&B);
-		bi_delete(&Q);
-		bi_delete(&R);
+		//bi_delete(&B);
+		bi_delete(&C);
+		bi_delete(&C1);
+
 	}
 }
 
@@ -112,7 +123,7 @@ void modt() {
 
 
 int main() {
-	modt();
+	toy1();
 	/*
 	clock_t after_ClockCycle, before_ClockCycle;
 	
@@ -123,5 +134,6 @@ int main() {
 	
 	printf("\n time = %fms", (double)(after_ClockCycle - before_ClockCycle) / LoopCTR);
 	*/
+	printf("ok");
 	return 0;
 }

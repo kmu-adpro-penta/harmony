@@ -11,4 +11,5 @@ void KaratsubaMUL(int f, bigint* A, bigint* B, bigint** C);
 void A2(word* A, word* C0, word* C1);
 void Squaring(bigint* A, bigint** C);
 void TextbookSq(bigint* A, bigint** C);
+void KaratsubaSq(int f, bigint* A, bigint** C);
 #endif
