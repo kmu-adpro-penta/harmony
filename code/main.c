@@ -130,17 +130,52 @@ void modt() {
 	bi_show_hex(answer);
 	printf("\n");
 }
+//
+//
+//int main() {
+//	
+//	unsigned long long after_ClockCycle, before_ClockCycle;
+//	
+//	//! Measure Clock Cycles
+//	before_ClockCycle = clockcycles();
+//	toy1();
+//	after_ClockCycle = clockcycles();
+//	
+//	printf("\n time = %lld", (after_ClockCycle - before_ClockCycle) / LoopCTR);
+//	return 0;
+//}
 
+
+
+
+
+
+void multest() {
+	for (int i = 0; i < 1000; i++)
+	{
+		bigint* a = NULL;
+		bigint* b = NULL;
+		bi_gen_full_rand(&a);
+		bi_gen_full_rand(&a);
+		bi_gen_full_rand(&b);
+		printf("a = ");
+		bi_show_hex(a);
+		printf("\nb = ");
+		bi_show_hex(b);
+		printf("\n");
+		bigint* c = NULL;
+		ADD(a, b, &c);
+		printf("c = ");
+		bi_show_hex(c);
+		printf("\n");
+		printf("if a+b == c:\n\tprint('ok')\nelse:\n\tprint('error')\n");
+		bi_delete(&a);
+		bi_delete(&b);
+		bi_delete(&c);
+	}
+}
 
 int main() {
-	
-	unsigned long long after_ClockCycle, before_ClockCycle;
-	
-	//! Measure Clock Cycles
-	before_ClockCycle = clockcycles();
-	toy1();
-	after_ClockCycle = clockcycles();
-	
-	printf("\n time = %lld", (after_ClockCycle - before_ClockCycle) / LoopCTR);
+	multest();
 	return 0;
 }

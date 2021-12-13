@@ -224,13 +224,22 @@ void DIV(bigint* A, bigint* B, bigint** Q, bigint** R) {
 		Q_temp->sign = NEGATIVE;
 	}
 	else if (A_sign == NEGATIVE && B_sign == NON_NEGATIVE) {
-		ADD(B, R_temp, &R_temp);
-		ADD(Q_temp, value_1, &Q_temp);
 		Q_temp->sign = NEGATIVE;
+		R_temp->sign = NEGATIVE;
+		SUB(Q_temp, value_1, &Q_temp);
+
+		ADD(R_temp,B, &R_temp);
+		R_temp->sign = NON_NEGATIVE;
 	}
 	else if (A_sign == NEGATIVE && B_sign == NEGATIVE) {
-		ADD(B, R_temp, &R_temp);
-		ADD(Q_temp, value_1, &Q_temp);
+
+		Q_temp->sign = NEGATIVE;
+		R_temp->sign = NEGATIVE;
+		SUB(Q_temp, value_1, &Q_temp);
+
+		ADD(R_temp, B, &R_temp);
+		Q_temp->sign == NON_NEGATIVE;
+		R_temp->sign = NON_NEGATIVE;
 	}
 
 
