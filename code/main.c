@@ -14,14 +14,14 @@ void toy1() {
 	srand(time(NULL));
 	for (i = 0; i < LoopCTR; i++) {
 		bigint* A = NULL;
-		bi_gen_rand(&A, NON_NEGATIVE, 50);
+		bi_gen_rand(&A, NON_NEGATIVE, 100);
 		
 		//bigint* B = NULL;
 		//bi_gen_rand(&B, NON_NEGATIVE, 50);
 		bigint* C = NULL;
 		//bigint* C1 = NULL;
 		//MUL(A, B, &C);
-		KaratsubaSq(flag, A, &C);
+		TextbookSq(A, &C);
 		//TextbookSq(A, &C1);
 
 		bi_delete(&A);
