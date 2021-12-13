@@ -1,9 +1,9 @@
 #include "MOD.h"
-
 void ex_ltr_sq(bigint* x, bigint* n, bigint** t) {
 	bi_set_one(t);
 	for(int i=bi_get_bitlen(n)-1; i>=0; i--) {
-		MUL(*t, *t, t);
+		TextbookSq(*t, t);
+		//MUL(*t, *t, t);
 		if(bi_get_ibit(n, i))
 			MUL(*t, x, t);
 		bi_refine(*t);
@@ -26,10 +26,12 @@ void ex_rtl_sq(bigint* x, bigint* n, bigint** t0) {
 	for(int i=0; i<bi_get_bitlen(n); i++) {
 		if(bi_get_ibit(n, i))
 			MUL(*t0, t1, t0);
-		MUL(t1, t1, &t1);
+		TextbookSq(t1, &t1);
+		//MUL(t1, t1, &t1);
 		bi_refine(*t0);
 		bi_refine(t1);
 	}
+	bi_delete(&t1);
 }
 
 void ex_rtl_mul(bigint* x, bigint* n, bigint** t0) {
@@ -41,6 +43,7 @@ void ex_rtl_mul(bigint* x, bigint* n, bigint** t0) {
 			ADD(*t0, t1, t0);
 		ADD(t1, t1, &t1);
 	}
+	bi_delete(&t1);
 }
 
 void MontRed(bigint* x, bigint* r, bigint* n, bigint* nn, bigint** t) {
