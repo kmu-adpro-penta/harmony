@@ -145,6 +145,9 @@ void bi_show_hex(bigint* x) {
 	if (bi_get_sign(x) == NEGATIVE)
 		fprintf(stdout, "-");
 	fprintf(stdout, "0x");
+	if (bi_is_zero(x)) {
+
+	}
 	for (i = x->wordlen - 1; i >= 0; i--) {
 #ifdef BIT64
 		fprintf(stdout, "%016llx", x->a[i]);
@@ -191,6 +194,7 @@ void bi_show_bin(bigint* x) {
 void bi_refine(bigint* x) {
 	if (x == NULL)
 		return;
+
 
 	int new_wordlen = x->wordlen;
 	while (new_wordlen > 1) {
@@ -259,7 +263,7 @@ void bi_gen_rand(bigint** x, int sign, int wordlen) {
 
 void bi_gen_full_rand(bigint**x) {
 	int sign = rand() & 0x1;
-	int wordlen = rand() % 1000;
+	int wordlen = rand() % (MAX_RAND - 1) + 1 ;
 	if (*x != NULL)
 		bi_delete(x);
 	bi_gen_rand(x, sign, wordlen);

@@ -17,6 +17,7 @@ binary long division algorithm can expand multiple words long division
 */
 
 /*
+
 Long Division Algorithm
 
 Input : A = A_1 * W + A_0	, B ( A_1,B_0 in [0,W), w-1 <= B`s bit length < w )
@@ -24,6 +25,7 @@ Input : A = A_1 * W + A_0	, B ( A_1,B_0 in [0,W), w-1 <= B`s bit length < w )
 Output : Q, R	( such that A = B*Q + R ( 0 <= R < B , Q in [0,W) )
 
 */
+
 word LDA(word A_1, word A_0, word B) {
 
 	word Q = 0;
@@ -177,13 +179,18 @@ void DIV(bigint* A, bigint* B, bigint** Q, bigint** R) {
 
 	int A_sign = A->sign;
 	int B_sign = B->sign;
+
+	A->sign = NON_NEGATIVE;
+	B->sign = NON_NEGATIVE;
+
+	//Q와 R에 값을 입력하기 위해 메모리를 할당하여 줍니다.
 	bigint* Q_temp = NULL;
 	bigint* R_temp = NULL;
 	bi_new(&Q_temp, A->wordlen);		bi_new(&R_temp, B->wordlen+1);
 
 	// A와 B를 비교하는 단계
 	// 만일 B가 A보다 크다면 Q = 0 , R = A 를 반환합니다.
-	if (bi_compare_abs(B,A) == 1) {		
+	if (bi_compare(B,A) == 1) {		
 		bi_assign(&R_temp, A);
 		bi_set_zero(&Q_temp);
 	}
@@ -196,8 +203,7 @@ void DIV(bigint* A, bigint* B, bigint** Q, bigint** R) {
 				break;
 			k++;
 		}
-
-		//Q와 R에 값을 입력하기 위해 메모리를 할당하여 줍니다.
+		 
 
 
 		//A의 길이 만큼 실행해줍니다.
@@ -226,6 +232,7 @@ void DIV(bigint* A, bigint* B, bigint** Q, bigint** R) {
 		ADD(B, R_temp, &R_temp);
 		ADD(Q_temp, value_1, &Q_temp);
 	}
+
 
 	bi_assign(Q, Q_temp);
 	bi_assign(R, R_temp);
