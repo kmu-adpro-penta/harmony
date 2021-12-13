@@ -13,25 +13,21 @@ void toy1() {
 	int i;
 	for (i = 0; i < LoopCTR; i++) {
 		bigint* A = NULL;
-		bi_gen_rand(&A, NON_NEGATIVE, 132);
-		bigint* B = NULL;
-		bi_gen_rand(&B, NON_NEGATIVE, 12);
-		bigint* Q = NULL;
-		bigint* R = NULL;
+		bi_gen_rand(&A, NON_NEGATIVE, 50);
 
-		//printf("A = ");
-		//bi_show_hex(A);
-		//printf("\nB = ");
-		//bi_show_hex(B);
-		//printf("\nC = ");
-
-		DIV(A, B, &Q,&R);
-		//bi_show_hex(C);
+		//bigint* B = NULL;
+		//bi_gen_rand(&B, NON_NEGATIVE, 50);
+		bigint* C = NULL;
+		//bigint* C1 = NULL;
+		//MUL(A, B, &C);
+		KaratsubaSq(flag, A, &C);
+		//TextbookSq(A, &C1);
 
 		bi_delete(&A);
-		bi_delete(&B);
-		bi_delete(&Q);
-		bi_delete(&R);
+		//bi_delete(&B);
+		bi_delete(&C);
+		//bi_delete(&C1);
+
 	}
 }
 

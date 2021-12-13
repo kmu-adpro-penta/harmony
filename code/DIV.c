@@ -203,7 +203,7 @@ void DIV(bigint* A, bigint* B, bigint** Q, bigint** R) {
 				break;
 			k++;
 		}
-
+		 
 
 
 		//A의 길이 만큼 실행해줍니다.
@@ -232,6 +232,7 @@ void DIV(bigint* A, bigint* B, bigint** Q, bigint** R) {
 		ADD(B, R_temp, &R_temp);
 		ADD(Q_temp, value_1, &Q_temp);
 	}
+
 
 	bi_assign(Q, Q_temp);
 	bi_assign(R, R_temp);
