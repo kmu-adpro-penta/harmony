@@ -156,7 +156,6 @@ void multest() {
 		bigint* a = NULL;
 		bigint* b = NULL;
 		bi_gen_full_rand(&a);
-		bi_gen_full_rand(&a);
 		bi_gen_full_rand(&b);
 		printf("a = ");
 		bi_show_hex(a);
@@ -164,11 +163,15 @@ void multest() {
 		bi_show_hex(b);
 		printf("\n");
 		bigint* c = NULL;
-		ADD(a, b, &c);
-		printf("c = ");
+		bigint* d = NULL;
+		DIV(a, b, &c, &d);
+		printf("\nc = ");
 		bi_show_hex(c);
-		printf("\n");
-		printf("if a+b == c:\n\tprint('ok')\nelse:\n\tprint('error')\n");
+
+		printf("\nd = ");
+		bi_show_hex(d);
+		printf("\nif b < 0:\n\td = d + b\n\tc = c -1\n");
+		printf("\nif a//b == c and a%%b == d:\n\tprint('ok')\nelse:\n\tprint('error')\n");
 		bi_delete(&a);
 		bi_delete(&b);
 		bi_delete(&c);

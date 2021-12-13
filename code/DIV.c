@@ -179,6 +179,8 @@ void DIV(bigint* A, bigint* B, bigint** Q, bigint** R) {
 
 	int A_sign = A->sign;
 	int B_sign = B->sign;
+	bigint* value_1 = NULL;
+	bi_set_one(&value_1);
 
 	A->sign = NON_NEGATIVE;
 	B->sign = NON_NEGATIVE;
@@ -191,8 +193,27 @@ void DIV(bigint* A, bigint* B, bigint** Q, bigint** R) {
 	// A와 B를 비교하는 단계
 	// 만일 B가 A보다 크다면 Q = 0 , R = A 를 반환합니다.
 	if (bi_compare(B,A) == 1) {		
-		bi_assign(&R_temp, A);
-		bi_set_zero(&Q_temp);
+		if (A_sign == NON_NEGATIVE && B_sign == NON_NEGATIVE) {
+
+			bi_assign(&R_temp, A);
+			bi_set_zero(&Q_temp);
+		}
+		else if (A_sign == NON_NEGATIVE && B_sign == NEGATIVE) {
+			bi_set_zero(&Q_temp);
+			bi_assign(&R_temp, A);
+		}
+		else if (A_sign == NEGATIVE && B_sign == NON_NEGATIVE) {
+			bi_set_one(&Q_temp);
+			Q_temp->sign = NEGATIVE;
+			SUB(B,A, &R_temp);
+
+		}
+		else if (A_sign == NEGATIVE && B_sign == NEGATIVE) {
+
+			bi_set_one(&Q_temp);
+			SUB(B, A, &R_temp);
+
+		}
 	}
 	else {
 
@@ -215,32 +236,29 @@ void DIV(bigint* A, bigint* B, bigint** Q, bigint** R) {
 		bi_refine(R_temp);
 		bi_refine(Q_temp);
 
+
+
+		if (A_sign == NON_NEGATIVE && B_sign == NEGATIVE) {
+			Q_temp->sign = NEGATIVE;
+		}
+		else if (A_sign == NEGATIVE && B_sign == NON_NEGATIVE) {
+			ADD(Q_temp, value_1, &Q_temp);
+			Q_temp->sign = NEGATIVE;
+
+			R_temp->sign = NEGATIVE;
+			ADD(R_temp, B, &R_temp);
+		}
+		else if (A_sign == NEGATIVE && B_sign == NEGATIVE) {
+
+			ADD(Q_temp, value_1, &Q_temp);
+
+			R_temp->sign = NEGATIVE;
+			ADD(R_temp, B, &R_temp);
+		}
 	}
 	//R과 Q의 필요없는 0제거
 	
-	bigint* value_1 = NULL;
-	bi_set_one(&value_1);
-	if (A_sign == NON_NEGATIVE && B_sign == NEGATIVE) {
-		Q_temp->sign = NEGATIVE;
-	}
-	else if (A_sign == NEGATIVE && B_sign == NON_NEGATIVE) {
-		Q_temp->sign = NEGATIVE;
-		R_temp->sign = NEGATIVE;
-		SUB(Q_temp, value_1, &Q_temp);
-
-		ADD(R_temp,B, &R_temp);
-		R_temp->sign = NON_NEGATIVE;
-	}
-	else if (A_sign == NEGATIVE && B_sign == NEGATIVE) {
-
-		Q_temp->sign = NEGATIVE;
-		R_temp->sign = NEGATIVE;
-		SUB(Q_temp, value_1, &Q_temp);
-
-		ADD(R_temp, B, &R_temp);
-		Q_temp->sign == NON_NEGATIVE;
-		R_temp->sign = NON_NEGATIVE;
-	}
+	
 
 
 	bi_assign(Q, Q_temp);
