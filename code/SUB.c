@@ -53,13 +53,14 @@ void SUB(bigint* A, bigint* B, bigint** C) {
 		//|A| >= |B|
 		if (bi_compare_abs(A, B) + 1) {
 			SUBC(A, B, &temp);
-			if(A->sign == -1)
+			if(A->sign == NEGATIVE)
 				temp->sign = NEGATIVE;
 		}
 		//|A| < |B|
 		else {
 			SUBC(B, A, &temp);
-			temp->sign = NEGATIVE;
+			if (A->sign == NON_NEGATIVE)
+				temp->sign = NEGATIVE;
 		}
 	}
 	//if sign is different
@@ -68,6 +69,7 @@ void SUB(bigint* A, bigint* B, bigint** C) {
 		if (!(A->sign)) {
 			B->sign = NON_NEGATIVE;
 			ADD(A, B, &temp);
+			temp->sign = NON_NEGATIVE;
 		}
 		//A < 0
 		else {
