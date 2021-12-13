@@ -12,36 +12,22 @@
 void toy1() {
 	int i;
 	srand(time(NULL));
-	for (i = 0; i < 1000; i++) {
+	for (i = 0; i < LoopCTR; i++) {
 		bigint* A = NULL;
-		bi_gen_rand(&A, NON_NEGATIVE, 100);
+		bi_gen_rand(&A, NON_NEGATIVE, 50);
 		
-		bigint* B = NULL;
+		//bigint* B = NULL;
 		//bi_gen_rand(&B, NON_NEGATIVE, 50);
 		bigint* C = NULL;
-		bigint* C1 = NULL;
-		//printf("A = ");
-		//bi_show_hex(A);
-		//printf("\nB = ");
-		//bi_show_hex(B);
-		//printf("\nC = ");
+		//bigint* C1 = NULL;
+		//MUL(A, B, &C);
 		KaratsubaSq(flag, A, &C);
-		TextbookSq(A, &C1);
-		//bi_show_hex(C);
-		if (bi_compare(C, C1)) {
-			printf("error %d", i);
-			printf("\n");
-			bi_show_hex(A);
-			printf("\n");
-			bi_show_hex(C);
-			printf("\n");
-			bi_show_hex(C1);
-			break;
-		}
+		//TextbookSq(A, &C1);
+
 		bi_delete(&A);
 		//bi_delete(&B);
 		bi_delete(&C);
-		bi_delete(&C1);
+		//bi_delete(&C1);
 
 	}
 }
@@ -147,17 +133,14 @@ void modt() {
 
 
 int main() {
-	toy1();
-	/*
-	clock_t after_ClockCycle, before_ClockCycle;
+	
+	unsigned long long after_ClockCycle, before_ClockCycle;
 	
 	//! Measure Clock Cycles
-	before_ClockCycle = clock();
-	toy2();
-	after_ClockCycle = clock();
+	before_ClockCycle = clockcycles();
+	toy1();
+	after_ClockCycle = clockcycles();
 	
-	printf("\n time = %fms", (double)(after_ClockCycle - before_ClockCycle) / LoopCTR);
-	*/
-	printf("ok");
+	printf("\n time = %lld", (after_ClockCycle - before_ClockCycle) / LoopCTR);
 	return 0;
 }
