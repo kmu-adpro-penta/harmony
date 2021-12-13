@@ -11,11 +11,11 @@
 
 void toy1() {
 	int i;
-	for (i = 0; i < 10; i++) {
+	for (i = 0; i < LoopCTR; i++) {
 		bigint* A = NULL;
-		bi_gen_rand(&A, NON_NEGATIVE, 5);
+		bi_gen_rand(&A, NON_NEGATIVE, 132);
 		bigint* B = NULL;
-		bi_gen_rand(&B, NON_NEGATIVE, 2);
+		bi_gen_rand(&B, NON_NEGATIVE, 12);
 		bigint* Q = NULL;
 		bigint* R = NULL;
 
@@ -38,9 +38,9 @@ void toy1() {
 void toy2() {
 	for (int i = 0; i < LoopCTR; i++) {
 		bigint* A = NULL;
-		bi_gen_rand(&A, NON_NEGATIVE, 100);
+		bi_gen_rand(&A, NON_NEGATIVE, 10);
 		bigint* B = NULL;
-		bi_gen_rand(&B, NON_NEGATIVE, 40);
+		bi_gen_rand(&B, NON_NEGATIVE, 4);
 
 		bigint* Q = NULL;
 		bigint* R = NULL;
@@ -136,16 +136,16 @@ void modt() {
 
 
 int main() {
-	modt();
+	//modt();
 	
-	//clock_t after_ClockCycle, before_ClockCycle;
-	//
-	////! Measure Clock Cycles
-	//before_ClockCycle = clock();
-	//toy2();
-	//after_ClockCycle = clock();
-	//
-	//printf("\n time = %fms", (double)(after_ClockCycle - before_ClockCycle) / LoopCTR);
-	//
+	unsigned long long after_ClockCycle, before_ClockCycle;
+	
+	//! Measure Clock Cycles
+	before_ClockCycle = clockcycles();
+	toy2();
+	after_ClockCycle = clockcycles();
+	
+	printf("\n time = %lld", (after_ClockCycle - before_ClockCycle) / LoopCTR);
+	
 	return 0;
 }

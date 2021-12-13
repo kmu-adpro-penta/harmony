@@ -66,6 +66,9 @@ case 5. A > B or A < B  ( A,B > 0 )
 */
 
 void ADD(bigint* A, bigint* B, bigint **C) {
+	int A_sign = A->sign;
+	int B_sign = B->sign;
+
 	// if A = 0  then return B
 	if (A->wordlen == 0)
 		bi_assign(C,B);
@@ -89,11 +92,21 @@ void ADD(bigint* A, bigint* B, bigint **C) {
 	}
 
 	// if A >= B then 
-	else if (A->wordlen >= B->wordlen)
+	else if (A->wordlen >= B->wordlen) {
+		A->sign == NON_NEGATIVE;
+		B->sign == NON_NEGATIVE;
 		ADDC(A, B, &temp);  // return A + B
 	// else (A < B)
-	else
+	}
+	else {
+		A->sign == NON_NEGATIVE;
+		B->sign == NON_NEGATIVE;
 		ADDC(B, A, &temp);	// return B + A
+	}
+
+	if (A_sign == NEGATIVE && B_sign == NEGATIVE) {
+		temp->sign == NEGATIVE;
+	}
 
 	bi_refine(temp);
 	bi_assign(C, temp);
