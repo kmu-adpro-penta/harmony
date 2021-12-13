@@ -93,19 +93,19 @@ void ADD(bigint* A, bigint* B, bigint **C) {
 
 	// if A >= B then 
 	else if (A->wordlen >= B->wordlen) {
-		A->sign == NON_NEGATIVE;
-		B->sign == NON_NEGATIVE;
+		A->sign = NON_NEGATIVE;
+		B->sign = NON_NEGATIVE;
 		ADDC(A, B, &temp);  // return A + B
 	// else (A < B)
 	}
 	else {
-		A->sign == NON_NEGATIVE;
-		B->sign == NON_NEGATIVE;
+		A->sign = NON_NEGATIVE;
+		B->sign = NON_NEGATIVE;
 		ADDC(B, A, &temp);	// return B + A
 	}
 
 	if (A_sign == NEGATIVE && B_sign == NEGATIVE) {
-		temp->sign == NEGATIVE;
+		temp->sign = NEGATIVE;
 	}
 
 	bi_refine(temp);
