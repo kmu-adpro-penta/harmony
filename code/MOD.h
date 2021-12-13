@@ -14,4 +14,6 @@ void ex_rtl_sq(bigint* x, bigint* n, bigint** t0);
 void ex_rtl_mul(bigint* x, bigint* n, bigint** t0);
 void invN(bigint* n, bigint* r, bigint** nn);
 void bi_expanded_euclid(bigint*a, bigint*b, bigint**x, bigint**y);
+
+void ModExp_by_MontRed(bigint* x, bigint* e, bigint* n, bigint* nn, bigint* r, bigint* phi1, bigint** t);
 #endif

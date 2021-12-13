@@ -49,31 +49,31 @@ void toy1() {
 void toy2() {
 	for (int i = 0; i < LoopCTR; i++) {
 		bigint* A = NULL;
-		bi_gen_rand(&A, NON_NEGATIVE, 50);
+		bi_gen_rand(&A, NON_NEGATIVE, 100);
 		bigint* B = NULL;
-		bi_gen_rand(&B, NON_NEGATIVE, 13);
+		bi_gen_rand(&B, NON_NEGATIVE, 40);
 
 		bigint* Q = NULL;
 		bigint* R = NULL;
 
-		printf("\n");
-		printf("print(");
-		bi_show_hex(A);
-		printf(" // ");
-		bi_show_hex(B);
-		DIV_Naive(A, B, &Q, &R);
-		printf(" == ");
-		bi_show_hex(Q);
-		printf(")");
+		//printf("\n");
+		//printf("print(");
+		//bi_show_hex(A);
+		//printf(" // ");
+		//bi_show_hex(B);
+		DIV(A, B, &Q, &R);
+		//printf(" == ");
+		//bi_show_hex(Q);
+		//printf(")");
 
-		printf("\n");
-		printf("print(");
-		bi_show_hex(A);
-		printf(" %% ");
-		bi_show_hex(B);
-		printf(" == ");
-		bi_show_hex(R);
-		printf(")");
+		//printf("\n");
+		//printf("print(");
+		//bi_show_hex(A);
+		//printf(" %% ");
+		//bi_show_hex(B);
+		//printf(" == ");
+		//bi_show_hex(R);
+		//printf(")");
 
 		bi_delete(&A);
 		bi_delete(&B);
@@ -109,6 +109,7 @@ void modt() {
 	bigint* n = NULL;
 	bigint* r = NULL;
 	bigint* nn = NULL;
+	bigint* temp = NULL;
 	bi_set_by_string(&n, NON_NEGATIVE, "3942ad939dedf");
 	bi_set_one(&r);
 	bi_lshift(&r, n->wordlen*sizeof(word)*BYTE);
@@ -116,8 +117,31 @@ void modt() {
 	printf("\n");
 	bi_show_hex(r);
 	printf("\n");
+	
 	invN(n, r, &nn);
 	bi_show_hex(nn);
+	printf("\n");
+	nn->sign = bi_get_flipsign(nn);
+	DIV(nn, r, &temp, &nn);
+
+	bigint* phi1 = NULL;
+	DIV(r, n, &temp, &phi1);
+	bi_show_hex(phi1);
+	printf("\n");
+
+	bigint* x = NULL;
+	bigint* e = NULL;
+	bi_set_by_string(&x, NON_NEGATIVE, "17081f820b5ad");
+	bi_set_by_string(&e, NON_NEGATIVE, "7281a");
+	bi_show_hex(x);
+	printf("\n");
+	bi_show_hex(e);
+	printf("\n");
+
+	bigint* answer = NULL;
+
+	ModExp_by_MontRed(x, e, n, nn, r, phi1, &answer);
+	bi_show_hex(answer);
 	printf("\n");
 }
 

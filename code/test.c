@@ -60,8 +60,8 @@ void multest() {
 	{
 		bigint* a = NULL;
 		bigint* b = NULL;
-		bi_gen_rand(&a, NON_NEGATIVE, 50);
-		bi_gen_rand(&b, NON_NEGATIVE, 10);
+		bi_gen_full_rand(&a);
+		bi_gen_full_rand(&b);
 		printf("a = ");
 		bi_show_hex(a);
 		printf("\nb = ");

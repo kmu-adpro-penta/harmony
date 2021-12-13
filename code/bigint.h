@@ -70,7 +70,8 @@ void bi_refine(bigint* x);
 
 void bi_assign(bigint** y, bigint* x);
 
-void bi_gen_rand(bigint** x, int sign, int wordlen);//fix
+void bi_gen_rand(bigint** x, int sign, int wordlen);
+void bi_gen_full_rand(bigint**x);
 
 int bi_get_wordlen(bigint* x);
 int bi_get_bitlen(bigint* x);

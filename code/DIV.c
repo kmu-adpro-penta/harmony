@@ -175,11 +175,17 @@ Output : Q  ( A = BQ + R ( 0 <= R < B, 0 < Q_j <= W ))
 */
 void DIV(bigint* A, bigint* B, bigint** Q, bigint** R) {
 
+	int A_sign = A->sign;
+	int B_sign = B->sign;
+	bigint* Q_temp = NULL;
+	bigint* R_temp = NULL;
+	bi_new(&Q_temp, A->wordlen);		bi_new(&R_temp, B->wordlen+1);
+
 	// A와 B를 비교하는 단계
 	// 만일 B가 A보다 크다면 Q = 0 , R = A 를 반환합니다.
-	if (bi_compare(B,A) == 1) {		
-		bi_assign(R, A);
-		bi_set_zero(Q);
+	if (bi_compare_abs(B,A) == 1) {		
+		bi_assign(&R_temp, A);
+		bi_set_zero(&Q_temp);
 	}
 	else {
 
@@ -192,9 +198,6 @@ void DIV(bigint* A, bigint* B, bigint** Q, bigint** R) {
 		}
 
 		//Q와 R에 값을 입력하기 위해 메모리를 할당하여 줍니다.
-		bigint* Q_temp = NULL;
-		bigint* R_temp = NULL;
-		bi_new(&Q_temp, A->wordlen);		bi_new(&R_temp, B->wordlen+1);
 
 
 		//A의 길이 만큼 실행해줍니다.
@@ -206,12 +209,29 @@ void DIV(bigint* A, bigint* B, bigint** Q, bigint** R) {
 		bi_refine(R_temp);
 		bi_refine(Q_temp);
 
-
-
-		bi_assign(Q, Q_temp);
-		bi_assign(R, R_temp);
 	}
 	//R과 Q의 필요없는 0제거
+	
+	bigint* value_1 = NULL;
+	bi_set_one(&value_1);
+	if (A_sign == NON_NEGATIVE && B_sign == NEGATIVE) {
+		Q_temp->sign = NEGATIVE;
+	}
+	else if (A_sign == NEGATIVE && B_sign == NON_NEGATIVE) {
+		ADD(B, R_temp, &R_temp);
+		ADD(Q_temp, value_1, &Q_temp);
+		Q_temp->sign = NEGATIVE;
+	}
+	else if (A_sign == NEGATIVE && B_sign == NEGATIVE) {
+		ADD(B, R_temp, &R_temp);
+		ADD(Q_temp, value_1, &Q_temp);
+	}
+
+	bi_assign(Q, Q_temp);
+	bi_assign(R, R_temp);
+	bi_delete(&Q_temp);
+	bi_delete(&R_temp);
+	bi_delete(&value_1);
 
 }
 

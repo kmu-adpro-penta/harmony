@@ -216,7 +216,10 @@ void bi_refine(bigint* x) {
  * @param wordlen
  */
 void array_copy(word* dst, word* arr, int wordlen) {
-	memcpy(dst, arr, wordlen * sizeof(word));
+	for(int i=0; i<wordlen; i++) {
+		*dst = *arr;
+		dst++; arr++;
+	}
 }
 
 /**
@@ -254,6 +257,13 @@ void bi_gen_rand(bigint** x, int sign, int wordlen) {
 	bi_refine(*x);
 }
 
+void bi_gen_full_rand(bigint**x) {
+	int sign = rand() & 0x1;
+	int wordlen = rand() % 1000;
+	if (*x != NULL)
+		bi_delete(x);
+	bi_gen_rand(x, sign, wordlen);
+}
 //return wordlen
 int bi_get_wordlen(bigint* x) {
 	if (x == NULL) return 0;
@@ -427,7 +437,7 @@ void bi_realloc(bigint** x, int i) {
 	int n;
 	word* w;
 	w = (word*)malloc(((*x)->wordlen + i) * sizeof(word));
-	memcpy(w, (*x)->a, (*x)->wordlen * sizeof(word));
+	array_copy(w, (*x)->a, (*x)->wordlen);
 	for (n = 0; n < i; n++) {
 		w[(*x)->wordlen + n] = 0;
 	}
@@ -445,9 +455,9 @@ void bi_mod(bigint* x, int r, bigint** n) {
 		bi_assign(n, x);
 		return;
 	}
-	bi_new(n, r);
+	bi_new(n, r-1);
 	(*n)->sign = bi_get_sign(x);
-	for (int i = 0; i < r; i++) {
+	for (int i = 0; i < r-1; i++) {
 		(*n)->a[i] = x->a[i];
 	}
 }
