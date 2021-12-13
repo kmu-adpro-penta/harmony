@@ -224,7 +224,7 @@ void KaratsubaSq(int f, bigint* A, bigint** C) {
 	else {
 		//Divide top, bottom bit
 		int l = (A->wordlen + 1) >> 1;
-		int i, sign;
+		int i;
 
 		bigint* A0 = NULL;
 		bigint* A1 = NULL;
