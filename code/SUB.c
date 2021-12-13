@@ -51,8 +51,11 @@ void SUB(bigint* A, bigint* B, bigint** C) {
 	//if sign is same
 	if (A->sign == B->sign) {
 		//|A| >= |B|
-		if (bi_compare_abs(A, B) + 1) 
+		if (bi_compare_abs(A, B) + 1) {
 			SUBC(A, B, &temp);
+			if(A->sign == -1)
+				temp->sign = NEGATIVE;
+		}
 		//|A| < |B|
 		else {
 			SUBC(B, A, &temp);

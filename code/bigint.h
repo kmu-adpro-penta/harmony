@@ -16,7 +16,7 @@
 #define BIT8
 #define LoopCTR 1000
 #define flag 2
-#define MAX_RAND 1000
+#define MAX_RAND 200
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>

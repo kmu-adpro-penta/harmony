@@ -12,24 +12,24 @@
 void toy1() {
 	int i;
 	srand(time(NULL));
-	for (i = 0; i < LoopCTR; i++) {
+	//for (i = 0; i < LoopCTR; i++) {
 		bigint* A = NULL;
-		bi_gen_rand(&A, NON_NEGATIVE, 50);
-		
-		//bigint* B = NULL;
-		//bi_gen_rand(&B, NON_NEGATIVE, 50);
+		bi_gen_full_rand(&A);
+
+		bigint* B = NULL;
+		bi_gen_full_rand(&B);
 		bigint* C = NULL;
 		//bigint* C1 = NULL;
-		//MUL(A, B, &C);
-		KaratsubaSq(flag, A, &C);
+		MUL(A, B, &C);
+		//KaratsubaSq(flag, A, &C);
 		//TextbookSq(A, &C1);
 
 		bi_delete(&A);
-		//bi_delete(&B);
+		bi_delete(&B);
 		bi_delete(&C);
 		//bi_delete(&C1);
 
-	}
+	//}
 }
 
 void toy2() {
